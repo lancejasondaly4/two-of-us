@@ -19,7 +19,7 @@ button{font-family:inherit; cursor:pointer;}
 #ctl{flex:0 0 auto; background:#121214; color:#EDEDF0; padding:calc(env(safe-area-inset-top) + 5px) 8px 6px; display:flex; flex-direction:column; gap:5px; font-family:Inter, system-ui, sans-serif; z-index:70;}
 #ctl .r{display:flex; gap:5px; align-items:center;}
 #ctl .lab{font-size:.75rem; font-weight:700; color:#9A9AA6; width:38px; flex:0 0 38px;}
-#ctl button{height:32px; border-radius:8px; border:1.5px solid #3A3A42; background:none; color:#EDEDF0; font-size:.82rem; font-weight:700; padding:0 9px; flex:1 1 0;}
+#ctl button{height:32px; border-radius:8px; border:1.5px solid #3A3A42; background:none; color:#EDEDF0; font-size:.78rem; font-weight:700; padding:0 5px; flex:1 1 0; white-space:nowrap;}
 #ctl button.on{background:#EDEDF0; color:#121214; border-color:#EDEDF0;}
 #ctl button.play{background:#2B2B33; border-color:#2B2B33;}
 #ctl button.snd{flex:0 0 auto;}
@@ -140,16 +140,19 @@ body[data-look=bold] .clue{background:#CFE5FF; border:2.5px solid #111; border-r
 body[data-look=bold] .clue .q{font-weight:700;} body[data-look=bold] .clue .arrow{color:#111;}
 body[data-look=night] .clue{border:1px solid rgba(255,255,255,.1);}
 body[data-look=night] .clue .q{font-weight:500;}
-.kb{display:flex; flex-direction:column; gap:7px; padding:0 3px;}
-.kb .row{display:flex; justify-content:center; gap:5px;}
-.kb button{flex:1 1 0; max-width:40px; height:48px; border:0; border-radius:9px; background:var(--key); color:var(--keyInk); font-size:1.3rem; font-weight:700; padding:0;}
-.kb button.del{max-width:64px; flex:1.6 1 0; font-size:1.15rem;}
-body[data-look=glass] .kb button{box-shadow:0 1px 0 rgba(0,0,0,.12), 0 2px 6px rgba(60,60,140,.06); font-family:var(--display); font-weight:600;}
-body[data-look=glass] .kb button:active{background:#DDE4FF;}
-body[data-look=bold] .kb button{border:2px solid #111; border-radius:8px; box-shadow:0 3px 0 #111; font-family:var(--display); font-weight:800;}
-body[data-look=bold] .kb button:active{transform:translateY(2px); box-shadow:0 1px 0 #111; background:#FFD23F;}
-body[data-look=night] .kb button{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
-body[data-look=night] .kb button:active{background:rgba(242,179,91,.35);}
+.kb{display:flex; flex-direction:column; gap:0; padding:0 2px;}
+.kb .row{display:flex; justify-content:center; gap:0;}
+/* Bigger keys (research: a normal phone keyboard is below the key size older fingers need). The whole
+   button, gaps included, is the touch area; the visible key is the span inside it. */
+.kb button{flex:1 1 0; height:60px; border:0; background:none; padding:3px 2.5px; touch-action:manipulation;}
+.kb button>span{display:flex; align-items:center; justify-content:center; width:100%; height:100%; border-radius:10px; background:var(--key); color:var(--keyInk); font-size:1.5rem; font-weight:700; pointer-events:none;}
+.kb button.del{flex:1.5 1 0;} .kb button.del>span{font-size:1.3rem;}
+body[data-look=glass] .kb button>span{box-shadow:0 1px 0 rgba(0,0,0,.12), 0 2px 6px rgba(60,60,140,.06); font-family:var(--display); font-weight:600;}
+body[data-look=glass] .kb button:active>span{background:#DDE4FF;}
+body[data-look=bold] .kb button>span{border:2px solid #111; border-radius:8px; box-shadow:0 3px 0 #111; font-family:var(--display); font-weight:800;}
+body[data-look=bold] .kb button:active>span{transform:translateY(2px); box-shadow:0 1px 0 #111; background:#FFD23F;}
+body[data-look=night] .kb button>span{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+body[data-look=night] .kb button:active>span{background:rgba(242,179,91,.35);}
 
 /* finish panel (replaces the keyboard) */
 .fin{display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 14px 6px; text-align:center;}
@@ -232,8 +235,8 @@ body[data-look=day] .c.cur{box-shadow:0 4px 14px rgba(235,167,72,.55);}
 body[data-look=day] .dock{background:rgba(255,250,240,.72); border-top:1px solid rgba(168,89,26,.12); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);}
 body[data-look=day] .clue{border:1px solid rgba(168,89,26,.12); box-shadow:0 4px 16px rgba(150,100,40,.08);}
 body[data-look=day] .clue .q{font-weight:500;}
-body[data-look=day] .kb button{box-shadow:0 1px 0 rgba(120,80,30,.22), 0 2px 5px rgba(120,80,30,.06);}
-body[data-look=day] .kb button:active{background:#FBE2B6;}
+body[data-look=day] .kb button>span{box-shadow:0 1px 0 rgba(120,80,30,.22), 0 2px 5px rgba(120,80,30,.06);}
+body[data-look=day] .kb button:active>span{background:#FBE2B6;}
 body[data-look=day] .fin .big{font-weight:600; color:#241F3E;}
 body[data-look=day] .fin .cta{background:linear-gradient(180deg,#F6C277,#E9A445); color:#241F3E; border-radius:99px; box-shadow:0 8px 22px rgba(233,164,69,.40);}
 /* a right answer: each letter warms up like the sun coming through, then settles amber */
@@ -256,12 +259,43 @@ body[data-look=day] .c.fxw{animation:warm .8s ease-out both, tilewarm .9s ease-o
 .plate{position:absolute; border-radius:999px; pointer-events:none; z-index:1;}
 .plate.night{background:radial-gradient(closest-side, rgba(16,14,40,.92), rgba(16,14,40,.75) 65%, rgba(16,14,40,0));}
 .plate.day{background:rgba(255,252,246,.94); box-shadow:0 12px 34px rgba(170,110,40,.22), 0 0 0 1px rgba(235,167,72,.30);}
+
+/* ---------- round 22: what the design research asked for ---------- */
+/* letter: a tiny pop on the square you just filled (the smallest step of the feedback ladder) */
+@keyframes letterPop{0%{transform:scale(.8)} 60%{transform:scale(1.1)} 100%{transform:scale(1)}}
+.c.pop{animation:letterPop .17s ease-out;}
+/* the letter you are pressing, shown big above your finger */
+.keypop{position:fixed; pointer-events:none; z-index:80; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:2.5rem; font-weight:600;
+  border-radius:14px; background:var(--key); color:var(--keyInk); box-shadow:0 10px 26px rgba(0,0,0,.28);}
+body[data-look=night] .keypop{background:#3A3560; box-shadow:0 10px 26px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.12);}
+/* welcome: the first screen after the link */
+.welcome{flex:1; display:flex; flex-direction:column; padding:16px 22px calc(22px + env(safe-area-inset-bottom)); overflow-y:auto;}
+.welcome .mid{flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px;}
+.welcome h1{font-family:var(--display); font-weight:600; font-size:2.9rem; line-height:1.05; letter-spacing:-.015em; margin:0;}
+.welcome .lede{font-size:1.2rem; line-height:1.45; color:var(--muted); margin:0;}
+.welcome .start{width:100%; min-height:66px; border:0; border-radius:99px; font-size:1.3rem; font-weight:700; margin-top:18px;}
+.welcome .small{text-align:center; color:var(--muted); font-size:1rem; margin:12px 0 0;}
+body[data-look=night] .welcome .start{background:linear-gradient(180deg,#F6C277,#E9A445); color:#1A1630; box-shadow:0 0 28px rgba(242,179,91,.45);}
+body[data-look=day] .welcome .start{background:linear-gradient(180deg,#F6C277,#E9A445); color:#241F3E; box-shadow:0 10px 26px rgba(233,164,69,.40);}
+body[data-look=glass] .welcome .start{background:#15151C; color:#fff;}
+body[data-look=bold] .welcome .start{background:#111; color:#fff; border-radius:12px;}
+/* first move, taught by doing it */
+.coach{margin:4px 8px 6px; padding:10px 14px; border-radius:14px; font-size:1.06rem; line-height:1.35; background:var(--panel); border:1px solid var(--accent);}
+.c.cur.ring{box-shadow:0 0 0 3px var(--accent) !important;}
+/* Day / Night switch the player can see */
+.toprow{display:flex; align-items:center; justify-content:space-between;}
+.modebtn{border:1px solid rgba(127,127,150,.35); background:var(--panel); color:var(--ink); border-radius:99px; padding:8px 14px; min-height:42px; font-size:.98rem; font-weight:700;}
+/* finish: a gentle count-up */
+.fin .count{font-size:1.2rem; color:var(--muted); animation:rise .7s .12s cubic-bezier(.2,.8,.2,1) both;}
+.fin .count b{font-family:var(--display); font-size:1.6rem; color:var(--ink); font-variant-numeric:tabular-nums; display:inline-block; min-width:1.4em; text-align:center;}
+body.calm *{animation:none !important;}
 @media (prefers-reduced-motion:reduce){ *{animation:none !important;} }
 </style></head>
 <body data-look="night">
 <div id="ctl">
   <div class="r"><span class="lab">Look</span><button data-pref="night">Night</button><button data-pref="day">Day</button><button data-pref="auto" id="autoBtn">Automatic</button><button class="snd" id="snd">Sound on</button></div>
-  <div class="r"><span class="lab">Show</span><button data-view="home">Home</button><button data-view="puzzle">Puzzle</button><button class="play" id="pW">&#9654; Right</button><button class="play" id="pF">&#9654; Finish</button></div>
+  <div class="r"><span class="lab">Show</span><button data-view="welcome">Start</button><button data-view="home">Home</button><button data-view="puzzle">Puzzle</button><button class="play" id="pW">&#9654; Right</button><button class="play" id="pF">&#9654; Finish</button></div>
+  <div class="r"><span class="lab">Try</span><button data-keys="qwerty">QWERTY keys</button><button data-keys="abc">ABC keys</button><button id="calmBtn">Calm motion: off</button></div>
 </div>
 <div id="screen"></div>
 <div id="fx"></div>
@@ -293,14 +327,16 @@ P.placed.forEach(pl=>pl.cells.forEach(([r,c],i)=>{ sol.set(K(r,c),pl.word[i]); i
 const order=[...P.placed].sort((a,b)=>a.dir===b.dir?a.num-b.num:(a.dir==='A'?-1:1));
 const STUDE=P.placed.find(p=>p.word==='STUDEBAKER');
 const START_W=['DUBUQUE','PEANUT','PAPERROUTE','BUTTERPECAN','BISCUIT','JITTERBUG'];
-let pref='night', look='night', view='home', mode='w', act=STUDE, ci=0, lastScroll=null, busy=0, finishing=false, sound=true;
-const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+let pref='night', look='night', view='welcome', mode='w', act=STUDE, ci=0, lastScroll=null, busy=0, finishing=false, sound=true;
+let keys='qwerty', coach=false, justTyped=null, renderTok=0, lift=null, calm=false;
+const phoneCalm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+let reduce=phoneCalm;   // the phone's Reduce Motion setting is the main switch; the try-out strip can force it
 const solved=pl=>pl.cells.every(([r,c])=>entry.get(K(r,c))===sol.get(K(r,c)));
 const allDone=()=>P.placed.every(solved);
 const firstEmpty=pl=>{ const i=pl.cells.findIndex(([r,c])=>!entry.get(K(r,c))); return i<0?0:i; };
-function setup(m){ mode=m; entry=new Map();
-  P.placed.forEach(pl=>{ if(pl===STUDE) return; if(m==='f'||START_W.includes(pl.word)) pl.cells.forEach(([r,c],i)=>entry.set(K(r,c),pl.word[i])); });
-  act=STUDE; ci=firstEmpty(act); finishing=false; busy++; lastScroll=null; fx.innerHTML=''; parts=[]; }
+function setup(m){ skipLift(); mode=m; entry=new Map(); coach=false;
+  P.placed.forEach(pl=>{ if(pl===STUDE||m==='n') return; if(m==='f'||START_W.includes(pl.word)) pl.cells.forEach(([r,c],i)=>entry.set(K(r,c),pl.word[i])); });
+  act=m==='n'?order[0]:STUDE; ci=firstEmpty(act); finishing=false; busy++; lastScroll=null; fx.innerHTML=''; parts=[]; }
 
 /* ---------- sound: soft ticks that climb with each square, then a bell ---------- */
 let AC=null;
@@ -309,10 +345,14 @@ function note(f,at,dur,vol,type){ const a=ac(); if(!a) return; const t=a.current
   o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.05); }
 const SCALE=[0,2,4,7,9,12,14,16,19,21,24,26];
-function ticks(n,start,gap){ const base=look==='night'?392:523, ty=look==='bold'?'triangle':'sine';
-  for(let i=0;i<n;i++) note(base*Math.pow(2,SCALE[Math.min(i,SCALE.length-1)]/12), start+i*gap, look==='bold'?0.09:0.14, look==='night'?0.07:0.09, ty); }
-function bellWord(at){ const b=look==='night'?587:784; [[b,0,.9,.14],[b*1.335,.1,1.3,.12]].forEach(([f,t,d,v])=>{ note(f,at+t,d,v); note(f*2,at+t,d*.6,v*.2); }); }
-function bellFinish(at){ const b=look==='night'?392:523; [[b,0],[b*1.26,.14],[b*1.5,.28],[b*2,.44]].forEach(([f,t],i)=>{ note(f,at+t,i===3?2.2:1,.13); note(f*2,at+t,.7,.03); }); }
+function ticks(n,start,gap){ const base=look==='night'?294:look==='day'?330:523, ty=look==='bold'?'triangle':'sine';
+  for(let i=0;i<n;i++) note(base*Math.pow(2,SCALE[Math.min(i,SCALE.length-1)]/12)*rnd(.99,1.01), start+i*gap, look==='bold'?0.09:0.14, (look==='night'||look==='day')?0.08:0.09, ty); }
+// smallest step of the ladder: a soft low tock for each letter
+function letterTick(){ note((look==='night'?220:262)*rnd(.97,1.03),0,.08,.06,'triangle'); vib(8); }
+// Android phones can buzz from a web page; iPhones can only in the App Store version
+function vib(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+function bellWord(at){ const b=look==='night'?440:look==='day'?523:784; [[b,0,.9,.14],[b*1.335,.1,1.3,.12]].forEach(([f,t,d,v])=>{ note(f,at+t,d,v); note(f*2,at+t,d*.6,v*.2); }); }
+function bellFinish(at){ const b=look==='night'?294:look==='day'?330:523; [[b,0],[b*1.26,.14],[b*1.5,.28],[b*2,.44]].forEach(([f,t],i)=>{ note(f,at+t,i===3?2.2:1,.13); note(f*2,at+t,.7,.03); }); }
 
 /* ---------- particles (canvas; positions come from the clock so a slow phone never plays in slow motion) ---------- */
 const cv=document.getElementById('fxc'), cx=cv.getContext('2d'), fx=document.getElementById('fx'); let parts=[], running=false;
@@ -345,12 +385,26 @@ function sync(){ document.body.dataset.look=look;
   document.querySelectorAll('#ctl [data-pref]').forEach(b=>b.classList.toggle('on',b.dataset.pref===pref));
   const ab=document.getElementById('autoBtn'); if(ab) ab.textContent=pref==='auto'?('Auto: '+(look==='night'?'Night':'Day')):'Automatic';
   document.querySelectorAll('#ctl [data-view]').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
-  document.getElementById('snd').textContent=sound?'Sound on':'Sound off'; }
-function render(){ sync(); if(view==='home') drawHome(); else drawPuzzle(); }
+  document.getElementById('snd').textContent=sound?'Sound on':'Sound off';
+  document.querySelectorAll('#ctl [data-keys]').forEach(b=>b.classList.toggle('on',b.dataset.keys===keys));
+  const cb=document.getElementById('calmBtn'); if(cb){ cb.textContent='Calm motion: '+(reduce?'on':'off'); cb.classList.toggle('on',reduce); } }
+function render(){ sync(); renderTok++; if(view==='welcome') drawWelcome(); else if(view==='home') drawHome(); else drawPuzzle(); }
+const MODE_LABEL={auto:'Automatic', day:'Day', night:'Night'}, MODE_NEXT={auto:'day', day:'night', night:'auto'};
+// The first screen after the link: who made it, one big Start. The first move is then taught by doing it.
+function drawWelcome(){
+  scr.innerHTML=`<div class="welcome">
+    <div class="toprow"><span class="brand">Two of Us</span>${modeBtn()}</div>
+    <div class="mid"><div class="kicker">For Lance</div><h1>Ruth made this game for you.</h1>
+      <p class="lede">Ruth answered 15 questions about their life. Solve the crossword to find out what they said.</p></div>
+    <button class="start" id="start">Start</button><p class="small">No sign-up. Nothing to install.</p></div>`;
+  wireMode(); document.getElementById('start').onclick=()=>{ setup('n'); coach=true; view='puzzle'; render(); };
+}
+function modeBtn(){ return `<button class="modebtn" id="mode" aria-label="Screen colors: ${MODE_LABEL[pref]||'Night'}. Tap to change.">${MODE_LABEL[pref]||'Night'}</button>`; }
+function wireMode(){ const b=document.getElementById('mode'); if(b) b.onclick=()=>{ pref=MODE_NEXT[pref]||'auto'; switchLook(); }; }
 function drawHome(){
   const n=P.placed.filter(solved).length;
   scr.innerHTML=`<div class="home">
-    <div class="brand">Two of Us</div>
+    <div class="toprow"><span class="brand">Two of Us</span>${modeBtn()}</div>
     <div><div class="kicker">From Ruth, for Lance</div><h1>Get to know Ruth</h1><p class="lede">Ruth answered 15 questions. Play to find out what they said.</p></div>
     <div class="bento">
       <button class="gc wide" id="toPuz"><span class="badge">Start here</span><span class="t">Crossword</span><span class="d">Work out their answers, one crossing letter at a time.</span><span class="go">${n?`Keep going, ${n} of 15 &rsaquo;`:'Start &rsaquo;'}</span></button>
@@ -360,6 +414,7 @@ function drawHome(){
     </div>
     <button class="ghost">Now send one back</button></div>`;
   document.getElementById('toPuz').onclick=()=>{ view='puzzle'; render(); };
+  wireMode();
 }
 function cellColor(r,c){ const pl=P.placed.find(pl=>solved(pl)&&pl.cells.some(([a,b])=>a===r&&b===c)); return pl?pl.color:null; }
 function sizeFor(){ const W=Math.min(innerWidth,500)-16-4, gap=look==='bold'?2:3; return Math.min(44,Math.floor((W-(P.cols-1)*gap-(look==='bold'?6:0))/P.cols)); }
@@ -368,17 +423,17 @@ function drawPuzzle(){
   const actSet=new Set(done?[]:act.cells.map(([r,c])=>K(r,c))), [cr,cc]=act.cells[ci], nOk=P.placed.filter(solved).length;
   let g=''; for(let r=0;r<P.rows;r++) for(let c=0;c<P.cols;c++){ const k=K(r,c);
     if(!sol.has(k)){ g+='<div class="b"></div>'; continue; }
-    const cls=['c'], col=cellColor(r,c); if(col) cls.push('ok'); if(actSet.has(k)) cls.push('act'); if(!done&&r===cr&&c===cc) cls.push('cur');
+    const cls=['c'], col=cellColor(r,c); if(col) cls.push('ok'); if(actSet.has(k)) cls.push('act'); if(!done&&r===cr&&c===cc){ cls.push('cur'); if(coach) cls.push('ring'); } if(k===justTyped&&!reduce) cls.push('pop');
     const n=num.get(k);
     g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}" style="font-size:${Math.round(cs*0.58)}px;${col?`--wc:${col}`:''}">${n?`<span class="n" style="font-size:${Math.max(8,Math.round(cs*0.29))}px">${n}</span>`:''}${entry.get(k)||''}</div>`; }
-  const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+  const rows=keys==='abc'?['ABCDEFGHI','JKLMNOPQR','STUVWXYZ']:['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
   const em=P.placed.slice().sort((a,b)=>a.num-b.num).map((pl,i)=>`<span style="animation-delay:${1.3+i*0.09}s">${POP[pl.word]}</span>`).join('');
   const big={glass:'You know Ruth.', bold:'15 for 15.', night:'You know Ruth.', day:'You know Ruth.'}[look];
-  const sub={glass:'All 15 answers, worked out.', bold:'That is the whole of Ruth, in one grid.', night:'Every answer found its place.', day:'Every answer found its place.'}[look];
-  const dock = done ? `<div class="fin"><div class="big">${big}</div><div class="sub">${sub}</div><button class="cta" id="again">Now, how well were you listening?</button><div class="links"><button>Save as a picture</button><button>Keep all our answers</button></div></div>`
-   : `<div class="hintrow"><button>Show me a letter</button></div>
+  const sub=(look==='night'||look==='day')?`<div class="count">You found <b id="cnt">${reduce?15:0}</b> things about Ruth.</div>`:`<div class="sub">${{glass:'All 15 answers, worked out.', bold:'That is the whole of Ruth, in one grid.'}[look]}</div>`;
+  const dock = done ? `<div class="fin"><div class="big">${big}</div>${sub}<button class="cta" id="again">Now, how well were you listening?</button><div class="links"><button>Save as a picture</button><button>Keep all our answers</button></div></div>`
+   : `${coach?'<div class="coach">Tap the letters below to fill in the gold squares. One letter in each square.</div>':'<div class="hintrow"><button>Show me a letter</button></div>'}
       <div class="clue"><button class="arrow" id="prev">&lsaquo;</button><div class="txt" id="flip"><span class="tag">${act.num} ${act.dir==='A'?'ACROSS':'DOWN'} &middot; ${act.cells.length} LETTERS</span><span class="q">${act.clue}</span></div><button class="arrow" id="next">&rsaquo;</button></div>
-      <div class="kb">${rows.map((row,i)=>`<div class="row">${[...row].map(ch=>`<button data-k="${ch}">${ch}</button>`).join('')}${i===2?'<button class="del" data-k="DEL" aria-label="Delete">&#9003;</button>':''}</div>`).join('')}</div>`;
+      <div class="kb">${rows.map((row,i)=>`<div class="row">${[...row].map(ch=>`<button data-k="${ch}"><span>${ch}</span></button>`).join('')}${i===2?'<button class="del" data-k="DEL" aria-label="Delete a letter"><span>&#9003;</span></button>':''}</div>`).join('')}</div>`;
   scr.innerHTML=`<div class="ptop"><button class="back" id="back">&lsaquo;</button><span class="ptitle">Ruth's crossword</span><span class="prog">${nOk} of 15</span></div>
     <div class="bar"><i style="width:${nOk/15*100}%"></i></div>
     <div class="board" id="board"><div class="grid" style="grid-template-columns:repeat(${P.cols},${cs}px); grid-auto-rows:${cs}px">${g}</div></div>
@@ -386,6 +441,8 @@ function drawPuzzle(){
   document.getElementById('back').onclick=()=>{ view='home'; render(); };
   const ag=document.getElementById('again'); if(ag) ag.onclick=()=>{ setup('w'); render(); };
   scr.querySelectorAll('.kb button').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(k==='DEL') del(); else type(k); });
+  const kb=scr.querySelector('.kb'); if(kb) wireKeyPreview(kb);
+  justTyped=null;
   scr.querySelectorAll('.c').forEach(el=>el.onclick=()=>pick(+el.dataset.r,+el.dataset.c));
   if(!done){ document.getElementById('flip').onclick=flip; document.getElementById('prev').onclick=()=>step(-1); document.getElementById('next').onclick=()=>step(1); }
   const board=document.getElementById('board');
@@ -395,15 +452,18 @@ function drawPuzzle(){
   board.onscroll=()=>{ lastScroll=board.scrollTop; };
   return {board, cs};
 }
-function pick(r,c){ if(allDone()) return; const hits=P.placed.filter(pl=>pl.cells.some(([a,b])=>a===r&&b===c)); if(!hits.length) return;
+function pick(r,c){ skipLift(); if(allDone()) return; const hits=P.placed.filter(pl=>pl.cells.some(([a,b])=>a===r&&b===c)); if(!hits.length) return;
   const onIt=act.cells[ci][0]===r&&act.cells[ci][1]===c; act=onIt&&hits.length>1?hits.find(h=>h!==act):(hits.includes(act)?act:hits[0]);
   ci=act.cells.findIndex(([a,b])=>a===r&&b===c); render(); }
-function flip(){ const [r,c]=act.cells[ci]; const x=P.placed.find(pl=>pl!==act&&pl.cells.some(([a,b])=>a===r&&b===c)); if(x){ act=x; ci=x.cells.findIndex(([a,b])=>a===r&&b===c); render(); } }
-function step(n){ const i=order.indexOf(act), L=order.length; act=order[((i+n)%L+L)%L]; ci=firstEmpty(act); render(); }
-function del(){ const [r,c]=act.cells[ci]; if(entry.get(K(r,c))) entry.delete(K(r,c)); else if(ci>0){ ci--; entry.delete(K(...act.cells[ci])); } render(); }
-function type(ch){ if(allDone()) return; const [r,c]=act.cells[ci]; entry.set(K(r,c),ch);
-  if(solved(act)){ const w=act; if(allDone()){ finish(); return; } render(); wordMoment(w);
-    const token=busy; setTimeout(()=>{ if(busy!==token) return; const i=order.indexOf(w); const nx=order.slice(i+1).concat(order.slice(0,i)).find(x=>!solved(x)); if(nx){ act=nx; ci=firstEmpty(nx); render(); } }, (look==='night'||look==='day')?4000:2600); return; }
+function flip(){ skipLift(); const [r,c]=act.cells[ci]; const x=P.placed.find(pl=>pl!==act&&pl.cells.some(([a,b])=>a===r&&b===c)); if(x){ act=x; ci=x.cells.findIndex(([a,b])=>a===r&&b===c); render(); } }
+function step(n){ skipLift(); const i=order.indexOf(act), L=order.length; act=order[((i+n)%L+L)%L]; ci=firstEmpty(act); render(); }
+function del(){ skipLift(); const [r,c]=act.cells[ci]; if(entry.get(K(r,c))) entry.delete(K(r,c)); else if(ci>0){ ci--; entry.delete(K(...act.cells[ci])); } render(); }
+function type(ch){ skipLift(); if(allDone()) return; const [r,c]=act.cells[ci]; entry.set(K(r,c),ch); justTyped=K(r,c); coach=false; letterTick();
+  if(solved(act)){ const w=act; justTyped=null; if(allDone()){ vib([20,60,30]); finish(); return; } render(); vib(18);
+    const ms=wordMoment(w)||2600;
+    // Typing never waits: the next word is ready at once, and the screen catches up when the moment ends (or on the next tap).
+    const i=order.indexOf(w), nx=order.slice(i+1).concat(order.slice(0,i)).find(x=>!solved(x)); if(nx){ act=nx; ci=firstEmpty(nx); }
+    const token=busy, rt=renderTok; setTimeout(()=>{ if(busy===token && rt===renderTok && view==='puzzle') render(); }, ms); return; }
   if(ci<act.cells.length-1){ ci++; while(ci<act.cells.length-1 && entry.get(K(...act.cells[ci]))===sol.get(K(...act.cells[ci]))) ci++; }
   render(); }
 function autoType(){ const token=busy; const missing=STUDE.cells.filter(([r,c])=>entry.get(K(r,c))!==sol.get(K(r,c)));
@@ -416,9 +476,11 @@ function wordRect(w){ const a=document.querySelector(`.c[data-r="${w.cells[0][0]
    (spaced as the person wrote it, e.g. BUTTER PECAN), hold so it can be read up close, then drop
    back into their squares, which light up as each one lands. FLIP: lay the word out where it
    ends up, then start each letter from its own square. */
+function skipLift(){ if(!lift) return; const L=lift; lift=null; L.anims.forEach(a=>{ try{ a.cancel(); }catch(e){} }); L.timers.forEach(clearTimeout);
+  L.holder.remove(); L.plate.remove(); L.cells.forEach(el=>el.classList.remove('lifted')); }
 function liftWord(w){
   const token=busy, cells=w.cells.map(([r,c])=>document.querySelector(`.c[data-r="${r}"][data-c="${c}"]`));
-  if(cells.some(x=>!x)) return;
+  if(cells.some(x=>!x)) return 0;
   const B=document.getElementById('board').getBoundingClientRect(), R=wordRect(w);
   const text=PRETTY[w.word].toUpperCase(), n=w.word.length, gaps=(text.match(/ /g)||[]).length;
   const fs=Math.round(Math.max(24,Math.min(48,(innerWidth-56)/(n*0.8+gaps*0.42))));
@@ -430,28 +492,36 @@ function liftWord(w){
   const pw=Math.min(hb.width+fs*1.8, innerWidth-12), pl=Math.max(6, hb.left+hb.width/2-pw/2);
   Object.assign(plate.style,{left:pl+'px', top:(hb.top-fs*0.55)+'px', width:pw+'px', height:(hb.height+fs*1.1)+'px'});
   fx.insertBefore(plate,holder);
+  const L=lift={anims:[], timers:[], holder, plate, cells};
+  if(reduce){ // still version for Reduce Motion: the word simply fades in big, holds, and fades out; nothing moves
+    const fade=[{opacity:0},{opacity:1,offset:.15},{opacity:1,offset:.85},{opacity:0}];
+    L.anims.push(holder.animate(fade,{duration:1500,fill:'both'}), plate.animate(fade,{duration:1500,fill:'both'}));
+    bellWord(0.05); L.timers.push(setTimeout(()=>{ if(lift===L) skipLift(); },1550)); return 1550; }
   const tileFs=parseFloat(getComputedStyle(cells[0]).fontSize)||16;
   const from=spans.map((sp,i)=>{ const a=sp.getBoundingClientRect(), t=cells[i].getBoundingClientRect();
     return `translate(${(t.left+t.width/2)-(a.left+a.width/2)}px, ${(t.top+t.height/2)-(a.top+a.height/2)}px) scale(${(tileFs/fs).toFixed(3)})`; });
-  const up=0.7, st=0.05, hold=1.0, down=0.5, st2=0.045;
+  const up=0.42, st=0.025, hold=0.55, down=0.32, st2=0.02;   // research: keep it short and let any tap skip it
   const holdAt=up+(n-1)*st, backAt=holdAt+hold;
-  plate.animate([{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.84},{opacity:0}],{duration:(backAt+0.25)*1000, delay:250, fill:'both', easing:'ease-in-out'});
+  L.anims.push(plate.animate([{opacity:0},{opacity:1,offset:.15},{opacity:1,offset:.82},{opacity:0}],{duration:(backAt+0.2)*1000, delay:120, fill:'both', easing:'ease-in-out'}));
   ticks(n,0,st); bellWord(holdAt-0.05);
   spans.forEach((sp,i)=>{
-    sp.animate([{transform:from[i]},{transform:'none'}],{duration:up*1000, delay:i*st*1000, easing:'cubic-bezier(.2,.9,.25,1.12)', fill:'both'});
-    setTimeout(()=>{ if(busy===token) cells[i].classList.add('lifted'); }, i*st*1000+20);
+    L.anims.push(sp.animate([{transform:from[i]},{transform:'none'}],{duration:up*1000, delay:i*st*1000, easing:'cubic-bezier(.2,.9,.25,1.12)', fill:'both'}));
+    L.timers.push(setTimeout(()=>{ if(lift===L) cells[i].classList.add('lifted'); }, i*st*1000+20));
     const back=sp.animate([{transform:'none', opacity:1},{transform:from[i], opacity:1}],{duration:down*1000, delay:(backAt+i*st2)*1000, easing:'cubic-bezier(.55,0,.8,.4)', fill:'forwards'});
-    back.onfinish=()=>{ sp.style.opacity=0; if(busy!==token) return; const el=cells[i]; el.classList.remove('lifted'); el.style.animationDelay='0s'; el.classList.add('fxw');
+    L.anims.push(back);
+    back.onfinish=()=>{ sp.style.opacity=0; if(busy!==token||lift!==L) return; const el=cells[i]; el.classList.remove('lifted'); el.style.animationDelay='0s'; el.classList.add('fxw');
       const r=el.getBoundingClientRect(); for(let j=0;j<2;j++) emit(look==='night'
         ? {kind:'glow',x:r.left+r.width/2,y:r.top+r.height/2,vx:rnd(-12,12),vy:rnd(-70,-30),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(5,9),col:j?'#FFC46B':'#FFE7A8',life:rnd(1.6,2.4),fadeIn:.15,fadeAt:.45}
         : {kind:'glow',soft:true,x:r.left+r.width/2,y:r.top+r.height/2,vx:rnd(-12,12),vy:rnd(-55,-25),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(6,10),col:j?'#F6B54A':'#FFC98A',life:rnd(1.6,2.4),fadeIn:.15,fadeAt:.45}); };
   });
-  setTimeout(()=>{ holder.remove(); plate.remove(); }, (backAt+n*st2+down+0.4)*1000);
+  const total=(backAt+n*st2+down+0.15)*1000;
+  L.timers.push(setTimeout(()=>{ if(lift===L){ lift=null; holder.remove(); plate.remove(); } }, total));
+  return total;
 }
 function wordMoment(w){ const token=busy; const cells=w.cells.map(([r,c])=>document.querySelector(`.c[data-r="${r}"][data-c="${c}"]`)).filter(Boolean);
   const gap=look==='bold'?.07:(look==='night'||look==='day')?.09:.065, d0=.25;
+  if(look==='night'||look==='day') return liftWord(w);
   if(reduce){ bellWord(0); return; }
-  if(look==='night'||look==='day'){ liftWord(w); return; }
   ticks(cells.length,d0,gap); bellWord(d0+cells.length*gap+.05);
   cells.forEach((el,i)=>{ el.style.setProperty('--wc',w.color); el.style.animationDelay=(d0+i*gap)+'s'; el.classList.add('fxw'); if(look==='glass') el.classList.add('lit'); });
   const after=(d0+cells.length*gap)*1000;
@@ -489,6 +559,7 @@ function finish(){ finishing=true; const token=busy;
   grid.style.gridTemplateColumns=`repeat(${P.cols},${fitc}px)`; grid.style.gridAutoRows=fitc+'px';
   grid.querySelectorAll('.c').forEach(el=>{ el.style.fontSize=Math.round(fitc*.6)+'px'; const n=el.querySelector('.n'); if(n) n.remove(); });   // the finished picture drops the clue numbers
   board.scrollTop=0; board.style.overflow='hidden';
+  countUp(token);
   if(reduce){ bellFinish(0); if(look==='glass') grid.classList.add('final'); return; }
   grid.style.setProperty('--from',(csOld/fitc).toFixed(3)); grid.style.animation='shrink .8s cubic-bezier(.2,.8,.2,1) both';
   bellFinish(.55);
@@ -512,6 +583,19 @@ function finish(){ finishing=true; const token=busy;
         note(180+rnd(0,60),.55,.35,.06,'sine'); note(1400+rnd(0,600),.6,.6,.012,'sine'); }, (at-.55)*1000); } }
 }
 
+function countUp(token){ const el=document.getElementById('cnt'); if(!el||reduce) return; const t0=performance.now()+1100, dur=1000;
+  (function tick(now){ if(busy!==token||!el.isConnected) return; const k=Math.max(0,Math.min(1,(now-t0)/dur)); el.textContent=Math.round(15*(1-Math.pow(1-k,3)));
+    if(k<1) setTimeout(()=>tick(performance.now()),33); })(performance.now()); }
+// letter preview above the finger while a key is held
+let keyPopEl=null;
+function wireKeyPreview(kb){
+  const hide=()=>{ if(keyPopEl){ keyPopEl.remove(); keyPopEl=null; } };
+  kb.onpointerdown=e=>{ const b=e.target.closest('button[data-k]'); hide(); if(!b||b.dataset.k==='DEL') return; const r=b.querySelector('span').getBoundingClientRect();
+    const w=Math.max(54,r.width*1.6), h=74; keyPopEl=document.createElement('div'); keyPopEl.className='keypop'; keyPopEl.textContent=b.dataset.k;
+    Object.assign(keyPopEl.style,{left:Math.max(4,Math.min(innerWidth-w-4, r.left+r.width/2-w/2))+'px', top:(r.top-h-6)+'px', width:w+'px', height:h+'px'}); document.body.appendChild(keyPopEl); };
+  kb.onpointerup=kb.onpointercancel=kb.onpointerleave=hide; setTimeout(()=>{},0);
+  addEventListener('pointerup',hide,{once:true});
+}
 // Day finish: a wash of warm light from the puzzle, then specks of sunlight drifting down.
 function dayFinish(token){
   setTimeout(()=>{ if(busy!==token) return; const R=document.querySelector('.grid').getBoundingClientRect(), x=R.left+R.width/2, y=R.top+R.height/2;
@@ -525,16 +609,20 @@ function dayFinish(token){
 // Automatic = follow the phone's own Light/Dark setting (many phones switch at sunset).
 const darkMQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
 function applyPref(){ if(pref==='auto') look=darkMQ.matches?'night':'day'; else if(pref==='night'||pref==='day') look=pref; }
-function switchLook(){ if(finishing) setup(mode); busy++; fx.innerHTML=''; parts=[]; applyPref(); render(); }
+function switchLook(){ skipLift(); if(finishing) setup(mode); busy++; fx.innerHTML=''; parts=[]; applyPref(); render(); }
 document.querySelectorAll('#ctl [data-pref]').forEach(b=>b.onclick=()=>{ pref=b.dataset.pref; switchLook(); });
 function autoCheck(){ if(pref==='auto' && (darkMQ.matches?'night':'day')!==look) switchLook(); }
 if(darkMQ.addEventListener) darkMQ.addEventListener('change',autoCheck);
 // Phones usually flip to dark at sunset while the app is in the background, so check again on return.
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) autoCheck(); }); addEventListener('focus',autoCheck);
-document.querySelectorAll('#ctl [data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; if(finishing) setup('w'); render(); });
+document.querySelectorAll('#ctl [data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; if(finishing||mode==='n') setup('w'); render(); });
 document.getElementById('pW').onclick=()=>{ setup('w'); view='puzzle'; render(); autoType(); };
 document.getElementById('pF').onclick=()=>{ setup('f'); view='puzzle'; render(); autoType(); };
 document.getElementById('snd').onclick=()=>{ sound=!sound; sync(); };
+document.querySelectorAll('#ctl [data-keys]').forEach(b=>b.onclick=()=>{ keys=b.dataset.keys; if(view!=='puzzle'){ view='puzzle'; } render(); });
+document.getElementById('calmBtn').onclick=()=>{ calm=!calm; reduce=calm||phoneCalm; document.body.classList.toggle('calm',calm); switchLook(); };
+// any tap on the game skips a running celebration
+scr.addEventListener('pointerdown',()=>skipLift());
 ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 document.addEventListener('keydown',e=>{ if(view!=='puzzle'||e.metaKey||e.ctrlKey||e.altKey) return; if(/^[a-z]$/i.test(e.key)) type(e.key.toUpperCase()); else if(e.key==='Backspace') del(); });
 const q=new URLSearchParams(location.search), ql=q.get('look');
