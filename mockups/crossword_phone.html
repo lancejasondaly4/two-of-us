@@ -42,6 +42,14 @@
   .box{border:2px solid var(--gridline); background:var(--cellbg); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700;}
   .box.cur{background:var(--amber); border-color:var(--amber);}
   .box.cross{color:var(--teal);}
+  .box{position:relative;}
+  .box.x::after{content:""; position:absolute; bottom:3px; left:50%; width:6px; height:6px; margin-left:-3px; border-radius:50%; background:var(--teal); opacity:.55;}
+  .box.cur.x::after{background:var(--ink);}
+  .hintrow{display:flex; justify-content:center; margin-top:12px;}
+  .hintbtn{border:1px solid var(--teal); background:var(--card); color:var(--teal); font-weight:700; font-family:var(--body); font-size:1.02rem;
+    border-radius:999px; padding:10px 18px; min-height:44px;}
+  .fliptip{text-align:center; font-size:.88rem; color:var(--muted); margin-top:8px;}
+  .hintfloat{position:absolute; left:10px; bottom:10px;}
   .navrow{display:flex; justify-content:space-between; margin-top:12px;}
   .navrow button{border:0; background:none; color:var(--teal); font-weight:700; font-size:1rem; padding:8px 4px; font-family:var(--body);}
   .maplabel{font-size:.85rem; color:var(--muted); text-align:center; margin:4px 0 2px;}
@@ -123,6 +131,11 @@ function pick(r,c){
 }
 function step(n){ const i=P.order.indexOf(act); act=P.order[(i+n+P.order.length)%P.order.length]; ci=firstEmpty(act); zoomOut=false; draw(); focusKb(); }
 function type(ch){ const [r,c]=act.cells[ci]; P.entry.set(K(r,c),ch); if(ci<act.cells.length-1) ci++; draw(); }
+// The hint: put the right letter in the square you're on (or the word's first empty one).
+function hint(){ let i=ci; const [r0,c0]=act.cells[i]; if(P.entry.get(K(r0,c0))===P.sol.get(K(r0,c0))) i=firstEmpty(act);
+  const [r,c]=act.cells[i]; P.entry.set(K(r,c),P.sol.get(K(r,c))); ci=Math.min(i+1,act.cells.length-1); draw(); focusKb(); }
+// The other word running through a square of the current word, if there is one.
+const crossAt=i=>{ const [r,c]=act.cells[i]; return P.d.placed.find(pl=>pl!==act&&pl.cells.some(([a,b])=>a===r&&b===c)); };
 function del(){ const [r,c]=act.cells[ci]; if(P.entry.get(K(r,c))) P.entry.delete(K(r,c)); else if(ci>0){ ci--; const [r2,c2]=act.cells[ci]; P.entry.delete(K(r2,c2)); } draw(); }
 const hid=document.getElementById('hidden');
 function focusKb(){ if(!FRAME) hid.focus({preventScroll:true}); }
@@ -156,7 +169,7 @@ function draw(){
     const st=document.getElementById('stage'), W=st.clientWidth, H=st.clientHeight, d=P.d;
     const fit=Math.floor(Math.min((W-12)/d.cols,(H-12)/d.rows))-2;
     const cs=zoomOut?fit:40;
-    st.innerHTML=gridHTML(cs,true)+`<button class="whole" id="whole">${zoomOut?'Zoom in':'See the whole puzzle'}</button>`;
+    st.innerHTML=gridHTML(cs,true)+`<button class="hintbtn hintfloat" id="hint">Show a letter</button><button class="whole" id="whole">${zoomOut?'Zoom in':'Whole puzzle'}</button>`;
     const g=st.querySelector('.grid'), pitch=cs+2;
     let tx,ty;
     if(zoomOut){ tx=(W-d.cols*pitch)/2; ty=(H-d.rows*pitch)/2; }
@@ -175,10 +188,12 @@ function draw(){
     const [cr,cc]=act.cells[ci];
     const boxes=act.cells.map(([r,c],i)=>{ const k=K(r,c), v=P.entry.get(k)||'';
       const crossing=P.d.placed.some(pl=>pl!==act&&solved(pl)&&pl.cells.some(([a,b])=>a===r&&b===c));
-      return `<div class="box ${i===ci?'cur':''} ${crossing?'cross':''}" data-i="${i}" style="width:${bs}px;height:${bs+6}px;font-size:${Math.round(bs*0.6)}px">${v}</div>`; }).join('');
+      return `<div class="box ${i===ci?'cur':''} ${crossing?'cross':''} ${crossAt(i)?'x':''}" data-i="${i}" style="width:${bs}px;height:${bs+6}px;font-size:${Math.round(bs*0.6)}px">${v}</div>`; }).join('');
     ph.innerHTML=`${top}
       <div class="card"><div class="tag">${tag(act)} &middot; ${n} letters</div><div class="q">${act.clue}</div>
         <div class="strip">${boxes}</div>
+        <div class="fliptip">A dot means another word crosses there. Tap that box twice to switch to it.</div>
+        <div class="hintrow"><button class="hintbtn" id="hint">Show me a letter</button></div>
         <div class="navrow"><button id="prev">&lsaquo; Previous clue</button><button id="next">Next clue &rsaquo;</button></div></div>
       <div class="maplabel">The whole puzzle. Tap any word to jump to it.</div>
       <div class="stage" id="stage"></div>${kbHTML()}`;
@@ -186,10 +201,15 @@ function draw(){
     const cs=Math.max(8,Math.floor(Math.min((W-16)/d.cols,(H-8)/d.rows))-2);
     st.innerHTML=gridHTML(cs,true,true);
     const g=st.querySelector('.grid'); g.style.transform=`translate(${(W-d.cols*(cs+2))/2}px,0px)`;
-    ph.querySelectorAll('.box').forEach(b=>b.onclick=()=>{ ci=+b.dataset.i; draw(); focusKb(); });
+    // Tap a box to move there; tap the box you're already on to flip to the word crossing it.
+    ph.querySelectorAll('.box').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, x=crossAt(i);
+      if(i===ci && x){ const [r,c]=act.cells[i]; act=x; ci=x.cells.findIndex(([a,bb])=>a===r&&bb===c); }
+      else ci=i;
+      draw(); focusKb(); });
   } else {
     ph.innerHTML=`${top}
       <div class="parts"><button data-p="0" class="${cur===0?'on':''}">Part 1 of 2</button><button data-p="1" class="${cur===1?'on':''}">Part 2 of 2</button></div>
+      <div class="hintrow" style="margin:6px 0 0"><button class="hintbtn" id="hint">Show me a letter</button></div>
       <div class="cluebar"><button class="arrow" id="prev">&lsaquo;</button>
         <div class="txt"><span class="tag">${tag(act)}</span>${act.clue}</div>
         <button class="arrow" id="next">&rsaquo;</button></div>
@@ -203,6 +223,7 @@ function draw(){
   ph.querySelectorAll('.c').forEach(el=>el.onclick=()=>pick(+el.dataset.r,+el.dataset.c));
   const pv=document.getElementById('prev'), nx=document.getElementById('next');
   if(pv) pv.onclick=()=>step(-1); if(nx) nx.onclick=()=>step(1);
+  const hb=document.getElementById('hint'); if(hb) hb.onclick=hint;
   document.title=LABEL[OPT];
 }
 draw();
