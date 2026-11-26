@@ -144,51 +144,42 @@
     .xw-cluepanel{min-width:0; max-width:none;}
   }
   .xw-msg{margin:8px 0 0;}
-  /* phone crossword (layout B): big boxes under the question, the whole grid as a map */
-  .xwp-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 10px 10px; margin:0 -8px;}
-  .xwp-card .xwp-tag, .xwp-card .xwp-q{padding:0 4px;}
-  .xwp-tag{font-size:.9rem; color:var(--muted); font-weight:700;}
-  .xwp-q{font-family:var(--display); font-size:1.45rem; line-height:1.25; margin:4px 0 14px;}
-  /* The hidden box that raises the phone keyboard sits ON the answer boxes: a phone scrolls
-     to whatever is focused, so it must live where the player is looking (it was at the
-     page bottom and the screen jumped down on every tap). 16px font stops iPhone zooming. */
-  .xwp-stripwrap{position:relative;}
-  .xwp-input{position:absolute; top:8px; left:50%; width:1px; height:1px; padding:0; border:0; opacity:0; font-size:16px; pointer-events:none;}
-  .xwp-strip{display:flex; gap:3px; justify-content:center;}
-  .xwp-box{border:2px solid var(--gridline,#A9C4BE); background:#FBF4E4; border-radius:8px; display:flex; align-items:center; justify-content:center;
-    font-weight:700; text-transform:uppercase; cursor:pointer; line-height:1;}
-  .xwp-box.cur{background:var(--amber); border-color:var(--amber);}
-  .xwp-box.cross{color:var(--teal);}
-  .xwp-hintrow{display:flex; justify-content:center; margin-top:14px;}
-  .xwp-hint{font-size:1.02rem; min-height:44px; padding:10px 20px;}
-  .xwp-nav{display:flex; justify-content:space-between; margin-top:8px;}
-  .xwp-nav button{width:auto; min-height:44px; border:0; background:none; box-shadow:none; color:var(--teal); font-weight:700; font-size:1rem; padding:8px 4px; font-family:var(--body); cursor:pointer;}
-  .xwp-maplabel{font-size:.88rem; color:var(--muted); text-align:center; margin:14px 0 6px;}
-  .xwp-map{display:flex; justify-content:center;}
-  .xwp-grid{width:auto; gap:2px; border-width:2px;}
-  .xwp-grid .xw-cell{font-size:calc(var(--cs)*0.62); border-radius:2px;}
-  .xwp-grid .xw-cell.xwp-solved{color:var(--teal);}
-  /* phone crossword (layout A): zoomed-in grid that slides to each word.
-     Kept deliberately quiet (Lance: "it's just so crowded"): no boxes round the arrows,
-     no buttons over the puzzle, no frame round the grid window. */
-  .xwz-clue{position:relative; display:flex; align-items:center; gap:2px; padding:2px 0 4px;}
-  .xwz-arrow{flex:0 0 40px; width:40px; height:56px; min-height:0; padding:0; border:0; background:none; box-shadow:none;
-    font-size:2rem; line-height:1; color:var(--teal); font-weight:400; cursor:pointer;}
-  .xwz-txt{flex:1; font-family:var(--display); font-size:1.2rem; line-height:1.25; text-align:center;}
-  .xwz-tag{display:block; font-family:var(--body); font-size:.82rem; color:var(--muted); font-weight:700; margin-bottom:2px;}
-  .xwz-tools{display:flex; justify-content:space-between; border-top:1px solid var(--line); margin:2px 0 6px;}
-  .xwz-tool{width:auto; min-height:42px; padding:6px 4px; border:0; background:none; box-shadow:none;
-    color:var(--teal); font-family:var(--body); font-weight:700; font-size:.95rem; cursor:pointer;}
-  .xwz-stage{position:relative; overflow:hidden; height:300px; margin:0 -20px;}
-  .xwz-grid{position:absolute; left:0; top:0; display:grid; gap:2px; padding:2px; background:#A9C4BE; border-radius:6px; will-change:transform;}
-  .xwz-grid .xw-cell{font-size:calc(var(--cs)*0.58); border-radius:3px;}
-  .xwz-grid .xw-num{font-size:calc(var(--cs)*0.28);}
-  .xwz-grid .xw-cell.xwz-solved{color:var(--teal);}
-  .xwz-grid .xw-cell.active{background:#F2D49A;}
-  .xwz-grid .xw-cell.cursor{background:var(--amber);}
-  @media(max-width:600px){ #app[data-screen="crossword"]{padding-top:calc(10px + env(safe-area-inset-top));} }
-  .xwp-grid .xw-cell.active{background:#F2D49A;}
-  .xwp-grid .xw-cell.cursor{background:var(--amber);}
+  /* phone crossword (layout D, r20): full screen; the puzzle scrolls; the question and the
+     game's own keyboard are docked at the bottom (the phone's keyboard never opens). */
+  body:has(.xwd){overflow:hidden; overscroll-behavior:none;}
+  .xwd{position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; background:var(--linen);
+    padding-top:env(safe-area-inset-top); height:100%; height:100dvh;}
+  .xwd button{width:auto; min-height:0; transition:none;}
+  .xwd button:hover, .xwd button:active{transform:none;}
+  .xwd-top{flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:4px 10px 2px;}
+  .xwd-who{font-size:.9rem; color:var(--muted); font-weight:700;}
+  .xwd .xwd-link{border:0; background:none; box-shadow:none; color:var(--teal); font-family:var(--body); font-weight:700; font-size:1rem; padding:8px 4px; min-height:42px;}
+  .xwd-board{flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:4px 8px 12px; scrollbar-width:none;}
+  .xwd-board::-webkit-scrollbar{display:none;}
+  .xwd .xwd-grid{width:max-content; gap:2px; border-width:2px; margin:0 auto;}
+  .xwd-grid .xw-cell{font-size:calc(var(--cs)*0.6); border-radius:3px;}
+  .xwd-grid .xw-num{font-size:max(8px, calc(var(--cs)*0.3));}
+  .xwd-grid .xw-cell.active{background:#F2D49A;}
+  .xwd-grid .xw-cell.cursor{background:var(--amber);}
+  .xwd-grid .xw-cell.xwd-solved{color:var(--teal);}
+  .xwd-dock{flex:0 0 auto; background:#E9E3D8; border-top:1px solid var(--line); padding:0 0 calc(6px + env(safe-area-inset-bottom));}
+  .xwd-talk{margin:8px 8px 0; padding:10px 14px;}
+  .xwd-talk .talk{font-size:1rem; line-height:1.35;}
+  .xwd-hintrow{display:flex; justify-content:flex-end; padding:0 8px;}
+  .xwd-clue{display:flex; align-items:center; margin:0 6px 7px; background:var(--card); border-radius:12px; min-height:64px; box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .xwd .xwd-arrow{flex:0 0 40px; align-self:stretch; border:0; background:none; box-shadow:none; color:var(--teal); font-size:1.9rem; padding:0; font-weight:400;}
+  .xwd-q{flex:1; text-align:center; padding:8px 2px; cursor:pointer; font-family:var(--display); font-size:1.12rem; line-height:1.22;}
+  .xwd-tag{display:block; font-family:var(--body); font-size:.8rem; color:var(--muted); font-weight:700; margin-bottom:2px;}
+  .xwd-kb{display:flex; flex-direction:column; gap:7px; padding:0 3px;}
+  .xwd-row{display:flex; justify-content:center; gap:5px;}
+  .xwd .xwd-kb button{flex:1 1 0; max-width:40px; height:46px; border:0; border-radius:7px; background:var(--card); color:var(--ink);
+    font-family:var(--body); font-size:1.3rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.25); padding:0; touch-action:manipulation;}
+  .xwd .xwd-kb button:active{background:var(--amber-soft);}
+  .xwd .xwd-kb .xwd-del{max-width:64px; flex:1.6 1 0; font-size:1.15rem;}
+  .xwd-finish{display:flex; flex-direction:column; gap:10px; padding:12px 12px 4px;}
+  .xwd-done{font-size:1.05rem; line-height:1.35; text-align:center;}
+  .xwd .xwd-finish .btn-amber{width:100%; min-height:56px;}
+  .xwd-finrow{display:flex; justify-content:space-around;}
   .xw-cluebar{display:flex; align-items:stretch; margin:10px 0 8px; border-radius:10px; overflow:hidden; border:1px solid #b9d4ef; background:#dce9f7;}
   .xw-arrow{flex:0 0 auto; width:46px; min-height:0; padding:0; border:0; border-radius:0; background:#cdddf0; color:#11406b;
     font-size:1.7rem; line-height:1; font-weight:700; cursor:pointer;}
@@ -610,7 +601,7 @@ function wordAnswers(id){const a=getAns(id);
    and square (phone-friendly). entries: [{word, q}]. Returns {placed, rows, cols,
    cells} where cells is a Map "r,c" -> {sol, num?} and each placed entry has
    {word, q, r, c, dir:'A'|'D', cells:[[r,c]...], num}. */
-function buildCrossword(entries){
+function buildCrossword(entries, opts){
   const key=(r,c)=>r+','+c;
   let base=entries.map(e=>({...e, word:String(e.word).toUpperCase().replace(/[^A-Z]/g,'')}))
     .filter(e=>e.word.length>=3 && e.word.length<=12);
@@ -656,9 +647,42 @@ function buildCrossword(entries){
   // MOST words, then the DENSEST (smallest bounding-box area, tie smallest side).
   // Density is what keeps the grid from looking sprawling/embarrassing.
   const shuffle=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
-  const orders=[ [...base].sort((a,b)=>b.word.length-a.word.length) ];
-  for(let t=0;t<140;t++) orders.push(shuffle([...base]));
   let bestRun=null;
+  // PHONE (r20, layout D): pack the puzzle to at most maxW squares WIDE so every column
+  // shows at a readable size on a phone; the grid then scrolls up and down instead.
+  // Randomised greedy with a time budget; keeps the run that places every word with the
+  // smallest area. If nothing fits that narrow, widen by one and try again.
+  if(opts&&opts.maxW){
+    const narrow=(order,maxW)=>{
+      const grid=new Map(), placed=[]; const bb={a:0,b:0,c:0,d:0};
+      const place=(it,r,c,dir)=>{ const st=dir==='A'?[0,1]:[1,0], cells=[];
+        for(let k=0;k<it.word.length;k++){ const rr=r+st[0]*k, cc=c+st[1]*k; grid.set(key(rr,cc),it.word[k]); cells.push([rr,cc]);
+          bb.a=Math.min(bb.a,rr); bb.b=Math.min(bb.b,cc); bb.c=Math.max(bb.c,rr); bb.d=Math.max(bb.d,cc); }
+        placed.push({word:it.word, q:it.q, r, c, dir, cells}); };
+      place(order[0],0,0, order[0].word.length>maxW||Math.random()<.5?'D':'A');
+      const pend=order.slice(1);
+      for(let pass=0; pass<10 && pend.length; pass++){
+        for(let pi=0; pi<pend.length; pi++){ const it=pend[pi], opts2=[];
+          for(const p of placed){ for(let k=0;k<p.cells.length;k++){ const [pr,pc]=p.cells[k], L=grid.get(key(pr,pc));
+            for(let i=0;i<it.word.length;i++){ if(it.word[i]!==L) continue;
+              const dir=p.dir==='A'?'D':'A', st=dir==='A'?[0,1]:[1,0], r=pr-st[0]*i, c=pc-st[1]*i, sc=fit(grid,it.word,r,c,dir);
+              if(sc>0){ const er=r+st[0]*(it.word.length-1), ec=c+st[1]*(it.word.length-1);
+                const h=Math.max(bb.c,er)-Math.min(bb.a,r)+1, w=Math.max(bb.d,ec)-Math.min(bb.b,c)+1;
+                if(w<=maxW) opts2.push({r,c,dir,s:h*w-sc*3+Math.random()*6}); } } } }
+          if(opts2.length){ opts2.sort((x,y)=>x.s-y.s); const o=opts2[Math.random()<.7?0:Math.floor(Math.random()*Math.min(3,opts2.length))];
+            place(it,o.r,o.c,o.dir); pend.splice(pi,1); pi--; } } }
+      return {grid, placed, rows:bb.c-bb.a+1, cols:bb.d-bb.b+1};
+    };
+    const t0=Date.now();
+    for(let w=opts.maxW; w<=opts.maxW+3 && !bestRun; w++){
+      for(let t=0; t<1500 && Date.now()-t0<450; t++){
+        const order=shuffle([...base]); if(t%3===0) order.sort((a,b)=>b.word.length-a.word.length);
+        const run=narrow(order,w); if(run.placed.length<base.length) continue;
+        run.area=run.rows*run.cols;
+        if(!bestRun || run.area<bestRun.area || (run.area===bestRun.area && run.rows<bestRun.rows)) bestRun=run; } }
+  }
+  const orders=bestRun?[]:[ [...base].sort((a,b)=>b.word.length-a.word.length) ];
+  if(!bestRun) for(let t=0;t<140;t++) orders.push(shuffle([...base]));
   for(const order of orders){ const run=attempt(order);
     const better = !bestRun || run.placed.length>bestRun.placed.length
       || (run.placed.length===bestRun.placed.length && (run.area<bestRun.area || (run.area===bestRun.area && run.md<bestRun.md)));
@@ -1414,7 +1438,8 @@ let XW=null, _xwKeyHandler=null;
 function scrCrossword(){
   const p=S.game.target;
   if(!XW||XW.for!==p){
-    const data=buildCrossword(wordAnswers(p).map(x=>({word:x.word, q:x.q})));
+    // Phones get a puzzle packed 12 squares wide (layout D); computers keep the squarer grid.
+    const data=buildCrossword(wordAnswers(p).map(x=>({word:x.word, q:x.q})), xwIsPhone()?{maxW:12}:null);
     const order=[...data.placed].filter(pl=>pl.dir==='A').sort((a,b)=>a.num-b.num)
       .concat([...data.placed].filter(pl=>pl.dir==='D').sort((a,b)=>a.num-b.num));
     XW={for:p, data, order, entry:new Map(), sel:null, solved:new Set(), just:[]};
@@ -1505,193 +1530,116 @@ function xwHint(p){ if(!XW.sel) return; let k=xwKey(XW.sel.r,XW.sel.c), cell=XW.
     if(fe){ XW.sel={r:fe[0],c:fe[1],dir:aw.dir}; k=xwKey(fe[0],fe[1]); cell=XW.data.cells.get(k); } } }
   XW.entry.set(k,cell.sol); xwRecompute(); xwAdvance(); renderCrossword(p); }
 function xwArrow(p,step){ xwGoClue(step,false); renderCrossword(p); }
-/* Phone layout (r18, Lance picked mockup option B): a full grid is too small to read
-   at phone width, so the question sits in large type with BIG letter boxes under it,
-   and the whole puzzle sits below as a small map you tap to jump to a word. Crossing
-   letters you have already solved show in teal in the boxes. No dots (Lance: "i don't
-   like the dots"); tapping the box you are on, or that square on the map, switches to
-   the word that crosses there. Desktop and the finished puzzle keep the full grid. */
+/* Phone layout D (r20, Lance: "build D into the game"): the layout most phone crossword
+   apps use. The puzzle is packed 12 squares wide (buildCrossword maxW) so every column
+   shows at a readable size, and it scrolls up and down by itself to keep your word in
+   view. The question sits in one bar right above the game's OWN letter keyboard, so the
+   phone's keyboard (and its AutoFill bar) never appears and the page never jumps.
+   Computers and tablets (wider than 600px) keep the big grid + clue list and type on
+   their real keyboard. (Layouts A and B from r18/r19 were removed; see round_19.html.) */
+function xwIsPhone(){ return window.innerWidth<=600; }
+// The word being worked on; a bare cursor square adopts the word through it (across first).
 function xwPhoneWord(){
   let aw=xwActiveWord(); if(aw) return aw;
   if(!XW.sel) return null;
   const hits=XW.data.placed.filter(pl=>pl.cells.some(([r,c])=>r===XW.sel.r&&c===XW.sel.c));
   aw=hits.find(pl=>pl.dir==='A')||hits[0]; if(aw) XW.sel.dir=aw.dir; return aw;
 }
-// Tap a square (a box or the map): move there. Tapping the square you are already on
-// switches to the other word that runs through it, if there is one.
+// Tap a square: move there. Tap the square you are already on: switch to the word crossing it.
 function xwPhonePick(r,c){
   const hits=XW.data.placed.filter(pl=>pl.cells.some(([rr,cc])=>rr===r&&cc===c)); if(!hits.length) return;
   const aw=xwPhoneWord(), onIt=XW.sel&&XW.sel.r===r&&XW.sel.c===c;
-  let w = onIt&&hits.length>1 ? hits.find(h=>h!==aw) : (hits.includes(aw)?aw:hits[0]);
+  const w = onIt&&hits.length>1 ? hits.find(h=>h!==aw) : (hits.includes(aw)?aw:hits[0]);
   XW.sel={r,c,dir:w.dir};
 }
-function renderCrosswordPhone(p){
-  const d=XW.data, aw=xwPhoneWord(); if(!aw) return;
-  const nm=getName(p);
-  const clue=esc((CROSSWORD_CLUES[aw.q.id]||aw.q.reveal||aw.q.label).replace(/\{n\}/g,nm));
-  // Boxes share the card's width; a 12-letter answer still gets ~24px wide boxes on a
-  // 375px phone, so the letter is sized to the box and every box is at least 44px tall to tap.
-  const n=aw.cells.length, W=Math.min(window.innerWidth,820)-40+16-20;   // page padding, card bleeds 8px each side, card padding
-  const bs=Math.max(20, Math.min(46, Math.floor((W-(n-1)*3)/n)));
-  const solvedCell=(r,c)=>d.placed.some((pl,idx)=>XW.solved.has(idx)&&pl.cells.some(([a,b])=>a===r&&b===c));
-  const boxes=aw.cells.map(([r,c])=>{ const k=xwKey(r,c), cur=XW.sel.r===r&&XW.sel.c===c;
-    const fromCross=d.placed.some((pl,idx)=>pl!==aw&&XW.solved.has(idx)&&pl.cells.some(([a,b])=>a===r&&b===c));
-    return `<div class="xwp-box${cur?' cur':''}${fromCross?' cross':''}" data-r="${r}" data-c="${c}" style="width:${bs}px;height:${Math.max(44,bs+6)}px;font-size:${Math.round(Math.min(bs*0.75,28))}px">${XW.entry.get(k)||''}</div>`; }).join('');
-  const activeSet=new Set(aw.cells.map(([r,c])=>xwKey(r,c)));
-  const ms=Math.max(9, Math.min(22, Math.floor((Math.min(window.innerWidth,820)-40-8)/d.cols)-3));
-  let map='';
-  for(let r=0;r<d.rows;r++) for(let c=0;c<d.cols;c++){ const k=xwKey(r,c), cell=d.cells.get(k);
-    if(!cell){ map+=`<div class="xw-block"></div>`; continue; }
-    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(XW.sel.r===r&&XW.sel.c===c) cls.push('cursor'); if(solvedCell(r,c)) cls.push('xwp-solved');
-    map+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}"><span class="xw-let">${XW.entry.get(k)||''}</span></div>`; }
-  app.innerHTML=`
-    <div class="center" style="margin:2px 0 10px"><div class="pill pill-teal">Get to know ${esc(nm)}</div></div>
-    <div class="xwp-card">
-      <div class="xwp-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${n} letters</div>
-      <div class="xwp-q">${clue}</div>
-      <div class="xwp-stripwrap">
-        <input id="xwinput" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Type a letter" class="xwp-input">
-        <div class="xwp-strip">${boxes}</div></div>
-      <div class="xwp-hintrow"><button class="xw-hint xwp-hint" id="xwhint">Show me a letter</button></div>
-      <div class="xwp-nav"><button id="xwprev">&lsaquo; Previous clue</button><button id="xwnext">Next clue &rsaquo;</button></div>
-    </div>
-    <div id="xwmsg" class="xw-msg"></div>
-    <div class="xwp-maplabel">The whole puzzle. Tap any word to jump to it.</div>
-    <div class="xwp-map"><div class="xw-grid xwp-grid" style="grid-template-columns:repeat(${d.cols},${ms}px); grid-auto-rows:${ms}px; --cs:${ms}px">${map}</div></div>
-    <div class="xw-foot"><button class="xw-back" id="back">Back to games</button><button class="xw-back" id="xwlayout">Switch to the zoomed-in puzzle</button></div>`;
-  document.getElementById('xwlayout').onclick=()=>{ XW_PHONE_LAYOUT='A'; XW.cam=null; renderCrossword(p); };
-  const xwinput=document.getElementById('xwinput');
-  const tap=el=>{ xwPhonePick(+el.dataset.r,+el.dataset.c); renderCrossword(p); };
-  app.querySelectorAll('.xwp-box, .xwp-grid .xw-cell').forEach(el=> el.onclick=()=>tap(el));
-  xwinput.oninput=()=>{ const v=xwinput.value.replace(/[^a-zA-Z]/g,''); xwinput.value=''; xwTypeAll(p,v); };
-  xwinput.onkeydown=(e)=>{ e.stopPropagation(); if(e.key==='Backspace'){ xwBackspace(p); e.preventDefault(); } };
-  xwinput.focus({preventScroll:true});
-  document.getElementById('xwhint').onclick=()=>xwHint(p);
-  document.getElementById('xwprev').onclick=()=>xwArrow(p,-1);
-  document.getElementById('xwnext').onclick=()=>xwArrow(p,1);
-  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; gameBack(p); };
-  if(XW.just&&XW.just.length){
-    const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-    XW.just.forEach(idx=>{ const cells=d.placed[idx].cells, lastI=cells.length-1;
-      const cls=d.placed[idx].dir==='D'?'xw-snake':'xw-wave';
-      cells.forEach(([r,c],i)=>{ const el=app.querySelector(`.xwp-grid .xw-cell[data-r="${r}"][data-c="${c}"]`); if(!el) return;
-        if(reduce){ if(i===lastI) celebrate(null,el); return; }
-        el.style.animationDelay=(i*65)+'ms'; el.classList.add(cls);
-        if(i===lastI) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, i*65+150); });
-    });
-    const last=d.placed[XW.just[XW.just.length-1]];
-    document.getElementById('xwmsg').innerHTML=`<div class="reveal"><div class="label">You got it</div><div class="talk"><b>${talkLead()}:</b> ${last.q.talk}</div></div>`;
-    XW.just=[];
-  }
-}
-/* Phone layout A (r19, Lance: "more intuitive and also more fulfilling when they get the
-   right answer"): the real crossword, zoomed in close on the word you are working on.
-   Big squares; the grid slides to each word. When a word is solved the view HOLDS on it
-   so its ripple and floating picture play out big, then slides on to the next clue.
-   Layout B (renderCrosswordPhone) is kept; XW_PHONE_LAYOUT picks which one phones get.
-   In memory only (no storage), so a reload goes back to the default. */
-let XW_PHONE_LAYOUT='A';
-const XWZ_CS=36, XWZ_GAP=2, XWZ_PAD=2;
-function renderCrosswordZoom(p){
-  const d=XW.data, aw=xwPhoneWord(); if(!aw) return;
-  XW.holdToken=(XW.holdToken||0)+1;   // any new render cancels a pending slide-on
-  const nm=getName(p), zoomOut=!!XW.zoomOut;
-  const clue=esc((CROSSWORD_CLUES[aw.q.id]||aw.q.reveal||aw.q.label).replace(/\{n\}/g,nm));
-  const activeSet=new Set(aw.cells.map(([r,c])=>xwKey(r,c)));
+// Tapping the question switches between across and down at the same square.
+function xwFlip(){ if(!XW.sel) return; const aw=xwPhoneWord();
+  const x=XW.data.placed.find(pl=>pl!==aw&&pl.cells.some(([a,b])=>a===XW.sel.r&&b===XW.sel.c));
+  if(x) XW.sel={r:XW.sel.r, c:XW.sel.c, dir:x.dir}; }
+const XWD_KEYS=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+function renderCrosswordDock(p){
+  const d=XW.data, done=d.placed.length>0 && XW.solved.size===d.placed.length;
+  const aw=done?null:xwPhoneWord();
+  XW.holdToken=(XW.holdToken||0)+1;   // any new render cancels a pending scroll-on
+  const nm=getName(p), reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const W=Math.min(window.innerWidth,600)-16-4;
+  const cs=Math.max(18, Math.min(44, Math.floor((W-(d.cols-1)*2)/d.cols)));
+  const activeSet=new Set(aw? aw.cells.map(([r,c])=>xwKey(r,c)):[]);
   const solvedCell=(r,c)=>d.placed.some((pl,idx)=>XW.solved.has(idx)&&pl.cells.some(([a,b])=>a===r&&b===c));
   let g='';
   for(let r=0;r<d.rows;r++) for(let c=0;c<d.cols;c++){ const k=xwKey(r,c), cell=d.cells.get(k);
     if(!cell){ g+=`<div class="xw-block"></div>`; continue; }
-    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(XW.sel.r===r&&XW.sel.c===c) cls.push('cursor'); if(solvedCell(r,c)) cls.push('xwz-solved');
-    g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}">${cell.num&&!zoomOut?`<span class="xw-num">${cell.num}</span>`:''}<span class="xw-let">${XW.entry.get(k)||''}</span></div>`; }
-  const other = XW_PHONE_LAYOUT==='A' ? 'Switch to big answer boxes' : 'Switch to the zoomed-in puzzle';
-  app.innerHTML=`
-    <div class="xwz-clue">
-      <input id="xwinput" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Type a letter" class="xwp-input">
-      <button class="xwz-arrow" id="xwprev" aria-label="Previous clue">&lsaquo;</button>
-      <div class="xwz-txt"><span class="xwz-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${aw.cells.length} letters</span>${clue}</div>
-      <button class="xwz-arrow" id="xwnext" aria-label="Next clue">&rsaquo;</button>
-    </div>
-    <div class="xwz-tools"><button class="xwz-tool" id="xwhint">Show me a letter</button><button class="xwz-tool" id="xwwhole">${zoomOut?'Zoom back in':'Whole puzzle'}</button></div>
-    <div class="xwz-stage" id="xwstage"><div class="xwz-grid${zoomOut?' out':''}" id="xwzgrid">${g}</div></div>
-    <div id="xwmsg" class="xw-msg"></div>
-    <div class="xw-foot"><button class="xw-back" id="back">Back to games</button><button class="xw-back" id="xwlayout">${other}</button></div>`;
-  // Camera: square size + where the grid sits inside the stage.
-  const st=document.getElementById('xwstage'), grid=document.getElementById('xwzgrid');
-  // Fit the window to the screen space ABOVE the phone keyboard (the visual viewport), so the
-  // hint button at its bottom is never hidden under the keys. A phone with the keyboard and
-  // its AutoFill bar up can leave as little as ~370px of page.
-  const vh=(window.visualViewport?visualViewport.height:window.innerHeight);
-  const stTop=st.getBoundingClientRect().top+window.scrollY;
-  st.style.height=Math.max(200, Math.min(380, Math.floor(vh-stTop-10)))+'px';
-  const W=st.clientWidth, H=st.clientHeight;
-  const cs = zoomOut ? Math.max(10, Math.floor(Math.min((W-12)/d.cols,(H-12)/d.rows))-XWZ_GAP) : XWZ_CS;
-  const pitch=cs+XWZ_GAP;
-  grid.style.gridTemplateColumns=`repeat(${d.cols},${cs}px)`; grid.style.gridAutoRows=cs+'px'; grid.style.setProperty('--cs',cs+'px');
-  // Hold the view on a word that was just solved (so its celebration is seen), else frame the active word.
-  const hold = XW.just&&XW.just.length ? d.placed[XW.just[XW.just.length-1]] : null;
-  const focus = hold||aw;
-  let tx,ty;
-  if(zoomOut){ tx=(W-d.cols*pitch)/2; ty=(H-d.rows*pitch)/2; }
-  else {
-    const rs=focus.cells.map(x=>x[0]), cs2=focus.cells.map(x=>x[1]);
-    const midR=(Math.min(...rs)+Math.max(...rs)+1)/2, midC=(Math.min(...cs2)+Math.max(...cs2)+1)/2;
-    tx=W/2-midC*pitch-XWZ_PAD; ty=H/2-midR*pitch-XWZ_PAD;
-    if(!hold){ // a long word may not fit: keep the square you are typing in on screen
-      const curX=XW.sel.c*pitch+tx+XWZ_PAD, curY=XW.sel.r*pitch+ty+XWZ_PAD, m=10, bottomRoom=10;
-      if(curX<m) tx+=m-curX; if(curX+pitch>W-m) tx-=curX+pitch-(W-m);
-      if(curY<m) ty+=m-curY; if(curY+pitch>H-bottomRoom) ty-=curY+pitch-(H-bottomRoom);
-    }
+    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(!done&&XW.sel.r===r&&XW.sel.c===c) cls.push('cursor'); if(solvedCell(r,c)) cls.push('xwd-solved');
+    g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}">${cell.num?`<span class="xw-num">${cell.num}</span>`:''}<span class="xw-let">${XW.entry.get(k)||''}</span></div>`; }
+  // A word just solved: show its talk prompt (the conversation is the point) until they act again.
+  if(XW.just&&XW.just.length){ XW.talkQ=d.placed[XW.just[XW.just.length-1]].q; XW.talkLead=talkLead(); }
+  const talk = !done&&XW.talkQ ? `<div class="reveal xwd-talk"><div class="label">You got it</div><div class="talk"><b>${XW.talkLead}:</b> ${XW.talkQ.talk}</div></div>` : '';
+  const quizGame=GAMES.find(g2=>g2.id==='quiz'), canQuiz=done&&quizGame&&quizGame.canPlay(p);
+  const dock = done
+    ? `<div class="xwd-finish">
+         <div class="xwd-done"><b>You did it!</b> Every answer worked out. That is the whole of ${esc(nm)} in one little grid.</div>
+         ${canQuiz?`<button class="btn-amber" id="toquiz">Now, how well were you listening?</button>`:''}
+         <div class="xwd-finrow"><button class="xwd-link" id="savepic">Save as a picture</button><button class="xwd-link" id="keep">Keep all our answers</button></div>
+       </div>`
+    : `${talk}
+       <div class="xwd-hintrow"><button class="xwd-link" id="xwhint">Show me a letter</button></div>
+       <div class="xwd-clue"><button class="xwd-arrow" id="xwprev" aria-label="Previous clue">&lsaquo;</button>
+         <div class="xwd-q" id="xwflip"><span class="xwd-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${aw.cells.length} letters</span>${esc((CROSSWORD_CLUES[aw.q.id]||aw.q.reveal||aw.q.label).replace(/\{n\}/g,nm))}</div>
+         <button class="xwd-arrow" id="xwnext" aria-label="Next clue">&rsaquo;</button></div>
+       <div class="xwd-kb">${XWD_KEYS.map((row,i)=>`<div class="xwd-row">${[...row].map(ch=>`<button data-k="${ch}">${ch}</button>`).join('')}${i===2?'<button class="xwd-del" data-k="DEL" aria-label="Delete a letter">&#9003;</button>':''}</div>`).join('')}</div>`;
+  app.innerHTML=`<div class="xwd">
+    <div class="xwd-top"><button class="xwd-link" id="back">&lsaquo; Back to games</button><span class="xwd-who">Get to know ${esc(nm)}</span></div>
+    <div class="xwd-board" id="xwboard"><div class="xw-grid xwd-grid${done?' solved':''}" style="grid-template-columns:repeat(${d.cols},${cs}px); grid-auto-rows:${cs}px; --cs:${cs}px">${g}</div></div>
+    <div class="xwd-dock">${dock}</div></div>`;
+  const grid=app.querySelector('.xwd-grid'), board=document.getElementById('xwboard');
+  // Keep the word in view: scroll the PUZZLE (never the page) from where it was, so it glides.
+  const hold = !done&&XW.just&&XW.just.length ? d.placed[XW.just[XW.just.length-1]] : null;
+  const focusW = hold||aw;
+  if(XW.boardTop!=null) board.scrollTop=XW.boardTop;
+  if(focusW){ const rs=focusW.cells.map(x=>x[0]), mid=(Math.min(...rs)+Math.max(...rs)+1)/2*(cs+2)+6;
+    const target=Math.max(0, Math.min(mid-board.clientHeight/2, board.scrollHeight-board.clientHeight));
+    board.scrollTo({top:target, behavior:reduce?'auto':'smooth'}); XW.boardTop=target; }
+  board.onscroll=()=>{ XW.boardTop=board.scrollTop; };
+  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; resetGames(); gameBack(p); };
+  if(done){
+    document.getElementById('savepic').onclick=()=>exportCrossword(p);
+    document.getElementById('keep').onclick=()=>{ xwUnbindKeys(); XW=null; go('done'); };
+    const tq=document.getElementById('toquiz');
+    if(tq) tq.onclick=()=>{ xwUnbindKeys(); XW=null; QZ=null; S.game={type:'quiz',target:p}; go('quiz'); };
+    xwUnbindKeys();
+    const finalWords=(XW.just||[]).slice(); XW.just=[];
+    setTimeout(()=>{ if(!grid.isConnected) return; addSparkles(board); if(reduce) return;
+      grid.querySelectorAll('.xw-cell').forEach(el=>{ const d2=(+el.dataset.r)+(+el.dataset.c); el.style.animationDelay=(90+d2*45)+'ms'; el.classList.add('xw-wave'); });
+      finalWords.forEach(idx=>{ const cells=d.placed[idx].cells, [lr,lc]=cells[cells.length-1];
+        const el=grid.querySelector(`.xw-cell[data-r="${lr}"][data-c="${lc}"]`);
+        if(el) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, 90+(lr+lc)*45+150); });
+    },60);
+    return;
   }
-  // Slide from where the camera was last time (same zoom), instead of jumping.
-  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const prev=XW.cam;
-  if(prev && prev.cs===cs && !reduce){
-    grid.style.transform=`translate(${prev.tx}px,${prev.ty}px)`;
-    grid.getBoundingClientRect();   // lock in the start position so the move animates
-    grid.style.transition='transform .35s ease';
-  }
-  grid.style.transform=`translate(${tx}px,${ty}px)`;
-  XW.cam={tx,ty,cs};
-  const xwinput=document.getElementById('xwinput');
-  app.querySelectorAll('.xwz-grid .xw-cell').forEach(el=> el.onclick=()=>{ const wasOut=XW.zoomOut; XW.zoomOut=false;
-    if(wasOut){ const hits=d.placed.filter(pl=>pl.cells.some(([r,c])=>r===+el.dataset.r&&c===+el.dataset.c)); if(hits.length){ const w=hits.includes(aw)?aw:hits[0]; XW.sel={r:+el.dataset.r,c:+el.dataset.c,dir:w.dir}; } }
-    else xwPhonePick(+el.dataset.r,+el.dataset.c);
-    renderCrossword(p); });
-  xwinput.oninput=()=>{ const v=xwinput.value.replace(/[^a-zA-Z]/g,''); xwinput.value=''; xwTypeAll(p,v); };
-  xwinput.onkeydown=(e)=>{ e.stopPropagation(); if(e.key==='Backspace'){ xwBackspace(p); e.preventDefault(); } };
-  xwinput.focus({preventScroll:true});
-  document.getElementById('xwhint').onclick=()=>{ XW.zoomOut=false; xwHint(p); };
-  document.getElementById('xwwhole').onclick=()=>{ XW.zoomOut=!XW.zoomOut; renderCrossword(p); };
-  document.getElementById('xwprev').onclick=()=>{ XW.zoomOut=false; xwArrow(p,-1); };
-  document.getElementById('xwnext').onclick=()=>{ XW.zoomOut=false; xwArrow(p,1); };
-  document.getElementById('xwlayout').onclick=()=>{ XW_PHONE_LAYOUT = XW_PHONE_LAYOUT==='A'?'B':'A'; XW.cam=null; renderCrossword(p); };
-  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; gameBack(p); };
-  if(XW.just&&XW.just.length){
-    XW.just.forEach(idx=>{ const cells=d.placed[idx].cells, lastI=cells.length-1;
-      const cls=d.placed[idx].dir==='D'?'xw-snake':'xw-wave';
+  // Every tap clears the last talk prompt, then acts.
+  const act=fn=>()=>{ XW.talkQ=null; fn(); };
+  app.querySelectorAll('.xwd-grid .xw-cell').forEach(el=> el.onclick=act(()=>{ xwPhonePick(+el.dataset.r,+el.dataset.c); renderCrossword(p); }));
+  app.querySelectorAll('.xwd-kb button').forEach(b=> b.onclick=act(()=>{ const k=b.dataset.k; if(k==='DEL') xwBackspace(p); else xwLetter(p,k); }));
+  document.getElementById('xwhint').onclick=act(()=>xwHint(p));
+  document.getElementById('xwprev').onclick=act(()=>xwArrow(p,-1));
+  document.getElementById('xwnext').onclick=act(()=>xwArrow(p,1));
+  document.getElementById('xwflip').onclick=act(()=>{ xwFlip(); renderCrossword(p); });
+  if(hold){
+    const idxs=XW.just.slice(); XW.just=[];
+    idxs.forEach(idx=>{ const cells=d.placed[idx].cells, lastI=cells.length-1, cls=d.placed[idx].dir==='D'?'xw-snake':'xw-wave';
       cells.forEach(([r,c],i)=>{ const el=grid.querySelector(`.xw-cell[data-r="${r}"][data-c="${c}"]`); if(!el) return;
         if(reduce){ if(i===lastI) celebrate(null,el); return; }
-        el.style.animationDelay=(380+i*65)+'ms'; el.classList.add(cls);   // starts once the slide has landed
-        if(i===lastI) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, 380+i*65+150); });
+        el.style.animationDelay=(300+i*65)+'ms'; el.classList.add(cls);   // starts once the scroll has landed
+        if(i===lastI) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, 300+i*65+150); });
     });
-    const last=d.placed[XW.just[XW.just.length-1]];
-    document.getElementById('xwmsg').innerHTML=`<div class="reveal"><div class="label">You got it</div><div class="talk"><b>${talkLead()}:</b> ${last.q.talk}</div></div>`;
-    XW.just=[];
-    // After the celebration, slide on to the next clue (unless they have already moved on).
-    const token=XW.holdToken, me=XW, msgHTML=document.getElementById('xwmsg').innerHTML;
-    setTimeout(()=>{ if(XW===me && XW.holdToken===token && S.screen==='crossword' && XW.solved.size<XW.data.placed.length){ renderCrossword(p); const m=document.getElementById('xwmsg'); if(m) m.innerHTML=msgHTML; } }, 380+last.cells.length*65+1700);
+    // After the celebration, glide on to the next clue (unless they have already moved on).
+    const token=XW.holdToken, me=XW;
+    setTimeout(()=>{ if(XW===me && XW.holdToken===token && S.screen==='crossword' && XW.solved.size<XW.data.placed.length) renderCrossword(p); }, 300+hold.cells.length*65+1700);
   }
 }
-// When the phone keyboard opens or closes, refit the zoomed-in puzzle to the space left.
-if(window.visualViewport){ let _xwzVH=visualViewport.height, _xwzT=null;
-  visualViewport.addEventListener('resize',()=>{ clearTimeout(_xwzT); _xwzT=setTimeout(()=>{
-    if(Math.abs(visualViewport.height-_xwzVH)<40) return; _xwzVH=visualViewport.height;
-    if(S.screen==='crossword'&&XW&&XW_PHONE_LAYOUT==='A'&&window.innerWidth<=600&&!(XW.solved.size===XW.data.placed.length)&&document.getElementById('xwstage')){ window.scrollTo(0,0); renderCrossword(S.game.target); }
-  },150); }); }
 function renderCrossword(p){
   const d=XW.data, done=d.placed.length>0 && XW.solved.size===d.placed.length;
-  if(!done && window.innerWidth<=600) return XW_PHONE_LAYOUT==='A' ? renderCrosswordZoom(p) : renderCrosswordPhone(p);
+  if(xwIsPhone()) return renderCrosswordDock(p);
   const aw=done?null:xwActiveWord();
   const activeSet=new Set(aw? aw.cells.map(([r,c])=>xwKey(r,c)):[]);
   // Render an N x N SQUARE (N = larger of rows/cols), content centered, the extra
