@@ -149,6 +149,11 @@
   .xwp-card .xwp-tag, .xwp-card .xwp-q{padding:0 4px;}
   .xwp-tag{font-size:.9rem; color:var(--muted); font-weight:700;}
   .xwp-q{font-family:var(--display); font-size:1.45rem; line-height:1.25; margin:4px 0 14px;}
+  /* The hidden box that raises the phone keyboard sits ON the answer boxes: a phone scrolls
+     to whatever is focused, so it must live where the player is looking (it was at the
+     page bottom and the screen jumped down on every tap). 16px font stops iPhone zooming. */
+  .xwp-stripwrap{position:relative;}
+  .xwp-input{position:absolute; top:8px; left:50%; width:1px; height:1px; padding:0; border:0; opacity:0; font-size:16px; pointer-events:none;}
   .xwp-strip{display:flex; gap:3px; justify-content:center;}
   .xwp-box{border:2px solid var(--gridline,#A9C4BE); background:#FBF4E4; border-radius:8px; display:flex; align-items:center; justify-content:center;
     font-weight:700; text-transform:uppercase; cursor:pointer; line-height:1;}
@@ -1525,14 +1530,15 @@ function renderCrosswordPhone(p){
     <div class="xwp-card">
       <div class="xwp-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${n} letters</div>
       <div class="xwp-q">${clue}</div>
-      <div class="xwp-strip">${boxes}</div>
+      <div class="xwp-stripwrap">
+        <input id="xwinput" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Type a letter" class="xwp-input">
+        <div class="xwp-strip">${boxes}</div></div>
       <div class="xwp-hintrow"><button class="xw-hint xwp-hint" id="xwhint">Show me a letter</button></div>
       <div class="xwp-nav"><button id="xwprev">&lsaquo; Previous clue</button><button id="xwnext">Next clue &rsaquo;</button></div>
     </div>
     <div id="xwmsg" class="xw-msg"></div>
     <div class="xwp-maplabel">The whole puzzle. Tap any word to jump to it.</div>
     <div class="xwp-map"><div class="xw-grid xwp-grid" style="grid-template-columns:repeat(${d.cols},${ms}px); grid-auto-rows:${ms}px; --cs:${ms}px">${map}</div></div>
-    <input id="xwinput" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;">
     <div class="xw-foot"><button class="xw-back" id="back">Back to games</button></div>`;
   const xwinput=document.getElementById('xwinput');
   const tap=el=>{ xwPhonePick(+el.dataset.r,+el.dataset.c); renderCrossword(p); };
