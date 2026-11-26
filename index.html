@@ -42,6 +42,10 @@
   button:focus-visible{outline:4px solid var(--amber); outline-offset:3px;}
   button:disabled{opacity:.4; cursor:not-allowed;}
   .btn-ghost{background:transparent; color:var(--ink);}
+  /* The always-there way back (top-left of every setup screen). Big tap target, quiet look. */
+  .navback{display:inline-flex; align-items:center; gap:6px; width:auto; min-height:48px; padding:8px 16px 8px 6px; margin:0 0 4px -6px;
+    border:0; background:none; color:var(--teal); font-size:1.15rem; box-shadow:none;}
+  .navback:hover{transform:none; text-decoration:underline; text-underline-offset:4px;}
   .btn-teal{background:var(--teal); border-color:var(--teal); color:#fff;}
   .btn-rose{background:var(--rose); border-color:var(--rose); color:#fff;}
   .btn-amber{background:var(--amber); border-color:var(--amber); color:#3a2c08;}
@@ -481,11 +485,57 @@ let S={screen:'home', people:{}, iv:null, qi:0, si:0, pack:null, qlist:[], slist
        outConsent:true, myAgree:false, agree:{p1:false,p2:false}};
 const app=document.getElementById('app');
 const getName=id=>(S.people[id]&&S.people[id].name)||'A friend';
+// The name as typed, for refilling a field when someone comes back to it (blank if it was the default).
+const typedName=(id,dflt)=>{ const n=S.people[id]&&S.people[id].name; return n&&n!==dflt?n:''; };
 const getAns=id=>(S.people[id]&&S.people[id].answers)||{};
 const getStories=id=>(S.people[id]&&S.people[id].stories)||{};
 const answeredCount=id=>QUESTIONS.filter(q=>getAns(id)[q.id]).length;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-function go(s){ S.screen=s; render(); window.scrollTo(0,0); }
+/* ===================== GOING BACK =====================
+   Every screen change remembers where you came from, so there is always a way
+   back: the on-screen "Back" button AND the phone's own back gesture/button
+   (each move forward adds a browser history entry; popstate steps us back).
+   Inside the questions, back steps one question at a time.
+   The game menus are HUBS: arriving at one resets the trail, so Back from a
+   menu never walks you back into a half-played game. */
+const HUB_PARENT = { home:null, menu:null, themmenu:'received' };
+function snap(){ return {screen:S.screen, qi:S.qi, si:S.si, iv:S.iv, qlist:S.qlist, slist:S.slist}; }
+function pushNav(){ try{ history.pushState({tou:1}, ''); }catch(e){} }
+function go(s){
+  if(!S.hist) S.hist=[];
+  if(s in HUB_PARENT) S.hist = HUB_PARENT[s] ? [{...snap(), screen:HUB_PARENT[s]}] : [];
+  else S.hist.push(snap());
+  // Drop focus first: a phone keyboard still open from the last field can leave the
+  // new screen scrolled down, with the Back button hidden off the top.
+  if(document.activeElement&&document.activeElement.blur) document.activeElement.blur();
+  S.screen=s; render(); window.scrollTo(0,0); pushNav();
+}
+// Is there anywhere to go back to from here?
+const isGameScreen=()=>GAMES.some(g=>g.id===S.screen);
+function canGoBack(){
+  if(isGameScreen()) return true;
+  if(S.screen==='interview' && S.qi>0) return true;
+  if(S.screen==='story' && S.si>0) return true;
+  return !!(S.hist && S.hist.length);
+}
+function goBack(){
+  // From inside any game, back always means the game menu (same as "Back to games").
+  if(isGameScreen()){
+    const hub = S.game&&S.game.target==='them' ? 'themmenu' : 'menu';
+    S.hist = HUB_PARENT[hub] ? [{...snap(), screen:HUB_PARENT[hub]}] : [];
+    S.screen=hub; render(); window.scrollTo(0,0); return;
+  }
+  if(S.screen==='interview' && S.qi>0){ S.qi--; render(); return; }
+  if(S.screen==='story' && S.si>0){ S.si--; render(); return; }
+  const prev = S.hist && S.hist.pop(); if(!prev) return;
+  Object.assign(S, prev); render(); window.scrollTo(0,0);
+}
+// Buttons go through the browser history so the phone's back gesture stays in step.
+function backClick(){ if(canGoBack()) history.back(); }
+window.addEventListener('popstate', ()=>{ if(canGoBack()) goBack(); });
+// A forward step inside the questions (no screen change) still needs a history
+// entry, so the phone's back gesture steps back one question too.
+function stepForward(){ render(); window.scrollTo(0,0); pushNav(); }
 
 /* ===================== SERVERLESS LINK PAYLOAD ===================== */
 function enc(obj){return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
@@ -622,7 +672,17 @@ const ROUTES = {
   done:scrDone, remote_start:scrRemoteStart, link:scrLink, received:scrReceived, reply_intro:scrReplyIntro, review:scrReview
 };
 GAMES.forEach(g=>{ ROUTES[g.id]=g.render; });
-function render(){ app.setAttribute('data-screen', S.screen); (ROUTES[S.screen]||scrHome)(); }
+// Setup and in-between screens get a top-left Back. Games keep their own
+// "Back to games"; the questions and stories have "Go back" beside Next.
+const BACK_SCREENS = new Set(['mode_local_names','remote_start','whoto','tierpick','packpick','review',
+  'link','handoff','bridge','themmenu','reply_intro','done']);
+function render(){
+  app.setAttribute('data-screen', S.screen); (ROUTES[S.screen]||scrHome)();
+  if(BACK_SCREENS.has(S.screen) && canGoBack()){
+    app.insertAdjacentHTML('afterbegin', `<button class="navback" id="navback" aria-label="Go back">&lsaquo; Back</button>`);
+    document.getElementById('navback').onclick=backClick;
+  }
+}
 
 /* ===================== SCREENS ===================== */
 function scrHome(){
@@ -658,13 +718,15 @@ function scrLocalNames(){
     <div class="center" style="margin:10px 0 22px"><h2>Who's playing today?</h2></div>
     <div class="card stack">
       <div><div class="pill pill-teal" style="margin-bottom:8px">First player</div>
-        <input id="n1" type="text" placeholder="Their first name"></div>
+        <input id="n1" type="text" placeholder="Their first name" value="${esc(typedName('p1','Player 1'))}"></div>
       <div><div class="pill pill-rose" style="margin-bottom:8px">Second player</div>
-        <input id="n2" type="text" placeholder="Their first name"></div>
+        <input id="n2" type="text" placeholder="Their first name" value="${esc(typedName('p2','Player 2'))}"></div>
       <button class="btn-teal" id="go">Start with the first player</button></div>`;
   document.getElementById('go').onclick=()=>{
-    S.people={p1:{name:document.getElementById('n1').value.trim()||'Player 1',answers:{},stories:{}},
-              p2:{name:document.getElementById('n2').value.trim()||'Player 2',answers:{},stories:{}}};
+    // Came back here to fix a name? Keep everything already answered.
+    const keep=(id,n)=>S.people[id]?Object.assign(S.people[id],{name:n}):{name:n,answers:{},stories:{}};
+    S.people={p1:keep('p1',document.getElementById('n1').value.trim()||'Player 1'),
+              p2:keep('p2',document.getElementById('n2').value.trim()||'Player 2')};
     S.iv={slot:'p1',color:'teal',next:'handoff'}; go('whoto');
   };
 }
@@ -692,7 +754,8 @@ function scrTierPick(){
 function scrWhoTo(){
   const slot=S.iv.slot, color=S.iv.color, name=getName(slot);
   const remote = S.iv.next==='link';
-  const known = remote && S.people['them'] ? getName('them') : '';   // a reply: we already know who it goes back to
+  const known = (S.people[slot]&&S.people[slot].toName)     // typed already, then came back
+    || (remote && S.people['them'] ? getName('them') : '');  // a reply: we already know who it goes back to
   const circles=CIRCLES.map(c=>`
     <button class="btn-ghost game-btn rel-btn" data-circle="${c.id}">
       <span class="game-name">${c.label}</span>
@@ -759,10 +822,15 @@ function scrRemoteStart(){
       <p class="hint">You'll answer a few questions, then we'll make a link to send.</p></div>
     <div class="card stack">
       <div class="pill pill-teal" style="margin-bottom:4px">Your name</div>
-      <input id="n" type="text" placeholder="Your first name">
+      <input id="n" type="text" placeholder="Your first name" value="${esc(S.people['me']&&S.people['me'].draft?typedName('me','Me'):'')}">
       <button class="btn-teal" id="go">Begin my questions</button></div>`;
   document.getElementById('go').onclick=()=>{
-    S.people['me']={name:document.getElementById('n').value.trim()||'Me',answers:{},stories:{}};
+    const n=document.getElementById('n').value.trim()||'Me';
+    // `draft` marks answers typed in THIS session, so coming back to fix your name keeps
+    // them. A reply link can also carry an echoed old copy of "me" (no draft flag); that
+    // one is replaced, not reused.
+    const old=S.people['me'];
+    S.people['me'] = old&&old.draft ? Object.assign(old,{name:n}) : {name:n,answers:{},stories:{},draft:true};
     S.iv={slot:'me',color:'teal',next:'link'};
     // Replying: we already know who it goes back to (their name came in the link) and
     // the circle is symmetric, so don't ask either question again. Older links carry no
@@ -788,15 +856,15 @@ function scrInterview(){
       <h2>${q.ask}</h2>
       <div id="ans" class="ans-input sc" contenteditable="true" data-ph="Type your answer" spellcheck="false" autocapitalize="words">${esc(getAns(slot)[q.id]||'')}</div>
       <div class="btn-row">
-        ${S.qi>0?`<button class="btn-ghost" id="back">Go back</button>`:``}
+        ${canGoBack()?`<button class="btn-ghost" id="back">Go back</button>`:``}
         <button class="btn-${color}" id="next">${S.qi<list.length-1?'Next question':'Next'}</button></div>
       <p class="hint center" style="margin:0">No wrong answers. A word or two is plenty.</p>
       <p class="hint center" data-spellstatus style="margin:6px 0 0; font-size:.82rem; opacity:.75">${spellStatusText()}</p></div>`;
   const inp=document.getElementById('ans'); paintSpell(inp); inp.focus(); setCaret(inp,(inp.textContent||'').length);
   const save=()=>{const v=inp.textContent.trim(); if(v)S.people[slot].answers[q.id]=v; else delete S.people[slot].answers[q.id];};
   inp.addEventListener('input',()=>{ save(); paintSpell(inp); });
-  document.getElementById('next').onclick=()=>{save(); if(S.qi<list.length-1){S.qi++;render();} else startStories();};
-  if(document.getElementById('back')) document.getElementById('back').onclick=()=>{save();S.qi--;render();};
+  document.getElementById('next').onclick=()=>{save(); if(S.qi<list.length-1){S.qi++;stepForward();} else startStories();};
+  if(document.getElementById('back')) document.getElementById('back').onclick=()=>{save();backClick();};
   inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('next').click();}};
 }
 function startStories(){ if(S.slist&&S.slist.length){S.si=0;go('story');} else go('review'); }
@@ -811,16 +879,17 @@ function scrStory(){
       <h2>${s.ask}</h2>
       <textarea id="ans" class="linkbox" spellcheck="true" style="border-style:solid;border-color:var(--line);font-family:var(--body);font-size:1.15rem;word-break:normal;min-height:130px" placeholder="A sentence or two is plenty. Or skip it.">${esc(getStories(slot)[s.id]||'')}</textarea>
       <div class="btn-row">
-        ${S.si>0?`<button class="btn-ghost" id="back">Go back</button>`:``}
+        ${canGoBack()?`<button class="btn-ghost" id="back">Go back</button>`:``}
         <button class="btn-ghost" id="skip">Skip this one</button>
         <button class="btn-${color}" id="next">${S.si<list.length-1?'Next':'All done'}</button></div></div>`;
   const inp=document.getElementById('ans'); inp.focus();
   const save=()=>{const v=inp.value.trim(); if(v)S.people[slot].stories[s.id]=v; else delete S.people[slot].stories[s.id];};
+  inp.addEventListener('input', save);   // so the phone's back gesture never loses what was typed
   document.getElementById('next').onclick=()=>{save(); advanceStory();};
   document.getElementById('skip').onclick=()=>{inp.value='';save();advanceStory();};
-  if(document.getElementById('back')) document.getElementById('back').onclick=()=>{save();S.si--;render();};
+  if(document.getElementById('back')) document.getElementById('back').onclick=()=>{save();backClick();};
 }
-function advanceStory(){ if(S.si<S.slist.length-1){S.si++;render();} else go('review'); }
+function advanceStory(){ if(S.si<S.slist.length-1){S.si++;stepForward();} else go('review'); }
 function finishInterview(){
   const next=S.iv.next;
   if(next==='handoff')go('handoff');
