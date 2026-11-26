@@ -1,6 +1,6 @@
 /* Two of Us service worker. Offline-first for the app shell.
    No analytics, no network beyond Google Fonts. Bump CACHE on each release. */
-const CACHE = 'twoofus-v90';
+const CACHE = 'twoofus-v91';
 const SHELL = [
   './',
   './index.html',
