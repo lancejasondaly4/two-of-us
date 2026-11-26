@@ -174,12 +174,16 @@
   .xwd .xwd-arrow{flex:0 0 40px; align-self:stretch; border:0; background:none; box-shadow:none; color:var(--teal); font-size:1.9rem; padding:0; font-weight:400;}
   .xwd-q{flex:1; text-align:center; padding:8px 2px; cursor:pointer; font-family:var(--display); font-size:1.12rem; line-height:1.22;}
   .xwd-tag{display:block; font-family:var(--body); font-size:.8rem; color:var(--muted); font-weight:700; margin-bottom:2px;}
-  .xwd-kb{display:flex; flex-direction:column; gap:7px; padding:0 3px;}
-  .xwd-row{display:flex; justify-content:center; gap:5px;}
-  .xwd .xwd-kb button{flex:1 1 0; max-width:40px; height:46px; border:0; border-radius:7px; background:var(--card); color:var(--ink);
-    font-family:var(--body); font-size:1.3rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.25); padding:0; touch-action:manipulation;}
-  .xwd .xwd-kb button:active{background:var(--amber-soft);}
-  .xwd .xwd-kb .xwd-del{max-width:64px; flex:1.6 1 0; font-size:1.15rem;}
+  .xwd-kb{display:flex; flex-direction:column; gap:0; padding:0 2px;}
+  .xwd-row{display:flex; justify-content:center; gap:0;}
+  /* Big keys (r22, research: a normal phone keyboard is smaller than older fingers need). The whole
+     button, gaps included, is the touch area, so a near miss still lands; the key you see is the span. */
+  .xwd .xwd-kb button{flex:1 1 0; height:60px; border:0; border-radius:0; background:none; box-shadow:none; padding:3px 2.5px; touch-action:manipulation;}
+  .xwd .xwd-kb button>span{display:flex; align-items:center; justify-content:center; width:100%; height:100%; border-radius:10px;
+    background:var(--card); color:var(--ink); font-family:var(--body); font-size:1.5rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.25); pointer-events:none;}
+  .xwd .xwd-kb button:active{background:none;}
+  .xwd .xwd-kb button:active>span{background:var(--amber-soft);}
+  .xwd .xwd-kb .xwd-del{flex:1.5 1 0;} .xwd .xwd-kb .xwd-del>span{font-size:1.3rem;}
   .xwd-finish{display:flex; flex-direction:column; gap:10px; padding:12px 12px 4px;}
   .xwd-done{font-size:1.05rem; line-height:1.35; text-align:center;}
   .xwd .xwd-finish .btn-amber{width:100%; min-height:56px;}
@@ -212,7 +216,124 @@
   .ms{text-decoration:underline; text-decoration-style:wavy; text-decoration-color:#d11; text-decoration-skip-ink:none; -webkit-text-decoration:#d11 wavy underline;}
   @media (min-width:560px){ .mem-grid{grid-template-columns:repeat(4,1fr);} }
   @media (max-width:560px){ h1{font-size:2.05rem;} h2{font-size:1.6rem;} .card{padding:22px;} }
-  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
+
+  /* ===================== NIGHT and DAY (r22) =====================
+     Two looks for the whole app. AUTOMATIC (the default) follows the phone's own Light/Dark
+     setting, so most phones go to Night at sunset. The switch at the top of the main screens
+     also offers Day or Night; the choice lasts until the app is closed (nothing is stored). */
+  body[data-theme=day]{
+    --linen:#FCF7EE; --card:#FFFFFF; --ink:#241F3E; --muted:#6B6580;
+    --teal:#3B3670; --teal-soft:#ECEAF6; --rose:#A65A52; --rose-soft:#F6E7E3;
+    --amber:#E9A445; --amber-soft:#FFF0D4; --line:#EADFCB; --accent:#A8591A; --field:#FFFFFF;
+    --bg:radial-gradient(120% 50% at 50% -5%, #FFE9C4 0, rgba(255,233,196,0) 70%), linear-gradient(180deg,#FCF7EE 0%,#F8F0E2 60%,#F4E9D8 100%);}
+  body[data-theme=night]{
+    --linen:#1B1836; --card:#272350; --ink:#F3E8D2; --muted:#B3ADCF;
+    --teal:#F2B35B; --teal-soft:rgba(242,179,91,.16); --rose:#F2A196; --rose-soft:rgba(242,161,150,.16);
+    --amber:#F2B35B; --amber-soft:rgba(242,179,91,.13); --line:rgba(255,255,255,.14); --accent:#F2B35B; --field:rgba(255,255,255,.06);
+    --bg:radial-gradient(120% 50% at 50% 0%, #2A2552 0, rgba(42,37,82,0) 70%), linear-gradient(180deg,#151933 0%,#1B1836 55%,#261C3B 100%);}
+  body[data-theme]{background:var(--bg); background-color:var(--linen); min-height:100vh;}
+  body[data-theme] h1, body[data-theme] h2{letter-spacing:-.01em;}
+  /* panels */
+  body[data-theme=day] .card, body[data-theme=day] .modecard{border-color:rgba(168,89,26,.12); box-shadow:0 2px 0 rgba(168,89,26,.05), 0 10px 26px rgba(150,100,40,.08);}
+  body[data-theme=night] .card, body[data-theme=night] .modecard{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.10); box-shadow:none;}
+  body[data-theme] input[type=text], body[data-theme] .ans-input, body[data-theme] .rev-input, body[data-theme] .linkbox,
+  body[data-theme] .summary-card, body[data-theme] .agreebox{background:var(--field); color:var(--ink);}
+  body[data-theme=night] .linkbox{border-color:var(--teal);}
+  body[data-theme=night] .ms{text-decoration-color:#FF7A7A; -webkit-text-decoration:#FF7A7A wavy underline;}
+  /* buttons: Night = warm gold light; Day = deep indigo and sunlit gold */
+  body[data-theme=night] .btn-teal, body[data-theme=night] .btn-amber, body[data-theme=day] .btn-amber{
+    background:linear-gradient(180deg,#F6C277,#E9A445); border-color:#E9A445; color:#1A1630; box-shadow:0 0 22px rgba(242,179,91,.28);}
+  body[data-theme=day] .btn-amber{color:#241F3E; box-shadow:0 8px 20px rgba(233,164,69,.32);}
+  body[data-theme=night] .btn-rose{color:#1A1630;}
+  body[data-theme=night] .btn-ghost{border-color:rgba(255,255,255,.30);}
+  body[data-theme=night] .share-way .num{color:#1A1630;}
+  body[data-theme] #opts button.btn-teal:disabled{opacity:1;}   /* the right quiz answer stays bright after a pick */
+  body[data-theme=night] .mem-card{color:#1A1630;}
+  body[data-theme=night] .mem-card.up{background:rgba(255,255,255,.10); color:var(--ink); border-color:var(--line);}
+  body[data-theme=night] .mem-card.matched{background:var(--teal-soft); border-color:transparent; color:var(--muted);}
+  body[data-theme=day] .mem-card.up{background:#fff;}
+  body[data-theme=night] .pill-amber{color:#FFD27A;} body[data-theme=day] .pill-amber{color:#8E4A10;}
+  body[data-theme=day] .reveal .label, body[data-theme=day] .step .n{color:var(--accent);}
+  body[data-theme] .xw-cluebar{background:var(--card); border-color:var(--line);}
+  body[data-theme] .xw-arrow{background:transparent; color:var(--accent);} body[data-theme] .xw-cluetext b{color:var(--accent);}
+  /* the switch (top right of the main screens) */
+  .topbar{display:flex; align-items:center; gap:8px; margin:-14px 0 8px; min-height:48px;}
+  .topbar .sp{flex:1;}
+  .topbar .navback{margin:0 0 0 -6px;}
+  .tb-btn{width:auto; min-height:44px; padding:6px 15px; border-radius:99px; font-size:1rem; font-weight:700;
+    background:var(--card); color:var(--ink); border:1px solid var(--line); box-shadow:none;}
+  body[data-theme=night] .tb-btn{background:rgba(255,255,255,.08); color:var(--ink); border-color:rgba(255,255,255,.16);}
+  /* the first screen after the link: who made it, one big Start */
+  .welcome-r{display:flex; flex-direction:column; min-height:calc(100vh - 170px); min-height:calc(100dvh - 170px); justify-content:center; gap:14px;}
+  .welcome-r .for{font-size:1rem; font-weight:700; color:var(--accent);}
+  .welcome-r h1{font-size:2.9rem; line-height:1.05;}
+  .welcome-r .lead{margin:0;}
+  .welcome-r .start{min-height:72px; border-radius:99px; font-size:1.35rem; margin-top:16px;}
+  .welcome-r .quiet{background:none; border:0; color:var(--accent); min-height:52px; font-size:1.1rem; box-shadow:none;}
+  /* phone crossword in Night and Day */
+  body[data-theme] .xwd{background:var(--bg); background-color:var(--linen);}
+  body[data-theme] .xw-grid{background:transparent; border-color:transparent; box-shadow:none;}
+  body[data-theme] .xw-cell{font-family:var(--display); font-weight:600; border-radius:6px;}
+  body[data-theme] .xwd-q{font-weight:500;}
+  body[data-theme] .xwd .xwd-link, body[data-theme] .xwd .xwd-arrow{color:var(--accent);}
+  body[data-theme=night] .xw-block{background:rgba(255,255,255,.02); box-shadow:none; border-radius:4px;}
+  body[data-theme=night] .xw-cell{background:rgba(255,255,255,.075); color:var(--ink); box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
+  body[data-theme=night] .xw-cell.active, body[data-theme=night] .xwd-grid .xw-cell.active{background:rgba(255,196,110,.20);}
+  body[data-theme=night] .xw-cell.cursor, body[data-theme=night] .xwd-grid .xw-cell.cursor{background:#F2B35B; color:#1A1630; box-shadow:0 0 16px rgba(242,179,91,.7);}
+  body[data-theme=night] .xw-cell.cursor .xw-num{color:#1A1630;}
+  body[data-theme=night] .xwd-grid .xw-cell.xwd-solved{background:rgba(255,190,90,.10); color:#FFD27A; text-shadow:0 0 6px rgba(255,190,90,.75), 0 0 14px rgba(255,170,60,.35);}
+  body[data-theme=night] .xwd-dock{background:rgba(8,8,24,.35); border-top:1px solid rgba(255,255,255,.08); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);}
+  body[data-theme=night] .xwd-clue{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10); box-shadow:none;}
+  body[data-theme=night] .xwd .xwd-kb button>span{background:rgba(255,255,255,.10); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+  body[data-theme=night] .xwd .xwd-kb button:active>span{background:rgba(242,179,91,.35);}
+  body[data-theme=day] .xw-block{background:rgba(36,31,62,.045); box-shadow:none; border-radius:4px;}
+  body[data-theme=day] .xw-cell{background:#FFFFFF; color:var(--ink); box-shadow:0 1px 2px rgba(120,80,30,.10), 0 2px 6px rgba(120,80,30,.06);}
+  body[data-theme=day] .xw-cell.active, body[data-theme=day] .xwd-grid .xw-cell.active{background:#FBE2B6;}
+  body[data-theme=day] .xw-cell.cursor, body[data-theme=day] .xwd-grid .xw-cell.cursor{background:#EBA748; color:#241F3E; box-shadow:0 4px 14px rgba(235,167,72,.55);}
+  body[data-theme=day] .xwd-grid .xw-cell.xwd-solved{background:#FFF3DC; color:#9A4F12;}
+  body[data-theme=day] .xwd-dock{background:rgba(255,250,240,.72); border-top:1px solid rgba(168,89,26,.12); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);}
+  body[data-theme=day] .xwd-clue{border:1px solid rgba(168,89,26,.12); box-shadow:0 4px 16px rgba(150,100,40,.08);}
+  body[data-theme=day] .xwd .xwd-kb button>span{background:#FFFFFF; box-shadow:0 1px 0 rgba(120,80,30,.22), 0 2px 5px rgba(120,80,30,.06);}
+  body[data-theme=day] .xwd .xwd-kb button:active>span{background:#FBE2B6;}
+  /* the three sizes of "well done": a letter pops, a word lifts off its squares, the finish lights everything */
+  @keyframes letterPop{0%{transform:scale(.8)} 60%{transform:scale(1.1)} 100%{transform:scale(1)}}
+  .xw-cell.pop{animation:letterPop .17s ease-out;}
+  #fx{position:fixed; inset:0; pointer-events:none; z-index:55; overflow:hidden;}
+  #fxc{position:fixed; left:0; top:0; pointer-events:none; z-index:60;}
+  .xw-cell.lifted{color:transparent !important; text-shadow:none !important;}
+  .lift{position:absolute; left:50%; transform:translate(-50%,-50%); display:flex; align-items:center; white-space:nowrap; font-family:var(--display); font-weight:600; line-height:1; z-index:2;}
+  .lift .lt{display:inline-block; padding:0 .04em; will-change:transform;}
+  .lift .sp{display:inline-block; width:.42em;}
+  .lift.night{color:#FFE3B0; text-shadow:0 0 10px rgba(255,190,90,.85), 0 0 26px rgba(255,150,60,.5);}
+  .lift.day{color:#8E4A10; text-shadow:0 1px 0 #fff, 0 0 14px rgba(255,200,120,.55);}
+  .plate{position:absolute; border-radius:999px; pointer-events:none; z-index:1;}
+  .plate.night{background:radial-gradient(closest-side, rgba(16,14,40,.92), rgba(16,14,40,.75) 65%, rgba(16,14,40,0));}
+  .plate.day{background:rgba(255,252,246,.94); box-shadow:0 12px 34px rgba(170,110,40,.22), 0 0 0 1px rgba(235,167,72,.30);}
+  @keyframes ignite{0%{transform:scale(1); color:var(--ink); text-shadow:none}
+    35%{transform:scale(1.28); color:#FFF7E2; text-shadow:0 0 6px #FFE0A0, 0 0 16px #FFB347, 0 0 30px rgba(255,160,60,.9)}
+    100%{transform:scale(1); color:#FFD27A; text-shadow:0 0 6px rgba(255,190,90,.75), 0 0 14px rgba(255,170,60,.35)}}
+  @keyframes tileglow{0%{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)} 35%{box-shadow:inset 0 0 0 1px rgba(255,210,122,.9), 0 0 22px rgba(255,180,80,.7); background:rgba(255,190,90,.28)} 100%{box-shadow:inset 0 0 0 1px rgba(255,210,122,.35); background:rgba(255,190,90,.10)}}
+  @keyframes warm{0%{transform:scale(1); color:var(--ink)} 35%{transform:scale(1.26); color:#D9822B; text-shadow:0 0 10px rgba(255,190,90,.9), 0 0 22px rgba(255,170,60,.5)} 100%{transform:scale(1); color:#9A4F12; text-shadow:none}}
+  @keyframes tilewarm{0%{background:#fff} 35%{background:#FFE3A8; box-shadow:0 0 0 2px #F6C76E, 0 0 20px rgba(246,180,80,.75)} 100%{background:#FFF3DC}}
+  body[data-theme=night] .xw-cell.fxw{animation:ignite .8s ease-out both, tileglow .9s ease-out both; z-index:3;}
+  body[data-theme=day] .xw-cell.fxw{animation:warm .8s ease-out both, tilewarm .9s ease-out both; z-index:3;}
+  @keyframes shrink{0%{transform:scale(var(--from))} 100%{transform:scale(1)}}
+  @keyframes rise{0%{transform:translateY(16px); opacity:0} 100%{transform:none; opacity:1}}
+  .xwd-big{font-family:var(--display); font-size:2.2rem; font-weight:600; line-height:1.05; text-align:center; animation:rise .7s cubic-bezier(.2,.8,.2,1) both;}
+  body[data-theme=night] .xwd-big{color:#FFE3B0; text-shadow:0 0 18px rgba(255,190,90,.55);}
+  .xwd-count{font-size:1.15rem; color:var(--muted); text-align:center; animation:rise .7s .12s cubic-bezier(.2,.8,.2,1) both;}
+  .xwd-count b{font-family:var(--display); font-size:1.55rem; color:var(--ink); font-variant-numeric:tabular-nums; display:inline-block; min-width:1.4em;}
+  .xwd .xwd-finish .btn-amber{border-radius:99px; animation:rise .7s .22s cubic-bezier(.2,.8,.2,1) both;}
+  /* the letter you are pressing, shown big above your finger */
+  .keypop{position:fixed; pointer-events:none; z-index:80; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:2.5rem; font-weight:600;
+    border-radius:14px; background:var(--card); color:var(--ink); box-shadow:0 10px 26px rgba(0,0,0,.28);}
+  body[data-theme=night] .keypop{background:#3A3560; box-shadow:0 10px 26px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.12);}
+  /* the first move, taught by doing it: the first square glows and one line says what to do */
+  .xwd-coach{margin:6px 8px 7px; padding:10px 14px; border-radius:14px; font-size:1.06rem; line-height:1.35; background:var(--card); border:1px solid var(--amber); color:var(--ink);}
+  body[data-theme=night] .xwd-coach{background:rgba(255,255,255,.07);}
+  @keyframes ringGlow{0%,100%{box-shadow:0 0 0 3px var(--accent), 0 0 6px rgba(242,179,91,.35)} 50%{box-shadow:0 0 0 3px var(--accent), 0 0 22px rgba(242,179,91,.85)}}
+  .xwd-grid .xw-cell.cursor.ring{animation:ringGlow 1.6s ease-in-out infinite; z-index:2;}
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} .xwd-grid .xw-cell.cursor.ring{animation:none; box-shadow:0 0 0 3px var(--accent);} }
 </style>
 </head>
 <body>
@@ -749,12 +870,43 @@ GAMES.forEach(g=>{ ROUTES[g.id]=g.render; });
 // "Back to games"; the questions and stories have "Go back" beside Next.
 const BACK_SCREENS = new Set(['mode_local_names','remote_start','whoto','tierpick','packpick','review',
   'link','handoff','bridge','themmenu','reply_intro','done']);
+
+/* ===================== NIGHT and DAY (r22) =====================
+   AUTOMATIC (the default) follows the phone's own Light/Dark setting. The switch at the top of
+   the main screens cycles Automatic, Day, Night. Like everything else here, the choice lives only
+   in memory (no browser storage), so the app opens on Automatic again next time. */
+const THEME_LABEL={auto:'Automatic', day:'Day', night:'Night'}, THEME_NEXT={auto:'day', day:'night', night:'auto'};
+let THEME_PREF='auto', SOUND_ON=true;
+const darkMQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+function themeNow(){ return THEME_PREF==='auto' ? (darkMQ.matches?'night':'day') : THEME_PREF; }
+function applyTheme(){ const t=themeNow(); if(document.body.dataset.theme===t) return;
+  document.body.dataset.theme=t;
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', t==='night'?'#1B1836':'#FCF7EE'); }
+// Phones usually switch to dark at sunset while the app sits in the background, so check again on return.
+try{ darkMQ.addEventListener('change',applyTheme); }catch(e){ try{ darkMQ.addListener(applyTheme); }catch(e2){} }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) applyTheme(); });
+window.addEventListener('focus',applyTheme);
+const TOPBAR_SCREENS=new Set(['home','received','themmenu','menu','done']);
+function topbarHTML(back){
+  const sw=TOPBAR_SCREENS.has(S.screen);
+  if(!back && !sw) return '';
+  return `<div class="topbar">${back?`<button class="navback" id="navback" aria-label="Go back">&lsaquo; Back</button>`:''}<span class="sp"></span>
+    ${sw?`<button class="tb-btn" id="tbtheme" aria-label="Screen colors: ${THEME_LABEL[THEME_PREF]}. Tap to change.">${THEME_LABEL[THEME_PREF]}</button>
+    <button class="tb-btn" id="tbsound" aria-label="Sounds are ${SOUND_ON?'on':'off'}. Tap to change.">${SOUND_ON?'Sound on':'Sound off'}</button>`:''}</div>`;
+}
+function wireTopbar(){
+  const nb=document.getElementById('navback'); if(nb) nb.onclick=backClick;
+  const tt=document.getElementById('tbtheme'); if(tt) tt.onclick=()=>{ THEME_PREF=THEME_NEXT[THEME_PREF]; applyTheme();
+    tt.textContent=THEME_LABEL[THEME_PREF]; tt.setAttribute('aria-label',`Screen colors: ${THEME_LABEL[THEME_PREF]}. Tap to change.`); };
+  const ts=document.getElementById('tbsound'); if(ts) ts.onclick=()=>{ SOUND_ON=!SOUND_ON; ts.textContent=SOUND_ON?'Sound on':'Sound off';
+    ts.setAttribute('aria-label',`Sounds are ${SOUND_ON?'on':'off'}. Tap to change.`); if(SOUND_ON) letterTick(); };
+}
 function render(){
+  applyTheme(); skipLift();
   app.setAttribute('data-screen', S.screen); (ROUTES[S.screen]||scrHome)();
-  if(BACK_SCREENS.has(S.screen) && canGoBack()){
-    app.insertAdjacentHTML('afterbegin', `<button class="navback" id="navback" aria-label="Go back">&lsaquo; Back</button>`);
-    document.getElementById('navback').onclick=backClick;
-  }
+  if(document.querySelector('.xwd')) return;   // the phone crossword is full screen with its own top row
+  const bar=topbarHTML(BACK_SCREENS.has(S.screen) && canGoBack());
+  if(bar){ app.insertAdjacentHTML('afterbegin', bar); wireTopbar(); }
 }
 
 /* ===================== SCREENS ===================== */
@@ -1081,15 +1233,19 @@ function scrReceived(){
   // with no name, and local play, fall back.
   const callsMe=S.people['them']&&S.people['them'].callsMe;
   const pillText=callsMe?`For ${esc(callsMe)}`:'A puzzle just for you';
+  // r22 (design research): the first screen says who made this and offers ONE big Start,
+  // which goes straight into the crossword (the discovery game). The menu is one tap away.
+  const xw=GAMES.find(g=>g.id==='crossword'), n=answeredCount('them');
+  const canXw=xw&&xw.canPlay('them');
   app.innerHTML=`
-    <div class="center" style="margin:14px 0 10px">
-      <div class="pill pill-amber">${pillText}</div>
-      <h1 style="margin-top:14px">Get to know ${them}</h1>
-      <p class="lead" style="max-width:560px;margin:14px auto 0">
-        ${them} answered some questions about their life. Play a game or two and you'll learn the answers,
-        one warm little discovery at a time.</p></div>
-    <div class="card stack"><button class="btn-teal" id="play">Get to know ${them}</button></div>`;
-  document.getElementById('play').onclick=()=>go('themmenu');
+    <div class="welcome-r">
+      <div class="for">${pillText}</div>
+      <h1>${esc(them)} made this game for you.</h1>
+      <p class="lead">${esc(them)} answered ${n} questions about their life. ${canXw?'Solve the crossword to find out what they said.':'Play a game to find out what they said.'}</p>
+      <button class="btn-teal start" id="play">Start</button>
+      <button class="quiet" id="allgames">See all the games</button></div>`;
+  document.getElementById('play').onclick=()=>{ if(canXw){ resetGames(); S.game={type:'crossword',target:'them'}; go('crossword'); } else go('themmenu'); };
+  document.getElementById('allgames').onclick=()=>go('themmenu');
 }
 
 function gameButtons(p,color){
@@ -1521,7 +1677,10 @@ function xwRecompute(){ const now=new Set();
 // Some phone keyboards hand over several letters in one go (fast typing, a suggestion
 // tapped): place every one of them, in order, and stop if the puzzle gets finished.
 function xwTypeAll(p,v){ for(const ch of v.toUpperCase()){ if(!XW||!XW.sel||(XW.solved.size===XW.data.placed.length)) break; xwLetter(p,ch); } }
-function xwLetter(p,ch){ if(!XW.sel) return; XW.entry.set(xwKey(XW.sel.r,XW.sel.c),ch); xwRecompute(); xwAdvance(); renderCrossword(p); }
+function xwLetter(p,ch){ if(!XW.sel) return; const k=xwKey(XW.sel.r,XW.sel.c); XW.entry.set(k,ch); XW.typed=true; XW.justTyped=k;
+  xwRecompute(); xwAdvance();
+  if(XW.just.length) vib(XW.solved.size===XW.data.placed.length?[20,60,30]:18); else letterTick();
+  renderCrossword(p); }
 function xwBackspace(p){ if(!XW.sel) return; const k=xwKey(XW.sel.r,XW.sel.c);
   if(XW.entry.get(k)){ XW.entry.delete(k); }
   else { const aw=xwActiveWord(); if(aw){ const i=aw.cells.findIndex(([r,c])=>r===XW.sel.r&&c===XW.sel.c);
@@ -1560,6 +1719,151 @@ function xwPhonePick(r,c){
 function xwFlip(){ if(!XW.sel) return; const aw=xwPhoneWord();
   const x=XW.data.placed.find(pl=>pl!==aw&&pl.cells.some(([a,b])=>a===XW.sel.r&&b===XW.sel.c));
   if(x) XW.sel={r:XW.sel.r, c:XW.sel.c, dir:x.dir}; }
+
+/* ===================== FEEL (r22, from the design research) =====================
+   Three sizes of "well done": a letter gets a tiny pop and a soft low tock; a word lifts off its
+   squares; the finish lights the whole puzzle. Sounds are warm and low (ageing ears lose the high
+   notes first) and an iPhone's silent switch quiets them. Android phones also give a small buzz.
+   Everything big can be skipped with any tap, and the phone's Reduce Motion setting swaps the
+   moving parts for a still fade. */
+const isReduced=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+const theme=()=>document.body.dataset.theme==='night'?'night':'day';
+const rnd=(a,b)=>a+Math.random()*(b-a);
+let _ac=null;
+function ac(){ if(!SOUND_ON) return null; try{ _ac=_ac||new (window.AudioContext||window.webkitAudioContext)(); if(_ac.state==='suspended') _ac.resume(); return _ac; }catch(e){ return null; } }
+function note(f,at,dur,vol,type){ const a=ac(); if(!a) return; const t=a.currentTime+0.02+at, o=a.createOscillator(), g=a.createGain();
+  o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.05); }
+const SCALE=[0,2,4,7,9,12,14,16,19,21,24,26];
+function ticks(n,start,gap){ const base=theme()==='night'?294:330; for(let i=0;i<n;i++) note(base*Math.pow(2,SCALE[Math.min(i,SCALE.length-1)]/12)*rnd(.99,1.01), start+i*gap, .14, .08); }
+function letterTick(){ note((theme()==='night'?220:262)*rnd(.97,1.03),0,.08,.06,'triangle'); vib(8); }
+function bellWord(at){ const b=theme()==='night'?440:523; [[b,0,.9,.14],[b*1.335,.1,1.3,.12]].forEach(([f,t,d,v])=>{ note(f,at+t,d,v); note(f*2,at+t,d*.6,v*.2); }); }
+function bellFinish(at){ const b=theme()==='night'?294:330; [[b,0],[b*1.26,.14],[b*1.5,.28],[b*2,.44]].forEach(([f,t],i)=>{ note(f,at+t,i===3?2.2:1,.13); note(f*2,at+t,.7,.03); }); }
+function vib(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+
+// Light particles on a canvas laid over the screen. Positions come from the clock, never the frame
+// count, so a slow phone never plays the moment in slow motion.
+let _fx=null, _cv=null, _cx=null, _parts=[], _running=false; const _sprites={};
+function fxLayer(){ if(_fx&&_fx.isConnected) return _fx;
+  _fx=document.createElement('div'); _fx.id='fx'; document.body.appendChild(_fx);
+  _cv=document.createElement('canvas'); _cv.id='fxc'; document.body.appendChild(_cv); _cx=_cv.getContext('2d'); fxFit(); return _fx; }
+function fxFit(){ if(!_cv) return; const d=Math.min(2,window.devicePixelRatio||1); _cv.width=innerWidth*d; _cv.height=innerHeight*d; _cv.style.width=innerWidth+'px'; _cv.style.height=innerHeight+'px'; _cx.setTransform(d,0,0,d,0,0); }
+window.addEventListener('resize',fxFit);
+function glowSprite(col,core){ core=core||'#fff'; const key=col+core; if(_sprites[key]) return _sprites[key]; const c=document.createElement('canvas'); c.width=c.height=64; const g=c.getContext('2d');
+  const rg=g.createRadialGradient(32,32,0,32,32,32); rg.addColorStop(0,core); rg.addColorStop(.18,col); rg.addColorStop(.45,col+'66'); rg.addColorStop(1,col+'00');
+  g.fillStyle=rg; g.fillRect(0,0,64,64); return _sprites[key]=c; }
+function emit(q){ fxLayer(); q.t0=performance.now()+(q.delay||0)*1000; _parts.push(q); if(!_running){ _running=true; requestAnimationFrame(fxLoop); } }
+function fxLoop(now){ _cx.clearRect(0,0,innerWidth,innerHeight);
+  _parts=_parts.filter(q=>now<q.t0||(now-q.t0)/1000<q.life);
+  for(const q of _parts){ if(now<q.t0) continue; const a=(now-q.t0)/1000, k=q.drag||0, f=k?(1-Math.exp(-k*a))/k:a;
+    let x=q.x+q.vx*f, y=q.y+q.vy*f+0.5*(q.g||0)*a*a; if(q.wob) x+=Math.sin(a*(q.wf||3)+(q.ph||0))*q.wob;
+    const t=a/q.life, fa=q.fadeAt??.6; let al=t>fa?Math.max(0,1-(t-fa)/(1-fa)):1; if(q.fadeIn) al*=Math.min(1,a/q.fadeIn);
+    _cx.globalAlpha=al; if(!q.soft) _cx.globalCompositeOperation='lighter';
+    const sz=q.r*(q.grow?1+a*q.grow:1); _cx.drawImage(q.soft?glowSprite(q.col,q.col):glowSprite(q.col),x-sz,y-sz,sz*2,sz*2); _cx.globalCompositeOperation='source-over'; }
+  _cx.globalAlpha=1;
+  if(_parts.length) requestAnimationFrame(fxLoop); else { _running=false; _cx.clearRect(0,0,innerWidth,innerHeight); } }
+function burst(x,y,n,o){ for(let i=0;i<n;i++){ const ang=rnd(0,6.283), sp=rnd(o.sp[0],o.sp[1]);
+  emit(Object.assign({kind:'glow',x,y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp},o.base,{col:o.cols[i%o.cols.length], r:rnd(o.r[0],o.r[1]), delay:(o.delay||0)+rnd(0,o.jit||0)})); } }
+function fxClear(){ _parts=[]; if(_fx) _fx.innerHTML=''; }
+
+/* The right answer lifts off its own squares: each letter rises into the word, spaced and
+   accented the way the person typed it ("Butter pecan", "Día de Muertos"), holds big enough to
+   read, then drops back in and its square lights up. About 1.4 seconds; any tap skips it, and
+   typing never waits for it (the next clue is already set). */
+let _lift=null;
+function skipLift(){ if(!_lift) return; const L=_lift; _lift=null; L.anims.forEach(a=>{ try{ a.cancel(); }catch(e){} }); L.timers.forEach(clearTimeout);
+  L.holder.remove(); L.plate.remove(); L.cells.forEach(el=>el.classList.remove('lifted')); }
+function liftLetters(pl,p){
+  const raw=String(getAns(p)[pl.q.id]||''), out=[];
+  for(const ch of raw){ if(/\s|-/.test(ch)){ if(out.length&&out[out.length-1]!==' ') out.push(' '); } else if(gridWord(ch).length===1) out.push(ch.toUpperCase()); }
+  while(out[out.length-1]===' ') out.pop();
+  return out.filter(x=>x!==' ').length===pl.cells.length ? out : [...pl.word];
+}
+function liftWord(pl,p,board){
+  const cells=pl.cells.map(([r,c])=>board.querySelector(`.xw-cell[data-r="${r}"][data-c="${c}"]`));
+  if(cells.some(x=>!x)) return 0;
+  const lay=fxLayer(), th=theme(), reduce=isReduced();
+  const B=board.getBoundingClientRect(), ra=cells[0].getBoundingClientRect(), rb=cells[cells.length-1].getBoundingClientRect(), Ry=(ra.top+rb.bottom)/2;
+  const letters=liftLetters(pl,p), n=pl.cells.length, gaps=letters.filter(x=>x===' ').length;
+  const fs=Math.round(Math.max(24,Math.min(48,(innerWidth-56)/(n*0.8+gaps*0.42))));
+  const top = pl.dir==='A' ? Math.max(B.top+fs*1.1, Math.min(Ry-fs*1.9, B.bottom-fs*1.1)) : B.top+B.height*0.42;
+  const holder=document.createElement('div'); holder.className='lift '+th; holder.style.fontSize=fs+'px'; holder.style.top=top+'px';
+  const spans=[]; for(const ch of letters){ const sp=document.createElement('span'); if(ch===' ') sp.className='sp'; else { sp.className='lt'; sp.textContent=ch; spans.push(sp); } holder.appendChild(sp); }
+  lay.appendChild(holder);
+  const hb=holder.getBoundingClientRect(), plate=document.createElement('div'); plate.className='plate '+th;
+  const pw=Math.min(hb.width+fs*1.8, innerWidth-12), pleft=Math.max(6, hb.left+hb.width/2-pw/2);
+  Object.assign(plate.style,{left:pleft+'px', top:(hb.top-fs*0.55)+'px', width:pw+'px', height:(hb.height+fs*1.1)+'px'});
+  lay.insertBefore(plate,holder);
+  const L=_lift={anims:[], timers:[], holder, plate, cells};
+  if(reduce){ // still version for Reduce Motion: the word fades in big where it is, holds, fades out; nothing moves
+    const fade=[{opacity:0},{opacity:1,offset:.15},{opacity:1,offset:.85},{opacity:0}];
+    L.anims.push(holder.animate(fade,{duration:1500,fill:'both'}), plate.animate(fade,{duration:1500,fill:'both'}));
+    bellWord(0.05); L.timers.push(setTimeout(()=>{ if(_lift===L) skipLift(); },1550)); return 1550; }
+  const tileFs=parseFloat(getComputedStyle(cells[0]).fontSize)||16;
+  const from=spans.map((sp,i)=>{ const a=sp.getBoundingClientRect(), t=cells[i].getBoundingClientRect();
+    return `translate(${(t.left+t.width/2)-(a.left+a.width/2)}px, ${(t.top+t.height/2)-(a.top+a.height/2)}px) scale(${(tileFs/fs).toFixed(3)})`; });
+  const up=0.42, st=0.025, hold=0.55, down=0.32, st2=0.02;
+  const holdAt=up+(n-1)*st, backAt=holdAt+hold;
+  L.anims.push(plate.animate([{opacity:0},{opacity:1,offset:.15},{opacity:1,offset:.82},{opacity:0}],{duration:(backAt+0.2)*1000, delay:120, fill:'both', easing:'ease-in-out'}));
+  ticks(n,0,st); bellWord(holdAt-0.05);
+  spans.forEach((sp,i)=>{
+    L.anims.push(sp.animate([{transform:from[i]},{transform:'none'}],{duration:up*1000, delay:i*st*1000, easing:'cubic-bezier(.2,.9,.25,1.12)', fill:'both'}));
+    L.timers.push(setTimeout(()=>{ if(_lift===L) cells[i].classList.add('lifted'); }, i*st*1000+20));
+    const back=sp.animate([{transform:'none', opacity:1},{transform:from[i], opacity:1}],{duration:down*1000, delay:(backAt+i*st2)*1000, easing:'cubic-bezier(.55,0,.8,.4)', fill:'forwards'});
+    L.anims.push(back);
+    back.onfinish=()=>{ sp.style.opacity=0; if(_lift!==L) return; const el=cells[i]; el.classList.remove('lifted'); el.style.animationDelay='0s'; el.classList.add('fxw');
+      const r=el.getBoundingClientRect(); for(let j=0;j<2;j++) emit(th==='night'
+        ? {x:r.left+r.width/2,y:r.top+r.height/2,vx:rnd(-12,12),vy:rnd(-70,-30),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(5,9),col:j?'#FFC46B':'#FFE7A8',life:rnd(1.6,2.4),fadeIn:.15,fadeAt:.45}
+        : {soft:true,x:r.left+r.width/2,y:r.top+r.height/2,vx:rnd(-12,12),vy:rnd(-55,-25),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(6,10),col:j?'#F6B54A':'#FFC98A',life:rnd(1.6,2.4),fadeIn:.15,fadeAt:.45}); };
+  });
+  const total=(backAt+n*st2+down+0.15)*1000;
+  L.timers.push(setTimeout(()=>{ if(_lift===L){ _lift=null; holder.remove(); plate.remove(); } }, total));
+  return total;
+}
+// Any tap anywhere skips a running lift (the screen catches up at once).
+document.addEventListener('pointerdown',()=>skipLift(),true);
+
+// The finish: the whole puzzle shrinks to fit, every square lights up, and Night gets slow
+// fireworks while Day gets a wash of warm light and drifting specks of sun. The count climbs.
+function xwFinishMoment(board,grid,csOld,total){
+  const d=XW.data, me=XW, reduce=isReduced(), th=theme();
+  const H=board.clientHeight-18, Wd=board.clientWidth-16;
+  const fitc=Math.max(12,Math.min(Math.floor((H-(d.rows-1)*2-6)/d.rows),Math.floor((Wd-(d.cols-1)*2-6)/d.cols)));
+  grid.style.gridTemplateColumns=`repeat(${d.cols},${fitc}px)`; grid.style.gridAutoRows=fitc+'px'; grid.style.setProperty('--cs',fitc+'px');
+  grid.querySelectorAll('.xw-num').forEach(n=>n.remove());   // the finished picture drops the clue numbers
+  board.scrollTop=0; board.style.overflow='hidden'; XW.boardTop=0;
+  const cnt=document.getElementById('xwcnt');
+  if(cnt&&!reduce){ const t0=performance.now()+1100;
+    (function tick(){ if(XW!==me||!cnt.isConnected) return; const k=Math.max(0,Math.min(1,(performance.now()-t0)/1000)); cnt.textContent=Math.round(total*(1-Math.pow(1-k,3)));
+      if(k<1) setTimeout(tick,33); })(); }
+  if(reduce){ bellFinish(0); return; }
+  grid.style.transformOrigin='top center'; grid.style.setProperty('--from',(csOld/fitc).toFixed(3)); grid.style.animation='shrink .8s cubic-bezier(.2,.8,.2,1) both';
+  bellFinish(.55);
+  grid.querySelectorAll('.xw-cell').forEach(el=>{ const dd=(+el.dataset.r)+(+el.dataset.c); el.style.animationDelay=(.75+dd*.03)+'s'; el.classList.add('fxw'); });
+  const gr=()=>grid.getBoundingClientRect(), live=()=>XW===me&&grid.isConnected;
+  if(th==='night'){ const cols=['#FFC46B','#FF8FA3','#7FE6D5','#B9A7FF','#FFE7A8'];
+    for(let i=0;i<6;i++){ const at=1.3+i*.55, col=cols[i%cols.length];
+      setTimeout(()=>{ if(!live()) return; const R=gr(), x=R.left+rnd(.15,.85)*R.width, y=R.top+rnd(.12,.55)*R.height;
+        emit({x,y:R.bottom,vx:0,vy:(y-R.bottom)/.55,r:6,col:'#FFE7A8',life:.55,fadeAt:.8});
+        burst(x,y,70,{sp:[60,230],r:[4,8],cols:[col,col,'#FFFFFF'],delay:.55,base:{drag:1.6,g:40,life:2.1,fadeAt:.35}});
+        note(180+rnd(0,60),.55,.35,.06); }, (at-.55)*1000); } }
+  else setTimeout(()=>{ if(!live()) return; const R=gr(), x=R.left+R.width/2, y=R.top+R.height/2;
+    emit({soft:true,x,y,vx:0,vy:0,r:60,grow:2.2,col:'#FFD58A',life:1.6,fadeIn:.3,fadeAt:.35});
+    burst(x,y,60,{sp:[80,260],r:[6,12],cols:['#F6B54A','#FFC98A','#F59E5B','#FFE3A8'],base:{soft:true,drag:1.5,g:-20,life:2.2,fadeAt:.4}});
+    for(let i=0;i<46;i++) emit({soft:true,x:rnd(10,innerWidth-10),y:rnd(-40,innerHeight*.35),vx:rnd(-10,10),vy:rnd(25,60),wob:rnd(10,24),wf:rnd(1,2),ph:rnd(0,6),r:rnd(5,11),col:['#F6B54A','#FFC98A','#F59E5B','#FFE3A8'][i%4],life:rnd(3,4.5),fadeIn:.6,fadeAt:.55,delay:.2+rnd(0,1.4)});
+  }, 1300);
+}
+
+// The letter you are pressing, shown big above your finger.
+let _keyPop=null;
+function xwKeyPreview(kb){
+  const hide=()=>{ if(_keyPop){ _keyPop.remove(); _keyPop=null; } };
+  kb.onpointerdown=e=>{ const b=e.target.closest('button[data-k]'); hide(); if(!b||b.dataset.k==='DEL') return; const r=b.querySelector('span').getBoundingClientRect();
+    const w=Math.max(54,r.width*1.6), h=74; _keyPop=document.createElement('div'); _keyPop.className='keypop'; _keyPop.textContent=b.dataset.k;
+    Object.assign(_keyPop.style,{left:Math.max(4,Math.min(innerWidth-w-4, r.left+r.width/2-w/2))+'px', top:(r.top-h-6)+'px', width:w+'px', height:h+'px'}); document.body.appendChild(_keyPop);
+    window.addEventListener('pointerup',hide,{once:true}); window.addEventListener('pointercancel',hide,{once:true}); };
+  kb.onpointerleave=hide;
+}
 const XWD_KEYS=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
 // iPhones ignore the CSS above for two-finger zoom, so block that gesture while the puzzle is up.
 ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>{ if(document.querySelector('.xwd')) e.preventDefault(); },{passive:false}));
@@ -1568,7 +1872,11 @@ function renderCrosswordDock(p){
   const d=XW.data, done=d.placed.length>0 && XW.solved.size===d.placed.length;
   const aw=done?null:xwPhoneWord();
   XW.holdToken=(XW.holdToken||0)+1;   // any new render cancels a pending scroll-on
-  const nm=getName(p), reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  skipLift(); if(_keyPop){ _keyPop.remove(); _keyPop=null; }
+  const nm=getName(p), reduce=isReduced();
+  const coach=!done && !XW.typed;   // first move, taught by doing it: until the first letter goes in
+  const jt=XW.justTyped; XW.justTyped=null;
+  const csOld=XW.cs||0;
   const W=Math.min(window.innerWidth,600)-16-4;
   const cs=Math.max(18, Math.min(44, Math.floor((W-(d.cols-1)*2)/d.cols)));
   const activeSet=new Set(aw? aw.cells.map(([r,c])=>xwKey(r,c)):[]);
@@ -1576,72 +1884,71 @@ function renderCrosswordDock(p){
   let g='';
   for(let r=0;r<d.rows;r++) for(let c=0;c<d.cols;c++){ const k=xwKey(r,c), cell=d.cells.get(k);
     if(!cell){ g+=`<div class="xw-block"></div>`; continue; }
-    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(!done&&XW.sel.r===r&&XW.sel.c===c) cls.push('cursor'); if(solvedCell(r,c)) cls.push('xwd-solved');
+    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(!done&&XW.sel.r===r&&XW.sel.c===c){ cls.push('cursor'); if(coach) cls.push('ring'); } if(solvedCell(r,c)) cls.push('xwd-solved');
+    if(k===jt&&!reduce&&!(XW.just&&XW.just.length)) cls.push('pop');
     g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}">${cell.num?`<span class="xw-num">${cell.num}</span>`:''}<span class="xw-let">${XW.entry.get(k)||''}</span></div>`; }
   // A word just solved: show its talk prompt (the conversation is the point) until they act again.
   if(XW.just&&XW.just.length){ XW.talkQ=d.placed[XW.just[XW.just.length-1]].q; XW.talkLead=talkLead(); }
   const talk = !done&&XW.talkQ ? `<div class="reveal xwd-talk"><div class="label">You got it</div><div class="talk"><b>${XW.talkLead}:</b> ${XW.talkQ.talk}</div></div>` : '';
   const quizGame=GAMES.find(g2=>g2.id==='quiz'), canQuiz=done&&quizGame&&quizGame.canPlay(p);
+  const total=d.placed.length, finishFresh=done&&!XW.finished;
   const dock = done
     ? `<div class="xwd-finish">
-         <div class="xwd-done"><b>You did it!</b> Every answer worked out. That is the whole of ${esc(nm)} in one little grid.</div>
+         <div class="xwd-big">You know ${esc(nm)}.</div>
+         <div class="xwd-count">You found <b id="xwcnt">${finishFresh&&!reduce?0:total}</b> things about ${esc(nm)}.</div>
          ${canQuiz?`<button class="btn-amber" id="toquiz">Now, how well were you listening?</button>`:''}
          <div class="xwd-finrow"><button class="xwd-link" id="savepic">Save as a picture</button><button class="xwd-link" id="keep">Keep all our answers</button></div>
        </div>`
     : `${talk}
-       <div class="xwd-hintrow"><button class="xwd-link" id="xwhint">Show me a letter</button></div>
+       ${coach?'<div class="xwd-coach">Tap the letters below to fill in the gold squares. One letter in each square.</div>':'<div class="xwd-hintrow"><button class="xwd-link" id="xwhint">Show me a letter</button></div>'}
        <div class="xwd-clue"><button class="xwd-arrow" id="xwprev" aria-label="Previous clue">&lsaquo;</button>
          <div class="xwd-q" id="xwflip"><span class="xwd-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${aw.cells.length} letters</span>${esc((CROSSWORD_CLUES[aw.q.id]||aw.q.reveal||aw.q.label).replace(/\{n\}/g,nm))}</div>
          <button class="xwd-arrow" id="xwnext" aria-label="Next clue">&rsaquo;</button></div>
-       <div class="xwd-kb">${XWD_KEYS.map((row,i)=>`<div class="xwd-row">${[...row].map(ch=>`<button data-k="${ch}">${ch}</button>`).join('')}${i===2?'<button class="xwd-del" data-k="DEL" aria-label="Delete a letter">&#9003;</button>':''}</div>`).join('')}</div>`;
+       <div class="xwd-kb">${XWD_KEYS.map((row,i)=>`<div class="xwd-row">${[...row].map(ch=>`<button data-k="${ch}"><span>${ch}</span></button>`).join('')}${i===2?'<button class="xwd-del" data-k="DEL" aria-label="Delete a letter"><span>&#9003;</span></button>':''}</div>`).join('')}</div>`;
   app.innerHTML=`<div class="xwd">
     <div class="xwd-top"><button class="xwd-link" id="back">&lsaquo; Back to games</button><span class="xwd-who">Get to know ${esc(nm)}</span></div>
     <div class="xwd-board" id="xwboard"><div class="xw-grid xwd-grid${done?' solved':''}" style="grid-template-columns:repeat(${d.cols},${cs}px); grid-auto-rows:${cs}px; --cs:${cs}px">${g}</div></div>
     <div class="xwd-dock">${dock}</div></div>`;
-  const grid=app.querySelector('.xwd-grid'), board=document.getElementById('xwboard');
+  const grid=app.querySelector('.xwd-grid'), board=document.getElementById('xwboard'); XW.cs=cs;
   // Keep the word in view: scroll the PUZZLE (never the page) from where it was, so it glides.
   const hold = !done&&XW.just&&XW.just.length ? d.placed[XW.just[XW.just.length-1]] : null;
   const focusW = hold||aw;
   if(XW.boardTop!=null) board.scrollTop=XW.boardTop;
   if(focusW){ const rs=focusW.cells.map(x=>x[0]), mid=(Math.min(...rs)+Math.max(...rs)+1)/2*(cs+2)+6;
     const target=Math.max(0, Math.min(mid-board.clientHeight/2, board.scrollHeight-board.clientHeight));
-    board.scrollTo({top:target, behavior:reduce?'auto':'smooth'}); XW.boardTop=target; }
+    board.scrollTo({top:target, behavior:(reduce||hold)?'auto':'smooth'}); XW.boardTop=target; }   // a solved word jumps into place so it can lift from where it sits
   board.onscroll=()=>{ XW.boardTop=board.scrollTop; };
-  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; resetGames(); gameBack(p); };
+  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; fxClear(); resetGames(); gameBack(p); };
   if(done){
     document.getElementById('savepic').onclick=()=>exportCrossword(p);
     document.getElementById('keep').onclick=()=>{ xwUnbindKeys(); XW=null; go('done'); };
     const tq=document.getElementById('toquiz');
     if(tq) tq.onclick=()=>{ xwUnbindKeys(); XW=null; QZ=null; S.game={type:'quiz',target:p}; go('quiz'); };
     xwUnbindKeys();
-    const finalWords=(XW.just||[]).slice(); XW.just=[];
-    setTimeout(()=>{ if(!grid.isConnected) return; addSparkles(board); if(reduce) return;
-      grid.querySelectorAll('.xw-cell').forEach(el=>{ const d2=(+el.dataset.r)+(+el.dataset.c); el.style.animationDelay=(90+d2*45)+'ms'; el.classList.add('xw-wave'); });
-      finalWords.forEach(idx=>{ const cells=d.placed[idx].cells, [lr,lc]=cells[cells.length-1];
-        const el=grid.querySelector(`.xw-cell[data-r="${lr}"][data-c="${lc}"]`);
-        if(el) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, 90+(lr+lc)*45+150); });
-    },60);
+    XW.just=[];
+    if(finishFresh){ XW.finished=true; xwFinishMoment(board,grid,csOld||cs,total); }
+    else { // a later redraw of the finished puzzle: the same fitted picture, no replay
+      const H=board.clientHeight-18, Wd=board.clientWidth-16, fitc=Math.max(12,Math.min(Math.floor((H-(d.rows-1)*2-6)/d.rows),Math.floor((Wd-(d.cols-1)*2-6)/d.cols)));
+      grid.style.gridTemplateColumns=`repeat(${d.cols},${fitc}px)`; grid.style.gridAutoRows=fitc+'px'; grid.style.setProperty('--cs',fitc+'px');
+      grid.querySelectorAll('.xw-num').forEach(n=>n.remove()); board.scrollTop=0; board.style.overflow='hidden'; }
     return;
   }
   // Every tap clears the last talk prompt, then acts.
   const act=fn=>()=>{ XW.talkQ=null; fn(); };
   app.querySelectorAll('.xwd-grid .xw-cell').forEach(el=> el.onclick=act(()=>{ xwPhonePick(+el.dataset.r,+el.dataset.c); renderCrossword(p); }));
   app.querySelectorAll('.xwd-kb button').forEach(b=> b.onclick=act(()=>{ const k=b.dataset.k; if(k==='DEL') xwBackspace(p); else xwLetter(p,k); }));
-  document.getElementById('xwhint').onclick=act(()=>xwHint(p));
+  const hb=document.getElementById('xwhint'); if(hb) hb.onclick=act(()=>xwHint(p));
+  xwKeyPreview(app.querySelector('.xwd-kb'));
   document.getElementById('xwprev').onclick=act(()=>xwArrow(p,-1));
   document.getElementById('xwnext').onclick=act(()=>xwArrow(p,1));
   document.getElementById('xwflip').onclick=act(()=>{ xwFlip(); renderCrossword(p); });
   if(hold){
-    const idxs=XW.just.slice(); XW.just=[];
-    idxs.forEach(idx=>{ const cells=d.placed[idx].cells, lastI=cells.length-1, cls=d.placed[idx].dir==='D'?'xw-snake':'xw-wave';
-      cells.forEach(([r,c],i)=>{ const el=grid.querySelector(`.xw-cell[data-r="${r}"][data-c="${c}"]`); if(!el) return;
-        if(reduce){ if(i===lastI) celebrate(null,el); return; }
-        el.style.animationDelay=(300+i*65)+'ms'; el.classList.add(cls);   // starts once the scroll has landed
-        if(i===lastI) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, 300+i*65+150); });
-    });
-    // After the celebration, glide on to the next clue (unless they have already moved on).
+    XW.just=[];
+    // The answer lifts off its squares. The next clue is already chosen, so typing never waits;
+    // when the lift ends (or on the next tap) the view glides on to it.
+    const ms=liftWord(hold,p,board)||1200;
     const token=XW.holdToken, me=XW;
-    setTimeout(()=>{ if(XW===me && XW.holdToken===token && S.screen==='crossword' && XW.solved.size<XW.data.placed.length) renderCrossword(p); }, 300+hold.cells.length*65+1700);
+    setTimeout(()=>{ if(XW===me && XW.holdToken===token && S.screen==='crossword' && XW.solved.size<XW.data.placed.length) renderCrossword(p); }, ms+60);
   }
 }
 function renderCrossword(p){
@@ -1951,6 +2258,7 @@ function exportCrossword(p){
   const a=document.createElement('a'); a.download=(nm.replace(/[^a-z0-9]+/gi,'-')||'puzzle')+'-crossword.png'; a.href=cv.toDataURL('image/png'); a.click();
 }
 
+applyTheme();
 render();
 </script>
 <script>
