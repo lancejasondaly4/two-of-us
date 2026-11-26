@@ -1,7 +1,7 @@
 {
   "name": "Two of Us",
   "short_name": "Two of Us",
-  "description": "A gentle two-person game. Answer warm questions about your life, and they become a puzzle for someone you love to solve, and a reason to talk.",
+  "description": "A crossword made from your life, for someone you love.",
   "id": "/",
   "start_url": "./",
   "scope": "./",
