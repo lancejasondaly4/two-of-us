@@ -19,7 +19,7 @@
 <style>
   :root{
     --linen:#F7F2E9; --card:#FFFDF8; --ink:#2A2622; --muted:#6E655B;
-    --teal:#1F5A5A; --teal-soft:#E4EEEC; --rose:#A65A52; --rose-soft:#F2E6E3;
+    --teal:#1F5A5A; --teal-soft:#E4EEEC;
     --amber:#D99B2B; --amber-soft:#FBEFD6; --line:#E5DCCB;
     --display:"Fraunces", Georgia, serif; --body:"Atkinson Hyperlegible", system-ui, sans-serif;
   }
@@ -52,7 +52,6 @@
     border:0; background:none; color:var(--teal); font-size:1.15rem; box-shadow:none;}
   .navback:hover{transform:none; text-decoration:underline; text-underline-offset:4px;}
   .btn-teal{background:var(--teal); border-color:var(--teal); color:#fff;}
-  .btn-rose{background:var(--rose); border-color:var(--rose); color:#fff;}
   .btn-amber{background:var(--amber); border-color:var(--amber); color:#3a2c08;}
   .btn-row{display:flex; gap:14px; flex-wrap:wrap;} .btn-row > *{flex:1; min-width:200px;}
   /* Game menu buttons carry a plain line saying what you actually do. */
@@ -65,10 +64,10 @@
   .eyebrow{font-size:.95rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);}
   .center{text-align:center;}
   .pill{display:inline-block; padding:6px 16px; border-radius:999px; font-weight:700; font-size:1rem;}
-  .pill-teal{background:var(--teal-soft); color:var(--teal);} .pill-rose{background:var(--rose-soft); color:var(--rose);}
+  .pill-teal{background:var(--teal-soft); color:var(--teal);}
   .pill-amber{background:var(--amber-soft); color:#8a5a00;}
   .dots{display:flex; gap:8px; justify-content:center; margin:10px 0 4px;}
-  .dot{width:11px; height:11px; border-radius:50%; background:var(--line);} .dot.on{background:var(--teal);} .dot.on.rose{background:var(--rose);}
+  .dot{width:11px; height:11px; border-radius:50%; background:var(--line);} .dot.on{background:var(--teal);}
   .steps{display:grid; gap:14px;} .step{display:flex; gap:16px; align-items:flex-start;}
   .step .n{font-family:var(--display); font-size:1.5rem; color:var(--amber); min-width:34px;}
   .reveal{border:2px solid var(--amber); background:var(--amber-soft); border-radius:18px; padding:22px 24px;}
@@ -228,12 +227,12 @@
      also offers Day or Night; the choice lasts until the app is closed (nothing is stored). */
   body[data-theme=day]{
     --linen:#FCF7EE; --card:#FFFFFF; --ink:#241F3E; --muted:#6B6580;
-    --teal:#3B3670; --teal-soft:#ECEAF6; --rose:#A65A52; --rose-soft:#F6E7E3;
+    --teal:#3B3670; --teal-soft:#ECEAF6;
     --amber:#E9A445; --amber-soft:#FFF0D4; --line:#EADFCB; --accent:#A8591A; --field:#FFFFFF;
     --bg:radial-gradient(120% 50% at 50% -5%, #FFE9C4 0, rgba(255,233,196,0) 70%), linear-gradient(180deg,#FCF7EE 0%,#F8F0E2 60%,#F4E9D8 100%);}
   body[data-theme=night]{
     --linen:#1B1836; --card:#272350; --ink:#F3E8D2; --muted:#B3ADCF;
-    --teal:#F2B35B; --teal-soft:rgba(242,179,91,.16); --rose:#F2A196; --rose-soft:rgba(242,161,150,.16);
+    --teal:#F2B35B; --teal-soft:rgba(242,179,91,.16);
     --amber:#F2B35B; --amber-soft:rgba(242,179,91,.13); --line:rgba(255,255,255,.14); --accent:#F2B35B; --field:rgba(255,255,255,.06);
     --bg:radial-gradient(120% 50% at 50% 0%, #2A2552 0, rgba(42,37,82,0) 70%), linear-gradient(180deg,#151933 0%,#1B1836 55%,#261C3B 100%);}
   body[data-theme]{background:var(--bg); background-color:var(--linen); min-height:100vh;}
@@ -249,7 +248,6 @@
   body[data-theme=night] .btn-teal, body[data-theme=night] .btn-amber, body[data-theme=day] .btn-amber{
     background:linear-gradient(180deg,#F6C277,#E9A445); border-color:#E9A445; color:#1A1630; box-shadow:0 0 22px rgba(242,179,91,.28);}
   body[data-theme=day] .btn-amber{color:#241F3E; box-shadow:0 8px 20px rgba(233,164,69,.32);}
-  body[data-theme=night] .btn-rose{color:#1A1630;}
   body[data-theme=night] .btn-ghost{border-color:rgba(255,255,255,.30);}
   body[data-theme=night] .share-way .num{color:#1A1630;}
   body[data-theme] #opts button.btn-teal:disabled{opacity:1;}   /* the right quiz answer stays bright after a pick */
@@ -649,7 +647,7 @@ function paintSpell(el){ const text=el.textContent, off=caretOffset(el); let htm
 
 /* ===================== STATE ===================== */
 let S={screen:'home', people:{}, iv:null, qi:0, si:0, pack:null, qlist:[], slist:[], game:null, link:null,
-       outConsent:true, myAgree:false, agree:{p1:false,p2:false}};
+       outConsent:true, myAgree:false};
 const app=document.getElementById('app');
 const getName=id=>(S.people[id]&&S.people[id].name)||'A friend';
 // The name as typed, for refilling a field when someone comes back to it (blank if it was the default).
@@ -665,7 +663,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',
    Inside the questions, back steps one question at a time.
    The game menus are HUBS: arriving at one resets the trail, so Back from a
    menu never walks you back into a half-played game. */
-const HUB_PARENT = { home:null, menu:null, themmenu:'received' };
+const HUB_PARENT = { home:null, themmenu:'received' };
 function snap(){ return {screen:S.screen, qi:S.qi, si:S.si, iv:S.iv, qlist:S.qlist, slist:S.slist}; }
 function pushNav(){ try{ history.pushState({tou:1}, ''); }catch(e){} }
 function go(s){
@@ -688,7 +686,7 @@ function canGoBack(){
 function goBack(){
   // From inside any game, back always means the game menu (same as "Back to games").
   if(isGameScreen()){
-    const hub = S.game&&S.game.target==='them' ? 'themmenu' : 'menu';
+    const hub = 'themmenu';
     S.hist = HUB_PARENT[hub] ? [{...snap(), screen:HUB_PARENT[hub]}] : [];
     S.screen=hub; render(); window.scrollTo(0,0); return;
   }
@@ -843,7 +841,7 @@ function buildCrossword(entries, opts){
      blurb   one plain line saying what you actually do (always shown)
      featured  the one coloured/top button (else ghost)
      kind    'game' = a playable game; 'stories' = the conversation surface
-     canPlay(p)  enough of person p's data to offer it?  (p is 'p1'|'p2'|'them')
+     canPlay(p)  enough of person p's data to offer it?  (p is 'them')
      render  the scr* function
      reset   null out its module state (called by resetGames)
 
@@ -867,15 +865,15 @@ const GAMES = [
     canPlay:p=>STORIES.some(s=>getStories(p)[s.id]), render:scrStoryView,  reset:()=>{} },
 ];
 const ROUTES = {
-  home:scrHome, mode_local_names:scrLocalNames, whoto:scrWhoTo, tierpick:scrTierPick, packpick:scrPackPick, interview:scrInterview,
-  story:scrStory, handoff:scrHandoff, bridge:scrBridge, menu:scrMenu, themmenu:scrThemMenu,
+  home:scrHome, whoto:scrWhoTo, tierpick:scrTierPick, packpick:scrPackPick, interview:scrInterview,
+  story:scrStory, themmenu:scrThemMenu,
   done:scrDone, remote_start:scrRemoteStart, link:scrLink, received:scrReceived, reply_intro:scrReplyIntro, review:scrReview
 };
 GAMES.forEach(g=>{ ROUTES[g.id]=g.render; });
 // Setup and in-between screens get a top-left Back. Games keep their own
 // "Back to games"; the questions and stories have "Go back" beside Next.
-const BACK_SCREENS = new Set(['mode_local_names','remote_start','whoto','tierpick','packpick','review',
-  'link','handoff','bridge','themmenu','reply_intro','done']);
+const BACK_SCREENS = new Set(['remote_start','whoto','tierpick','packpick','review',
+  'link','themmenu','reply_intro','done']);
 
 /* ===================== NIGHT and DAY (r22) =====================
    AUTOMATIC (the default) follows the phone's own Light/Dark setting. The switch at the top of
@@ -892,7 +890,7 @@ function applyTheme(){ const t=themeNow(); if(document.body.dataset.theme===t) r
 try{ darkMQ.addEventListener('change',applyTheme); }catch(e){ try{ darkMQ.addListener(applyTheme); }catch(e2){} }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) applyTheme(); });
 window.addEventListener('focus',applyTheme);
-const TOPBAR_SCREENS=new Set(['home','received','themmenu','menu','done']);
+const TOPBAR_SCREENS=new Set(['home','received','themmenu','done']);
 function topbarHTML(back){
   const sw=TOPBAR_SCREENS.has(S.screen);
   if(!back && !sw) return '';
@@ -925,8 +923,8 @@ function scrHome(){
     return scrReceived();
   }
   // r23 (Lance: "too much to read"): the bare minimum of direction on every setup screen.
-  // r24: the play-together-on-one-phone option is gone from home (Lance: "i doubt that's how the game
-  // will ever be played"). Its screens (mode_local_names, handoff, bridge, scrMenu) are unreachable now.
+  // r24: the play-together-on-one-phone mode is gone, code and all (Lance: "i doubt that's how the
+  // game will ever be played"). The app is only ever: make one and send it, or receive one.
   app.innerHTML=`
     <div class="center" style="margin:14px 0 28px">
       <h1>Two of Us</h1>
@@ -937,30 +935,10 @@ function scrHome(){
   document.getElementById('remote').onclick=()=>go('remote_start');
 }
 
-function scrLocalNames(){
-  app.innerHTML=`
-    <div class="center" style="margin:10px 0 22px"><h2>Who's playing?</h2></div>
-    <div class="card stack">
-      <div><div class="pill pill-teal" style="margin-bottom:8px">First player</div>
-        <input id="n1" type="text" placeholder="First name" value="${esc(typedName('p1','Player 1'))}"></div>
-      <div><div class="pill pill-rose" style="margin-bottom:8px">Second player</div>
-        <input id="n2" type="text" placeholder="First name" value="${esc(typedName('p2','Player 2'))}"></div>
-      <button class="btn-teal" id="go">Start</button></div>`;
-  document.getElementById('go').onclick=()=>{
-    // Came back here to fix a name? Keep everything already answered.
-    const keep=(id,n)=>S.people[id]?Object.assign(S.people[id],{name:n}):{name:n,answers:{},stories:{}};
-    S.people={p1:keep('p1',document.getElementById('n1').value.trim()||'Player 1'),
-              p2:keep('p2',document.getElementById('n2').value.trim()||'Player 2')};
-    S.iv={slot:'p1',color:'teal',next:'handoff'}; go('whoto');
-  };
-}
-
 function scrTierPick(){
-  const slot=S.iv.slot, color=S.iv.color, name=getName(slot);
   const cards=Object.entries(TIERS).map(([id,t])=>`<button class="btn-ghost" data-tier="${id}">${t.btn}</button>`).join('');
   app.innerHTML=`
     <div class="center" style="margin:10px 0 20px">
-      ${slot==='me'?'':`<div class="pill pill-${color}" style="margin-bottom:10px">${name}</div>`}
       <h2>How old are you?</h2></div>
     <div class="choices">${cards}</div>`;
   app.querySelectorAll('button[data-tier]').forEach(b=>b.onclick=()=>chooseTier(b.dataset.tier));
@@ -968,22 +946,18 @@ function scrTierPick(){
 /* Who you are sharing with. Remote asks for a NAME too (whatever they call them:
    "Gramps", "Bruce", a nickname, it does not matter) because it is the only thing
    the sender ever tells us about the receiver, and it becomes the receiver's
-   greeting. Local already collected both names on the name screen, so it only asks
-   the circle. The circle is SYMMETRIC (if I am your family, you are mine), so it is
-   asked ONCE per game: p2 inherits p1's, and a reply inherits the sender's. */
+   greeting. The circle is SYMMETRIC (if I am your family, you are mine), so a reply
+   inherits the sender's. */
 function scrWhoTo(){
-  const slot=S.iv.slot, color=S.iv.color, name=getName(slot);
-  const remote = S.iv.next==='link';
+  const slot=S.iv.slot;
   const known = (S.people[slot]&&S.people[slot].toName)     // typed already, then came back
-    || (remote && S.people['them'] ? getName('them') : '');  // a reply: we already know who it goes back to
+    || (S.people['them'] ? getName('them') : '');  // a reply: we already know who it goes back to
   const circles=CIRCLES.map(c=>`<button class="btn-ghost" data-circle="${c.id}">${c.label}</button>`).join('');
-  // Remote: their name says hello when they open it ("For Gramps"). Local already has both names.
-  app.innerHTML = remote ? `
+  // Their name says hello when they open it ("For Gramps").
+  app.innerHTML = `
     <div class="center" style="margin:10px 0 18px"><h2>Who's it for?</h2></div>
     <input id="toname" type="text" placeholder="What you call them" value="${esc(known)}" autocapitalize="words" enterkeyhint="done" aria-label="What you call them">
     <h3 style="margin:26px 0 12px">How do you know them?</h3>
-    <div class="choices">${circles}</div>` : `
-    <div class="center" style="margin:10px 0 20px"><h2>How do you know each other?</h2></div>
     <div class="choices">${circles}</div>`;
   app.querySelectorAll('button[data-circle]').forEach(b=>b.onclick=()=>chooseCircle(b.dataset.circle));
 }
@@ -1049,10 +1023,9 @@ function scrRemoteStart(){
 
 function scrInterview(){
   const slot=S.iv.slot, color=S.iv.color, list=S.qlist, q=list[S.qi];
-  const dots=list.map((_,i)=>`<span class="dot ${i<=S.qi?'on':''} ${color==='rose'?'rose':''}"></span>`).join('');
+  const dots=list.map((_,i)=>`<span class="dot ${i<=S.qi?'on':''}"></span>`).join('');
   app.innerHTML=`
     <div class="center" style="margin:0 0 12px">
-      ${slot==='me'?'':`<div class="pill pill-${color}" style="margin-bottom:10px">${getName(slot)}</div>`}
       <div class="dots">${dots}</div>
       <p class="hint" style="margin:2px 0 0">${S.qi+1} of ${list.length}</p></div>
     <div class="card stack">
@@ -1074,7 +1047,6 @@ function scrStory(){
   if(!S.people[slot].stories)S.people[slot].stories={};
   app.innerHTML=`
     <div class="center" style="margin:0 0 12px">
-      ${slot==='me'?'':`<div class="pill pill-${color}" style="margin-bottom:10px">${getName(slot)}</div>`}
       <p class="hint" style="margin:0">A story, if you like. ${S.si+1} of ${list.length}</p></div>
     <div class="card stack">
       <h2>${s.ask}</h2>
@@ -1091,9 +1063,7 @@ function scrStory(){
 function advanceStory(){ if(S.si<S.slist.length-1){S.si++;stepForward();} else go('review'); }
 function finishInterview(){
   const next=S.iv.next;
-  if(next==='handoff')go('handoff');
-  else if(next==='bridge')go('bridge');
-  else if(next==='link'){S.link=makeLink();go('link');}
+  if(next==='link'){S.link=makeLink();go('link');}
 }
 // A quick "look these over" pass before the puzzle is built, so a typo
 // (e.g. "Saturnn") can be fixed at the source. Every answer is editable inline.
@@ -1106,7 +1076,6 @@ function scrReview(){
     </label>`).join('');
   app.innerHTML=`
     <div class="center" style="margin:10px 0 14px">
-      ${slot==='me'?'':`<div class="pill pill-${color}">${getName(slot)}</div>`}
       <h2 style="margin-top:10px">Any typos?</h2>
       <p class="hint" style="max-width:520px;margin:8px auto 0">Tap an answer to fix it.</p></div>
     <div class="card stack" style="gap:14px">${rows}
@@ -1118,31 +1087,6 @@ function scrReview(){
     el.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } });   // single-line answers
   });
   document.getElementById('done').onclick=()=>finishInterview();
-}
-
-function scrHandoff(){
-  app.innerHTML=`
-    <div class="center" style="margin-top:40px"></div>
-    <div class="card center stack">
-      <div class="eyebrow">Thanks, ${getName('p1')}</div>
-      <h2>Pass the phone to ${getName('p2')}</h2>
-      <button class="btn-rose" id="go">I'm ${getName('p2')}. I'm ready.</button></div>`;
-  // The circle is symmetric, so p2 inherits p1's instead of being asked the same
-  // question again, and their names were both taken on the name screen. Straight to tier.
-  document.getElementById('go').onclick=()=>{
-    const c=S.people['p1']&&S.people['p1'].circle;
-    S.people['p2'].circle=c; S.iv={slot:'p2',color:'rose',next:'bridge',circle:c};
-    go(c?'tierpick':'whoto');
-  };
-}
-function scrBridge(){
-  app.innerHTML=`
-    <div class="center" style="margin-top:30px"></div>
-    <div class="card center stack">
-      <h2>You've both answered.</h2>
-      <p class="lead">Now play each other's puzzles.</p>
-      <button class="btn-amber" id="go">Play</button></div>`;
-  document.getElementById('go').onclick=()=>go('menu');
 }
 
 function scrLink(){
@@ -1228,7 +1172,7 @@ function gameButtons(p,color){
   }).join('');
 }
 function wireGames(){ app.querySelectorAll('button[data-t]').forEach(b=>b.onclick=()=>{S.game={type:b.dataset.t,target:b.dataset.p};go(b.dataset.t);}); }
-function gameBack(p){ p==='them'?go('themmenu'):go('menu'); }
+function gameBack(p){ go('themmenu'); }
 function resetGames(){ GAMES.forEach(g=>{ try{ g.reset(); }catch(e){} }); }
 function appendAllDone(p){
   const r=document.getElementById('reveal'); if(!r)return;
@@ -1236,17 +1180,6 @@ function appendAllDone(p){
       <p style="margin:10px 0 16px">You know ${getName(p)} a little better now.</p>
       <button class="btn-amber" id="another">Pick another game</button></div>`;
   document.getElementById('another').onclick=()=>{resetGames();gameBack(p);};
-}
-function scrMenu(){
-  const col=(p,color)=>`<div class="modecard"><h3>Get to know ${getName(p)}</h3>
-      <div class="stack" style="margin-top:12px">${gameButtons(p,color)}</div></div>`;
-  app.innerHTML=`
-    <div class="center" style="margin:8px 0 18px"><h2>Pick a game</h2>
-      <p class="hint">Start with the crossword.</p></div>
-    <div class="stack">${col('p1','teal')}${col('p2','rose')}</div>
-    <div style="margin-top:22px"><button class="btn-ghost" id="finish">See all our answers</button></div>`;
-  wireGames();
-  document.getElementById('finish').onclick=()=>go('done');
 }
 function scrThemMenu(){
   const them=getName('them');
@@ -2073,9 +2006,8 @@ function scrReplyIntro(){
 }
 
 /* ---------- DONE / KEEPSAKE ---------- */
-function presentSlots(){return ['them','me','p1','p2'].filter(p=>S.people[p]&&(QUESTIONS.some(q=>getAns(p)[q.id])||STORIES.some(s=>getStories(p)[s.id])));}
+function presentSlots(){return ['them','me'].filter(p=>S.people[p]&&(QUESTIONS.some(q=>getAns(p)[q.id])||STORIES.some(s=>getStories(p)[s.id])));}
 function canExport(){
-  if(S.people['p1']&&S.people['p2']) return S.agree.p1&&S.agree.p2;
   return !!(S.people['them']&&S.people['them'].consent&&S.myAgree);
 }
 function renderExport(){
@@ -2101,16 +2033,9 @@ function scrDone(){
       <div class="stack">${cards}${stories}</div></div>`;};
 
   const slots=presentSlots();
-  const isLocal=S.people['p1']&&S.people['p2'];
   let controls;
   if(slots.length<2){
     controls=`<p class="hint center" style="margin:0">A keepsake needs both of you. Once they make one back, you can save it together.</p>`;
-  } else if(isLocal){
-    controls=`
-      <p class="center" style="margin:0 0 12px">Only if you both say yes.</p>
-      <label class="agreebox"><input type="checkbox" id="a1" ${S.agree.p1?'checked':''}><span>${getName('p1')} says yes</span></label>
-      <label class="agreebox"><input type="checkbox" id="a2" ${S.agree.p2?'checked':''}><span>${getName('p2')} says yes</span></label>
-      <div id="exp"></div>`;
   } else if(S.people['them']&&S.people['them'].consent){
     controls=`
       <p class="center" style="margin:0 0 12px"><b>${getName('them')}</b> said yes to a keepsake. Do you?</p>
@@ -2123,15 +2048,13 @@ function scrDone(){
   app.innerHTML=`
     <div class="center" style="margin:10px 0 6px">
       <h1 style="margin-top:8px">What you learned</h1></div>
-    ${block('them','amber')}${block('me','teal')}${block('p1','teal')}${block('p2','rose')}
+    ${block('them','amber')}${block('me','teal')}
     <div class="card stack" style="margin-top:22px"><h3 class="center">Save a keepsake?</h3>${controls}</div>
     <div style="margin-top:20px"><button class="btn-ghost" id="restart">Start over</button></div>`;
 
-  if(document.getElementById('a1')) document.getElementById('a1').onchange=e=>{S.agree.p1=e.target.checked;renderExport();};
-  if(document.getElementById('a2')) document.getElementById('a2').onchange=e=>{S.agree.p2=e.target.checked;renderExport();};
   if(document.getElementById('am')) document.getElementById('am').onchange=e=>{S.myAgree=e.target.checked;renderExport();};
   renderExport();
-  document.getElementById('restart').onclick=()=>{location.hash='';S={screen:'home',people:{},iv:null,qi:0,si:0,pack:null,qlist:[],slist:[],game:null,link:null,outConsent:true,myAgree:false,agree:{p1:false,p2:false}};resetGames();go('home');};
+  document.getElementById('restart').onclick=()=>{location.hash='';S={screen:'home',people:{},iv:null,qi:0,si:0,pack:null,qlist:[],slist:[],game:null,link:null,outConsent:true,myAgree:false};resetGames();go('home');};
 }
 
 function wrapText(ctx,text,maxW,font){
@@ -2141,7 +2064,7 @@ function wrapText(ctx,text,maxW,font){
 }
 function exportKeepsake(){
   const slots=presentSlots();
-  const colors={them:'#D99B2B',me:'#1F5A5A',p1:'#1F5A5A',p2:'#A65A52'};
+  const colors={them:'#D99B2B',me:'#1F5A5A'};
   const W=820, PAD=50, contentW=W-2*PAD-10;
   const cv=document.createElement('canvas'); cv.width=W;
   const x=cv.getContext('2d');
