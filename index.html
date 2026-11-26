@@ -144,6 +144,27 @@
     .xw-cluepanel{min-width:0; max-width:none;}
   }
   .xw-msg{margin:8px 0 0;}
+  /* phone crossword (layout B): big boxes under the question, the whole grid as a map */
+  .xwp-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 10px 10px; margin:0 -8px;}
+  .xwp-card .xwp-tag, .xwp-card .xwp-q{padding:0 4px;}
+  .xwp-tag{font-size:.9rem; color:var(--muted); font-weight:700;}
+  .xwp-q{font-family:var(--display); font-size:1.45rem; line-height:1.25; margin:4px 0 14px;}
+  .xwp-strip{display:flex; gap:3px; justify-content:center;}
+  .xwp-box{border:2px solid var(--gridline,#A9C4BE); background:#FBF4E4; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-weight:700; text-transform:uppercase; cursor:pointer; line-height:1;}
+  .xwp-box.cur{background:var(--amber); border-color:var(--amber);}
+  .xwp-box.cross{color:var(--teal);}
+  .xwp-hintrow{display:flex; justify-content:center; margin-top:14px;}
+  .xwp-hint{font-size:1.02rem; min-height:44px; padding:10px 20px;}
+  .xwp-nav{display:flex; justify-content:space-between; margin-top:8px;}
+  .xwp-nav button{width:auto; min-height:44px; border:0; background:none; box-shadow:none; color:var(--teal); font-weight:700; font-size:1rem; padding:8px 4px; font-family:var(--body); cursor:pointer;}
+  .xwp-maplabel{font-size:.88rem; color:var(--muted); text-align:center; margin:14px 0 6px;}
+  .xwp-map{display:flex; justify-content:center;}
+  .xwp-grid{width:auto; gap:2px; border-width:2px;}
+  .xwp-grid .xw-cell{font-size:calc(var(--cs)*0.62); border-radius:2px;}
+  .xwp-grid .xw-cell.xwp-solved{color:var(--teal);}
+  .xwp-grid .xw-cell.active{background:#F2D49A;}
+  .xwp-grid .xw-cell.cursor{background:var(--amber);}
   .xw-cluebar{display:flex; align-items:stretch; margin:10px 0 8px; border-radius:10px; overflow:hidden; border:1px solid #b9d4ef; background:#dce9f7;}
   .xw-arrow{flex:0 0 auto; width:46px; min-height:0; padding:0; border:0; border-radius:0; background:#cdddf0; color:#11406b;
     font-size:1.7rem; line-height:1; font-weight:700; cursor:pointer;}
@@ -1444,6 +1465,9 @@ function xwRecompute(){ const now=new Set();
   XW.data.placed.forEach((pl,idx)=>{ if(pl.cells.every(([r,c])=>XW.entry.get(xwKey(r,c))===XW.data.cells.get(xwKey(r,c)).sol)) now.add(idx); });
   XW.just=[...now].filter(idx=>!XW.solved.has(idx)); XW.solved=now;
 }
+// Some phone keyboards hand over several letters in one go (fast typing, a suggestion
+// tapped): place every one of them, in order, and stop if the puzzle gets finished.
+function xwTypeAll(p,v){ for(const ch of v.toUpperCase()){ if(!XW||!XW.sel||(XW.solved.size===XW.data.placed.length)) break; xwLetter(p,ch); } }
 function xwLetter(p,ch){ if(!XW.sel) return; XW.entry.set(xwKey(XW.sel.r,XW.sel.c),ch); xwRecompute(); xwAdvance(); renderCrossword(p); }
 function xwBackspace(p){ if(!XW.sel) return; const k=xwKey(XW.sel.r,XW.sel.c);
   if(XW.entry.get(k)){ XW.entry.delete(k); }
@@ -1451,11 +1475,92 @@ function xwBackspace(p){ if(!XW.sel) return; const k=xwKey(XW.sel.r,XW.sel.c);
     if(i>0){ const [r,c]=aw.cells[i-1]; XW.sel={r,c,dir:aw.dir}; XW.entry.delete(xwKey(r,c)); } } }
   xwRecompute(); renderCrossword(p);
 }
-function xwHint(p){ if(!XW.sel) return; const k=xwKey(XW.sel.r,XW.sel.c), cell=XW.data.cells.get(k); if(!cell) return;
+function xwHint(p){ if(!XW.sel) return; let k=xwKey(XW.sel.r,XW.sel.c), cell=XW.data.cells.get(k); if(!cell) return;
+  // Square already right? Give the word's first empty square instead, so a hint is never wasted.
+  if(XW.entry.get(k)===cell.sol){ const aw=xwActiveWord(); if(aw){ const fe=aw.cells.find(([r,c])=>!XW.entry.get(xwKey(r,c)));
+    if(fe){ XW.sel={r:fe[0],c:fe[1],dir:aw.dir}; k=xwKey(fe[0],fe[1]); cell=XW.data.cells.get(k); } } }
   XW.entry.set(k,cell.sol); xwRecompute(); xwAdvance(); renderCrossword(p); }
 function xwArrow(p,step){ xwGoClue(step,false); renderCrossword(p); }
+/* Phone layout (r18, Lance picked mockup option B): a full grid is too small to read
+   at phone width, so the question sits in large type with BIG letter boxes under it,
+   and the whole puzzle sits below as a small map you tap to jump to a word. Crossing
+   letters you have already solved show in teal in the boxes. No dots (Lance: "i don't
+   like the dots"); tapping the box you are on, or that square on the map, switches to
+   the word that crosses there. Desktop and the finished puzzle keep the full grid. */
+function xwPhoneWord(){
+  let aw=xwActiveWord(); if(aw) return aw;
+  if(!XW.sel) return null;
+  const hits=XW.data.placed.filter(pl=>pl.cells.some(([r,c])=>r===XW.sel.r&&c===XW.sel.c));
+  aw=hits.find(pl=>pl.dir==='A')||hits[0]; if(aw) XW.sel.dir=aw.dir; return aw;
+}
+// Tap a square (a box or the map): move there. Tapping the square you are already on
+// switches to the other word that runs through it, if there is one.
+function xwPhonePick(r,c){
+  const hits=XW.data.placed.filter(pl=>pl.cells.some(([rr,cc])=>rr===r&&cc===c)); if(!hits.length) return;
+  const aw=xwPhoneWord(), onIt=XW.sel&&XW.sel.r===r&&XW.sel.c===c;
+  let w = onIt&&hits.length>1 ? hits.find(h=>h!==aw) : (hits.includes(aw)?aw:hits[0]);
+  XW.sel={r,c,dir:w.dir};
+}
+function renderCrosswordPhone(p){
+  const d=XW.data, aw=xwPhoneWord(); if(!aw) return;
+  const nm=getName(p);
+  const clue=esc((CROSSWORD_CLUES[aw.q.id]||aw.q.reveal||aw.q.label).replace(/\{n\}/g,nm));
+  // Boxes share the card's width; a 12-letter answer still gets ~24px wide boxes on a
+  // 375px phone, so the letter is sized to the box and every box is at least 44px tall to tap.
+  const n=aw.cells.length, W=Math.min(window.innerWidth,820)-40+16-20;   // page padding, card bleeds 8px each side, card padding
+  const bs=Math.max(20, Math.min(46, Math.floor((W-(n-1)*3)/n)));
+  const solvedCell=(r,c)=>d.placed.some((pl,idx)=>XW.solved.has(idx)&&pl.cells.some(([a,b])=>a===r&&b===c));
+  const boxes=aw.cells.map(([r,c])=>{ const k=xwKey(r,c), cur=XW.sel.r===r&&XW.sel.c===c;
+    const fromCross=d.placed.some((pl,idx)=>pl!==aw&&XW.solved.has(idx)&&pl.cells.some(([a,b])=>a===r&&b===c));
+    return `<div class="xwp-box${cur?' cur':''}${fromCross?' cross':''}" data-r="${r}" data-c="${c}" style="width:${bs}px;height:${Math.max(44,bs+6)}px;font-size:${Math.round(Math.min(bs*0.75,28))}px">${XW.entry.get(k)||''}</div>`; }).join('');
+  const activeSet=new Set(aw.cells.map(([r,c])=>xwKey(r,c)));
+  const ms=Math.max(9, Math.min(22, Math.floor((Math.min(window.innerWidth,820)-40-8)/d.cols)-3));
+  let map='';
+  for(let r=0;r<d.rows;r++) for(let c=0;c<d.cols;c++){ const k=xwKey(r,c), cell=d.cells.get(k);
+    if(!cell){ map+=`<div class="xw-block"></div>`; continue; }
+    const cls=['xw-cell']; if(activeSet.has(k)) cls.push('active'); if(XW.sel.r===r&&XW.sel.c===c) cls.push('cursor'); if(solvedCell(r,c)) cls.push('xwp-solved');
+    map+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}"><span class="xw-let">${XW.entry.get(k)||''}</span></div>`; }
+  app.innerHTML=`
+    <div class="center" style="margin:2px 0 10px"><div class="pill pill-teal">Get to know ${esc(nm)}</div></div>
+    <div class="xwp-card">
+      <div class="xwp-tag">${aw.num} ${aw.dir==='A'?'Across':'Down'} &middot; ${n} letters</div>
+      <div class="xwp-q">${clue}</div>
+      <div class="xwp-strip">${boxes}</div>
+      <div class="xwp-hintrow"><button class="xw-hint xwp-hint" id="xwhint">Show me a letter</button></div>
+      <div class="xwp-nav"><button id="xwprev">&lsaquo; Previous clue</button><button id="xwnext">Next clue &rsaquo;</button></div>
+    </div>
+    <div id="xwmsg" class="xw-msg"></div>
+    <div class="xwp-maplabel">The whole puzzle. Tap any word to jump to it.</div>
+    <div class="xwp-map"><div class="xw-grid xwp-grid" style="grid-template-columns:repeat(${d.cols},${ms}px); grid-auto-rows:${ms}px; --cs:${ms}px">${map}</div></div>
+    <input id="xwinput" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="characters" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;">
+    <div class="xw-foot"><button class="xw-back" id="back">Back to games</button></div>`;
+  const xwinput=document.getElementById('xwinput');
+  const tap=el=>{ xwPhonePick(+el.dataset.r,+el.dataset.c); renderCrossword(p); };
+  app.querySelectorAll('.xwp-box, .xwp-grid .xw-cell').forEach(el=> el.onclick=()=>tap(el));
+  xwinput.oninput=()=>{ const v=xwinput.value.replace(/[^a-zA-Z]/g,''); xwinput.value=''; xwTypeAll(p,v); };
+  xwinput.onkeydown=(e)=>{ e.stopPropagation(); if(e.key==='Backspace'){ xwBackspace(p); e.preventDefault(); } };
+  xwinput.focus({preventScroll:true});
+  document.getElementById('xwhint').onclick=()=>xwHint(p);
+  document.getElementById('xwprev').onclick=()=>xwArrow(p,-1);
+  document.getElementById('xwnext').onclick=()=>xwArrow(p,1);
+  document.getElementById('back').onclick=()=>{ xwUnbindKeys(); XW=null; gameBack(p); };
+  if(XW.just&&XW.just.length){
+    const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+    XW.just.forEach(idx=>{ const cells=d.placed[idx].cells, lastI=cells.length-1;
+      const cls=d.placed[idx].dir==='D'?'xw-snake':'xw-wave';
+      cells.forEach(([r,c],i)=>{ const el=app.querySelector(`.xwp-grid .xw-cell[data-r="${r}"][data-c="${c}"]`); if(!el) return;
+        if(reduce){ if(i===lastI) celebrate(null,el); return; }
+        el.style.animationDelay=(i*65)+'ms'; el.classList.add(cls);
+        if(i===lastI) setTimeout(()=>{ celebrate(null,el); xwPop(el, d.placed[idx].q, getAns(p)[d.placed[idx].q.id]); }, i*65+150); });
+    });
+    const last=d.placed[XW.just[XW.just.length-1]];
+    document.getElementById('xwmsg').innerHTML=`<div class="reveal"><div class="label">You got it</div><div class="talk"><b>${talkLead()}:</b> ${last.q.talk}</div></div>`;
+    XW.just=[];
+  }
+}
 function renderCrossword(p){
   const d=XW.data, done=d.placed.length>0 && XW.solved.size===d.placed.length;
+  if(!done && window.innerWidth<=600) return renderCrosswordPhone(p);
   const aw=done?null:xwActiveWord();
   const activeSet=new Set(aw? aw.cells.map(([r,c])=>xwKey(r,c)):[]);
   // Render an N x N SQUARE (N = larger of rows/cols), content centered, the extra
@@ -1544,8 +1649,8 @@ function renderCrossword(p){
   }
   const xwinput=document.getElementById('xwinput');
   app.querySelectorAll('.xw-cell').forEach(el=> el.onclick=()=>{ xwSelect(+el.dataset.r,+el.dataset.c); renderCrossword(p); xwinput&&xwinput.focus(); });
-  if(xwinput){ xwinput.oninput=()=>{ const v=xwinput.value.replace(/[^a-zA-Z]/g,''); if(v) xwLetter(p,v[v.length-1].toUpperCase()); xwinput.value=''; };
-    xwinput.onkeydown=(e)=>{ if(e.key==='Backspace'){ xwBackspace(p); e.preventDefault(); }
+  if(xwinput){ xwinput.oninput=()=>{ const v=xwinput.value.replace(/[^a-zA-Z]/g,''); xwinput.value=''; xwTypeAll(p,v); };
+    xwinput.onkeydown=(e)=>{ e.stopPropagation(); if(e.key==='Backspace'){ xwBackspace(p); e.preventDefault(); }
       else if(e.key==='ArrowLeft'){ xwMove(p,0,-1); e.preventDefault(); }
       else if(e.key==='ArrowRight'){ xwMove(p,0,1); e.preventDefault(); }
       else if(e.key==='ArrowUp'){ xwMove(p,-1,0); e.preventDefault(); }
