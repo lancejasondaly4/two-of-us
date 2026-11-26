@@ -1,0 +1,18 @@
+{
+  "name": "Two of Us",
+  "short_name": "Two of Us",
+  "description": "A gentle two-person game. Answer warm questions about your life, and they become a puzzle for someone you love to solve, and a reason to talk.",
+  "id": "/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F2E9",
+  "theme_color": "#1F5A5A",
+  "lang": "en",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
