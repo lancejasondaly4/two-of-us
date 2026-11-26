@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Crossword celebrations: try them</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Try-out page for the crossword's two big moments: a RIGHT ANSWER and the FINISH.
+     Ruth's real puzzle at phone size, with every answer done except 3 Down (Studebaker).
+     The strip at the top is only for this try-out: pick a style, press Play. Made-up data only. */
+  :root{ --linen:#F7F2E9; --card:#FFFDF8; --ink:#2A2622; --muted:#6E655B; --teal:#1F5A5A; --rose:#A65A52;
+    --amber:#D99B2B; --amber-soft:#FBEFD6; --line:#E5DCCB; --cellbg:#FBF4E4; --block:#B7CEC9; --gridline:#A9C4BE;
+    --display:"Fraunces", Georgia, serif; --body:"Atkinson Hyperlegible", system-ui, sans-serif; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
+  html,body{margin:0; height:100%; background:var(--linen); color:var(--ink); font-family:var(--body);}
+  body{overflow:hidden; overscroll-behavior:none;}
+  #phone{display:flex; flex-direction:column; height:100%; height:100dvh; padding-top:env(safe-area-inset-top);}
+  /* try-out controls (not part of the game) */
+  .ctl{flex:0 0 auto; background:#2A2622; color:#F7F2E9; padding:6px 8px 7px; display:flex; flex-direction:column; gap:5px;}
+  .ctl .r{display:flex; align-items:center; gap:6px;}
+  .ctl .lab{flex:0 0 96px; font-size:.85rem; font-weight:700;}
+  .ctl .ch{flex:0 0 38px; height:36px; border-radius:9px; border:1.5px solid #6E655B; background:none; color:#F7F2E9; font-family:var(--body); font-size:1rem; font-weight:700; padding:0;}
+  .ctl .ch.on{background:var(--amber); border-color:var(--amber); color:#2A2622;}
+  .ctl .play{margin-left:auto; height:36px; padding:0 14px; border-radius:9px; border:0; background:#F7F2E9; color:#2A2622; font-family:var(--body); font-weight:700; font-size:.95rem;}
+  .ctl .cap{font-size:.82rem; line-height:1.3; color:#E9E3D8; min-height:2.6em; display:flex; gap:8px; align-items:flex-start;}
+  .ctl .cap span{flex:1;}
+  .ctl .snd{flex:0 0 auto; border:1.5px solid #6E655B; background:none; color:#F7F2E9; border-radius:9px; font-family:var(--body); font-size:.8rem; font-weight:700; padding:4px 8px;}
+  /* the puzzle */
+  .board{position:relative; flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:6px 8px 10px; scrollbar-width:none; touch-action:pan-y;}
+  .board *{touch-action:pan-y;}
+  .board::-webkit-scrollbar{display:none;}
+  .grid{display:grid; gap:2px; padding:2px; background:var(--gridline); border-radius:6px; margin:0 auto; width:max-content; transform-origin:top center;}
+  .b{background:var(--block); border-radius:2px;}
+  .c{position:relative; background:var(--cellbg); border-radius:3px; display:flex; align-items:center; justify-content:center;
+     font-weight:700; color:var(--ink); line-height:1; cursor:pointer; box-shadow:0 1px 0 rgba(31,90,90,.2);}
+  .c.act{background:#F2D49A;} .c.cur{background:var(--amber);}
+  .c.solved{color:var(--teal);}
+  .c.lock{background:var(--teal); color:#FBF4E4;} .c.lock .n{color:#BFD6D1;}
+  .n{position:absolute; top:1px; left:2px; font-weight:700; color:var(--muted); line-height:1;}
+  /* the dock */
+  .dock{flex:0 0 auto; background:#E9E3D8; border-top:1px solid var(--line); padding:0 0 calc(6px + env(safe-area-inset-bottom));}
+  .hintrow{display:flex; justify-content:flex-end; padding:2px 8px 0;}
+  .hintrow button{border:0; background:none; color:var(--teal); font-family:var(--body); font-weight:700; font-size:.95rem; padding:8px 6px; min-height:40px;}
+  .cluebar{display:flex; align-items:center; margin:0 6px 7px; background:var(--card); border-radius:12px; min-height:64px; box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .cluebar .arrow{flex:0 0 40px; align-self:stretch; border:0; background:none; color:var(--teal); font-size:1.9rem; padding:0; font-family:var(--body);}
+  .cluebar .txt{flex:1; text-align:center; padding:8px 2px;}
+  .cluebar .tag{display:block; font-size:.8rem; color:var(--muted); font-weight:700; margin-bottom:2px;}
+  .cluebar .q{font-family:var(--display); font-size:1.12rem; line-height:1.22;}
+  .kb{display:flex; flex-direction:column; gap:7px; padding:0 3px;}
+  .kb .row{display:flex; justify-content:center; gap:5px;}
+  .kb button{flex:1 1 0; max-width:40px; height:46px; border:0; border-radius:7px; background:var(--card); color:var(--ink);
+     font-family:var(--body); font-size:1.3rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.25); padding:0;}
+  .kb button:active{background:var(--amber-soft);}
+  .kb button.del{max-width:64px; flex:1.6 1 0; font-size:1.15rem;}
+  .fin{display:flex; flex-direction:column; gap:10px; padding:12px 12px 4px; text-align:center;}
+  .fin h2{font-family:var(--display); font-weight:600; font-size:1.7rem; margin:2px 0 0; line-height:1.1;}
+  .fin p{margin:0; font-size:1.02rem; line-height:1.35;}
+  .fin .emos{font-size:1.5rem; letter-spacing:2px; line-height:1.3;}
+  .fin .emos span{display:inline-block; animation:popIn .4s cubic-bezier(.2,.8,.2,1) both;}
+  .fin .go{min-height:56px; border:0; border-radius:14px; background:var(--amber); color:var(--ink); font-family:var(--body); font-size:1.1rem; font-weight:700;}
+  .fin .links{display:flex; justify-content:space-around;}
+  .fin .links button{border:0; background:none; color:var(--teal); font-family:var(--body); font-weight:700; font-size:1rem; padding:8px 4px;}
+  .bloom{animation:bloomIn .55s cubic-bezier(.2,.8,.2,1) both;}
+
+  /* ---- right-answer styles ---- */
+  /* 1: tiles flip over one after another and land teal, locked in */
+  @keyframes flipLock{0%{transform:rotateX(0); background:var(--cellbg); color:var(--ink);}
+    49%{transform:rotateX(90deg); background:var(--cellbg); color:var(--ink);}
+    50%{transform:rotateX(90deg); background:var(--teal); color:#FBF4E4;}
+    100%{transform:rotateX(0); background:var(--teal); color:#FBF4E4;}}
+  .c.flip{animation:flipLock .42s ease-in-out both; z-index:3;}
+  .c.flip .n{color:#BFD6D1;}
+  /* 1 and 3: the gentle ripple the game has now */
+  @keyframes wave{0%,100%{transform:translateY(0)} 35%{transform:translateY(-28%) scale(1.08)}}
+  @keyframes snake{0%,100%{transform:translateX(0)} 35%{transform:translateX(-26%) scale(1.06)}}
+  .c.w{animation:wave .45s ease-in-out both; z-index:3;} .c.s{animation:snake .45s ease-in-out both; z-index:3;}
+  @keyframes pop{0%{transform:translate(-50%,0) scale(.3);opacity:0} 25%{opacity:1;transform:translate(-50%,-60%) scale(1.05)} 100%{transform:translate(-50%,-230%) scale(.95);opacity:0}}
+  .pop{position:absolute; left:50%; top:0; font-size:28px; pointer-events:none; animation:pop 1.4s ease-out both; z-index:5;}
+  /* 2: the answer itself, big, in the middle of the screen */
+  #fx{position:fixed; inset:0; pointer-events:none; z-index:50; overflow:hidden;}
+  .banner{position:absolute; left:50%; top:38%; transform:translate(-50%,-50%); background:var(--card); border-radius:22px;
+    box-shadow:0 10px 30px rgba(42,38,34,.22), 0 0 0 3px var(--amber) inset; padding:18px 26px 16px; text-align:center; min-width:230px;
+    animation:bannerIn 1.9s cubic-bezier(.2,.8,.2,1) both;}
+  .banner .e{font-size:54px; line-height:1; display:block; margin-bottom:6px;}
+  .banner .w{font-family:var(--display); font-weight:600; font-size:2.1rem; line-height:1.05; color:var(--teal);}
+  .banner .t{font-size:.95rem; font-weight:700; color:var(--muted); margin-top:4px;}
+  @keyframes bannerIn{0%{transform:translate(-50%,-30%) scale(.6); opacity:0} 18%{transform:translate(-50%,-50%) scale(1.04); opacity:1}
+    26%{transform:translate(-50%,-50%) scale(1)} 82%{transform:translate(-50%,-50%) scale(1); opacity:1}
+    100%{transform:translate(-50%,-62%) scale(.92); opacity:0}}
+  .glow{animation:glow 1.2s ease-in-out both;}
+  @keyframes glow{0%{box-shadow:0 0 0 0 rgba(217,155,43,0)} 40%{box-shadow:0 0 0 3px var(--amber), 0 0 14px 2px rgba(217,155,43,.7)} 100%{box-shadow:0 1px 0 rgba(31,90,90,.2)}}
+  /* 3 + finish: flying pieces (emoji shower, confetti) */
+  .fly{position:absolute; left:0; top:0; will-change:transform,opacity; line-height:1;}
+  /* finish 3: the keepsake card */
+  .card3{position:absolute; inset:8px 10px; background:var(--card); border-radius:20px; box-shadow:0 10px 30px rgba(42,38,34,.18);
+    padding:16px 14px; overflow-y:auto; animation:cardUp .6s cubic-bezier(.2,.8,.2,1) both; z-index:6;}
+  .card3 h3{font-family:var(--display); font-weight:600; font-size:1.55rem; text-align:center; margin:0 0 2px;}
+  .card3 .sub{text-align:center; color:var(--muted); font-size:.92rem; margin:0 0 12px;}
+  .card3 ul{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px 10px;}
+  .card3 li{display:flex; align-items:center; gap:8px; font-size:1.02rem; font-weight:700; animation:popIn .4s cubic-bezier(.2,.8,.2,1) both;}
+  .card3 li b{font-size:1.5rem; font-weight:400;}
+  @keyframes cardUp{0%{transform:translateY(40px); opacity:0} 100%{transform:none; opacity:1}}
+  @keyframes popIn{0%{transform:scale(.4); opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1); opacity:1}}
+  @keyframes bloomIn{0%{transform:scale(.72); opacity:0;} 60%{transform:scale(1.07);} 100%{transform:scale(1); opacity:1;}}
+  @keyframes shrink{0%{transform:scale(var(--from))} 100%{transform:scale(1)}}
+</style></head>
+<body>
+<div id="phone"></div><div id="fx"></div>
+<script>
+const COMPACT={rows:19,cols:12,placed:[
+ {num:11,dir:"A",word:"PAPERROUTE",cells:[[11,2],[11,3],[11,4],[11,5],[11,6],[11,7],[11,8],[11,9],[11,10],[11,11]],clue:"What was their very first job?"},
+ {num:8,dir:"D",word:"AUTUMN",cells:[[8,9],[9,9],[10,9],[11,9],[12,9],[13,9]],clue:"What is their favorite season of the year?"},
+ {num:9,dir:"A",word:"JITTERBUG",cells:[[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9],[9,10]],clue:"What dance did they do when they were young?"},
+ {num:3,dir:"D",word:"STUDEBAKER",cells:[[0,7],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[8,7],[9,7]],clue:"What make was their first car?"},
+ {num:6,dir:"A",word:"BUTTERPECAN",cells:[[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[4,9],[4,10]],clue:"What is their favorite ice cream flavor?"},
+ {num:1,dir:"D",word:"QUILTING",cells:[[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[7,2]],clue:"What is a hobby they have always enjoyed?"},
+ {num:10,dir:"D",word:"GEOGRAPHY",cells:[[10,11],[11,11],[12,11],[13,11],[14,11],[15,11],[16,11],[17,11],[18,11]],clue:"What subject did they like best in school?"},
+ {num:15,dir:"A",word:"FOURTHOFJULY",cells:[[18,0],[18,1],[18,2],[18,3],[18,4],[18,5],[18,6],[18,7],[18,8],[18,9],[18,10],[18,11]],clue:"What is their favorite holiday?"},
+ {num:13,dir:"A",word:"KICKTHECAN",cells:[[13,0],[13,1],[13,2],[13,3],[13,4],[13,5],[13,6],[13,7],[13,8],[13,9]],clue:"What game did they play outside as a child?"},
+ {num:4,dir:"D",word:"BIGBAND",cells:[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],clue:"What kind of music did they love most?"},
+ {num:2,dir:"A",word:"BISCUIT",cells:[[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11]],clue:"What was the name of a pet they loved?"},
+ {num:12,dir:"D",word:"POTROAST",cells:[[11,4],[12,4],[13,4],[14,4],[15,4],[16,4],[17,4],[18,4]],clue:"What was their favorite food growing up?"},
+ {num:14,dir:"A",word:"LAUNDRY",cells:[[16,3],[16,4],[16,5],[16,6],[16,7],[16,8],[16,9]],clue:"What chore did they have as a child?"},
+ {num:7,dir:"A",word:"PEANUT",cells:[[6,5],[6,6],[6,7],[6,8],[6,9],[6,10]],clue:"What did people call them growing up?"},
+ {num:5,dir:"A",word:"DUBUQUE",cells:[[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[2,10]],clue:"What town did they grow up in?"}]};
+const POP={PAPERROUTE:'📰',AUTUMN:'🍂',BUTTERPECAN:'🍨',BISCUIT:'🐶',STUDEBAKER:'🚗',BIGBAND:'🎺',QUILTING:'🧵',GEOGRAPHY:'🌎',FOURTHOFJULY:'🎆',JITTERBUG:'💃',PEANUT:'🥜',KICKTHECAN:'🥫',POTROAST:'🍖',DUBUQUE:'🏡',LAUNDRY:'🧺'};
+const PRETTY={PAPERROUTE:'Paper route',AUTUMN:'Autumn',BUTTERPECAN:'Butter pecan',BISCUIT:'Biscuit',STUDEBAKER:'Studebaker',BIGBAND:'Big band',QUILTING:'Quilting',GEOGRAPHY:'Geography',FOURTHOFJULY:'Fourth of July',JITTERBUG:'Jitterbug',PEANUT:'Peanut',KICKTHECAN:'Kick the can',POTROAST:'Pot roast',DUBUQUE:'Dubuque',LAUNDRY:'Laundry'};
+const WORD_OPTS={1:'Lock in. The squares flip over one by one and land dark teal, so finished words stand out in the puzzle.',
+  2:'Big answer. The answer and its picture pop up large in the middle of the screen for a moment.',
+  3:'Shower. The ripple you have now, plus a handful of the answer\'s picture bursting up out of the word.'};
+const FIN_OPTS={1:'Parade. The puzzle shrinks to show all of it, every square flips teal, then a picture rises from each of Ruth\'s answers.',
+  2:'Confetti. The puzzle shrinks to show all of it, confetti in the game\'s colors falls, and a big "You did it!"',
+  3:'Keepsake. A card slides up: "Ruth, in 15 answers", each answer with its picture.'};
+
+const K=(r,c)=>r+','+c, P=COMPACT, sol=new Map(), num=new Map(); let entry=new Map();
+P.placed.forEach(pl=>pl.cells.forEach(([r,c],i)=>{ sol.set(K(r,c),pl.word[i]); if(i===0) num.set(K(r,c),pl.num); }));
+const order=[...P.placed].sort((a,b)=>a.dir===b.dir?a.num-b.num:(a.dir==='A'?-1:1));
+const STUDE=P.placed.find(p=>p.word==='STUDEBAKER');
+let capMode='w', wOpt=1, fOpt=1, sound=true, act, ci=0, lastScroll=null, busy=0, finishing=false;
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+const solved=pl=>pl.cells.every(([r,c])=>entry.get(K(r,c))===sol.get(K(r,c)));
+const firstEmpty=pl=>{ const i=pl.cells.findIndex(([r,c])=>!entry.get(K(r,c))); return i<0?0:i; };
+// Right-answer try-out: 3 Down plus a few squares of 8 Down are left, so 3 Down is not the last word.
+// Finish try-out: only 3 Down is left.
+function reset(){ entry=new Map(); P.placed.forEach(pl=>{ if(pl!==STUDE) pl.cells.forEach(([r,c],i)=>entry.set(K(r,c),pl.word[i])); });
+  if(capMode==='w') [[8,9],[10,9],[12,9]].forEach(([r,c])=>entry.delete(K(r,c)));
+  act=STUDE; ci=firstEmpty(act); finishing=false; busy++; document.getElementById('fx').innerHTML=''; draw(); }
+
+/* ---- sound: a soft bell (the iPhone's silent switch mutes it) ---- */
+let AC=null;
+function bell(notes){ if(!sound) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
+  const t=AC.currentTime+0.02;
+  notes.forEach(([f,at,dur,v])=>{ [[1,'sine',v],[2,'sine',v*0.25],[3,'triangle',v*0.08]].forEach(([m,type,vol])=>{
+    const o=AC.createOscillator(), g=AC.createGain(); o.type=type; o.frequency.value=f*m;
+    g.gain.setValueAtTime(0.0001,t+at); g.gain.exponentialRampToValueAtTime(vol,t+at+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+at+dur);
+    o.connect(g); g.connect(AC.destination); o.start(t+at); o.stop(t+at+dur+0.05); }); }); }catch(e){} }
+const chimeWord=()=>bell([[784,0,0.7,0.18],[1047,0.11,1.1,0.16]]);
+const chimeFinish=()=>bell([[523,0,0.9,0.15],[659,0.14,0.9,0.15],[784,0.28,0.9,0.15],[1047,0.44,1.8,0.17]]);
+
+const ph=document.getElementById('phone'), fx=document.getElementById('fx');
+function cellEl(r,c){ return ph.querySelector(`.c[data-r="${r}"][data-c="${c}"]`); }
+function draw(){
+  const done=P.placed.every(solved);
+  const actSet=new Set(done?[]:act.cells.map(([r,c])=>K(r,c))), [cr,cc]=act.cells[ci];
+  const W=Math.min(window.innerWidth,500)-16-4, cs=Math.min(44,Math.floor((W-(P.cols-1)*2)/P.cols));
+  const lockStyle=wOpt===1;
+  let g=''; for(let r=0;r<P.rows;r++) for(let c=0;c<P.cols;c++){ const k=K(r,c);
+    if(!sol.has(k)){ g+='<div class="b"></div>'; continue; }
+    const cls=['c']; if(actSet.has(k)) cls.push('act'); if(!done&&r===cr&&c===cc) cls.push('cur');
+    const isSolved=P.placed.some(pl=>solved(pl)&&pl.cells.some(([a,b])=>a===r&&b===c));
+    if(isSolved) cls.push(lockStyle&&!actSet.has(k)?'lock':'solved');
+    const n=num.get(k);
+    g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}" style="font-size:${Math.round(cs*0.6)}px">${n?`<span class="n" style="font-size:${Math.max(8,Math.round(cs*0.3))}px">${n}</span>`:''}${entry.get(k)||''}</div>`; }
+  const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+  const dock = done ? finishDock() : `
+      <div class="hintrow"><button>Show me a letter</button></div>
+      <div class="cluebar"><button class="arrow">&lsaquo;</button>
+        <div class="txt"><span class="tag">${act.num} ${act.dir==='A'?'Across':'Down'} &middot; ${act.cells.length} letters</span><span class="q">${act.clue}</span></div>
+        <button class="arrow">&rsaquo;</button></div>
+      <div class="kb">${rows.map((row,i)=>`<div class="row">${[...row].map(ch=>`<button data-k="${ch}">${ch}</button>`).join('')}${i===2?'<button class="del" data-k="DEL" aria-label="Delete">&#9003;</button>':''}</div>`).join('')}</div>`;
+  ph.innerHTML=`
+    <div class="ctl">
+      <div class="r"><span class="lab">Right answer</span>${[1,2,3].map(i=>`<button class="ch${i===wOpt?' on':''}" data-w="${i}">${i}</button>`).join('')}<button class="play" id="playW">&#9654; Play</button></div>
+      <div class="r"><span class="lab">The finish</span>${[1,2,3].map(i=>`<button class="ch${i===fOpt?' on':''}" data-f="${i}">${i}</button>`).join('')}<button class="play" id="playF">&#9654; Play</button></div>
+      <div class="cap"><span id="cap"></span><button class="snd" id="snd">${sound?'Sound on':'Sound off'}</button></div>
+    </div>
+    <div class="board" id="board"><div class="grid" style="grid-template-columns:repeat(${P.cols},${cs}px); grid-auto-rows:${cs}px">${g}</div></div>
+    <div class="dock">${dock}</div>`;
+  ph.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{ wOpt=+b.dataset.w; capMode='w'; reset(); });
+  ph.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{ fOpt=+b.dataset.f; capMode='f'; reset(); });
+  document.getElementById('playW').onclick=()=>{ capMode='w'; reset(); autoType(); };
+  document.getElementById('playF').onclick=()=>{ capMode='f'; reset(); autoType(); };
+  document.getElementById('snd').onclick=()=>{ sound=!sound; document.getElementById('snd').textContent=sound?'Sound on':'Sound off'; };
+  ph.querySelectorAll('.kb button').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(k==='DEL') del(); else type(k); });
+  ph.querySelectorAll('.c').forEach(el=>el.onclick=()=>{ if(done) return; const r=+el.dataset.r,c=+el.dataset.c; const i=act.cells.findIndex(([a,b])=>a===r&&b===c); if(i>=0){ ci=i; draw(); } });
+  document.getElementById('cap').textContent=capMode==='f'?FIN_OPTS[fOpt]:WORD_OPTS[wOpt];
+  const fin=ph.querySelector('.fin .go'); if(fin) fin.onclick=reset;
+  const board=document.getElementById('board');
+  if(!done){ const rs=act.cells.map(x=>x[0]), mid=(Math.min(...rs)+Math.max(...rs)+1)/2*(cs+2)+6;
+    const target=Math.max(0,Math.min(mid-board.clientHeight/2, board.scrollHeight-board.clientHeight));
+    if(lastScroll!=null) board.scrollTop=lastScroll; board.scrollTo({top:target, behavior:'smooth'}); lastScroll=target; }
+  board.onscroll=()=>{ lastScroll=board.scrollTop; };
+  return {cs, board};
+}
+function capShow(m){ capMode=m; const el=document.getElementById('cap'); if(el) el.textContent=m==='f'?FIN_OPTS[fOpt]:WORD_OPTS[wOpt]; }
+function finishDock(){
+  const links=`<div class="links"><button>Save as a picture</button><button>Keep all our answers</button></div>`;
+  const go=`<button class="go">Now, how well were you listening?</button>`;
+  if(fOpt===1){ const em=P.placed.map((pl,i)=>`<span style="animation-delay:${1400+i*120}ms">${POP[pl.word]}</span>`).join('');
+    return `<div class="fin"><h2 class="bloom">You solved Ruth!</h2><div class="emos">${em}</div>${go}${links}</div>`; }
+  if(fOpt===2) return `<div class="fin"><h2 class="bloom" style="font-size:2.3rem">You did it!</h2><p>All 15 of Ruth's answers, worked out.</p>${go}${links}</div>`;
+  return `<div class="fin"><p><b>You did it!</b> That is the whole of Ruth in one little grid.</p>${go}${links}</div>`;
+}
+function type(ch){ if(P.placed.every(solved)) return; const [r,c]=act.cells[ci]; entry.set(K(r,c),ch);
+  if(solved(act)){ const w=act; if(P.placed.every(solved)){ finish(w); return; } draw(); celebrateWord(w); return; }
+  if(ci<act.cells.length-1){ ci++; while(ci<act.cells.length-1 && entry.get(K(...act.cells[ci]))===sol.get(K(...act.cells[ci]))) ci++; }
+  draw(); }
+function del(){ const [r,c]=act.cells[ci]; if(entry.get(K(r,c))) entry.delete(K(r,c)); else if(ci>0){ ci--; entry.delete(K(...act.cells[ci])); } draw(); }
+// Play: types the missing letters of 3 Down, like a person would.
+function autoType(){ const token=++busy; const missing=STUDE.cells.filter(([r,c])=>entry.get(K(r,c))!==sol.get(K(r,c)));
+  missing.forEach(([r,c],i)=>setTimeout(()=>{ if(busy!==token) return; ci=STUDE.cells.findIndex(([a,b])=>a===r&&b===c); type(sol.get(K(r,c))); }, 350+i*260)); }
+
+/* ---- a right answer ---- */
+function celebrateWord(w){ const token=busy; if(reduce){ chimeWord(); return; }
+  const cells=w.cells.map(([r,c])=>cellEl(r,c)).filter(Boolean), last=cells[cells.length-1];
+  setTimeout(()=>chimeWord(), 250);
+  if(wOpt===1){ cells.forEach((el,i)=>{ el.classList.remove('solved'); el.style.animationDelay=(250+i*70)+'ms'; el.classList.add('flip'); });
+    setTimeout(()=>{ if(busy===token) emojiPop(last,w); }, 250+cells.length*70+200); }
+  if(wOpt===2){ cells.forEach((el,i)=>{ el.style.animationDelay=(i*40)+'ms'; el.classList.add('glow'); });
+    setTimeout(()=>{ if(busy!==token) return; const b=document.createElement('div'); b.className='banner';
+      b.innerHTML=`<span class="e">${POP[w.word]}</span><div class="w">${PRETTY[w.word]}</div><div class="t">That's right!</div>`; fx.appendChild(b); setTimeout(()=>b.remove(),2000); }, 200); }
+  if(wOpt===3){ const cls=w.dir==='D'?'s':'w'; cells.forEach((el,i)=>{ el.style.animationDelay=(250+i*60)+'ms'; el.classList.add(cls); });
+    setTimeout(()=>{ if(busy===token) shower(last,POP[w.word],12); }, 250+cells.length*60); }
+  // then glide on (in the real game, to the next clue); here, back to the start after a moment
+  setTimeout(()=>{ if(busy===token){ reset(); } }, 3600);
+}
+function emojiPop(host,w){ if(!host) return; const s=document.createElement('span'); s.className='pop'; s.textContent=POP[w.word]; host.appendChild(s); setTimeout(()=>s.remove(),1500); }
+// pieces thrown up and pulled back down, each on its own path
+function throwPieces(make, n, x, y, spread, up, life){
+  const ps=[]; for(let i=0;i<n;i++){ const el=make(i); el.className='fly'; fx.appendChild(el);
+    ps.push({el, x, y, vx:(Math.random()-.5)*spread, vy:-(up*.6+Math.random()*up*.5), rot:(Math.random()-.5)*40, vr:(Math.random()-.5)*300, t0:performance.now()+Math.random()*120}); }
+  // positions come from the clock (not frame by frame), so a slow phone never plays it in slow motion
+  const g=1400;
+  (function tick(now){ let alive=false;
+    ps.forEach(p=>{ if(!p.el.isConnected) return; if(now<p.t0){ alive=true; p.el.style.opacity=0; return; } const age=(now-p.t0)/1000; if(age>life){ p.el.remove(); return; } alive=true;
+      const x=p.x+p.vx*age, y=p.y+p.vy*age+0.5*g*age*age, rot=p.rot+p.vr*age;
+      p.el.style.opacity=Math.min(1, (life-age)/(life*.35)); p.el.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`; });
+    if(alive) requestAnimationFrame(tick); })(performance.now());
+}
+function shower(host,glyph,n){ if(!host) return; const r=host.getBoundingClientRect();
+  throwPieces(()=>{ const s=document.createElement('span'); s.textContent=glyph; s.style.fontSize=(22+Math.random()*14)+'px'; return s; }, n, r.left+r.width/2-14, r.top, 340, 720, 1.5); }
+
+/* ---- the finish ---- */
+function finish(w){ finishing=true; const token=busy;
+  const before=ph.querySelector('.c'); const csOld=before?before.getBoundingClientRect().width:30;
+  let {cs, board}=draw();
+  if(fOpt!==3){ // shrink the puzzle so all of it shows at once
+    const grid=ph.querySelector('.grid'), H=board.clientHeight-16, Wd=board.clientWidth-16;
+    const fit=Math.max(12, Math.min(Math.floor((H-(P.rows-1)*2-4)/P.rows), Math.floor((Wd-(P.cols-1)*2-4)/P.cols)));
+    grid.style.gridTemplateColumns=`repeat(${P.cols},${fit}px)`; grid.style.gridAutoRows=fit+'px';
+    grid.querySelectorAll('.c').forEach(el=>{ el.style.fontSize=Math.round(fit*0.6)+'px'; const n=el.querySelector('.n'); if(n) n.style.fontSize=Math.max(7,Math.round(fit*0.3))+'px'; });
+    board.scrollTop=0;
+    if(!reduce){ grid.style.setProperty('--from', (csOld/fit).toFixed(3)); grid.style.animation='shrink .7s cubic-bezier(.2,.8,.2,1) both'; }
+  }
+  if(reduce){ chimeFinish(); return; }
+  setTimeout(()=>{ if(busy===token) chimeFinish(); }, 500);
+  const grid=ph.querySelector('.grid');
+  if(fOpt===1){
+    grid.querySelectorAll('.c').forEach(el=>{ const d=(+el.dataset.r)+(+el.dataset.c); el.classList.remove('lock','solved'); el.style.animationDelay=(700+d*35)+'ms'; el.classList.add('flip'); });
+    P.placed.forEach((pl,i)=>{ const [lr,lc]=pl.cells[pl.cells.length-1]; setTimeout(()=>{ if(busy!==token) return; const el=cellEl(lr,lc); if(el){ const s=document.createElement('span'); s.className='pop'; s.style.fontSize='24px'; s.textContent=POP[pl.word]; el.appendChild(s); setTimeout(()=>s.remove(),1500); } }, 1700+i*160); });
+  }
+  if(fOpt===2){
+    grid.querySelectorAll('.c').forEach(el=>{ const d=(+el.dataset.r)+(+el.dataset.c); el.style.animationDelay=(700+d*40)+'ms'; el.classList.add('w'); });
+    setTimeout(()=>{ if(busy!==token) return; const cols=['#1F5A5A','#D99B2B','#A65A52','#FBF4E4','#7FA9A3','#F2D49A'], vw=window.innerWidth;
+      for(let wave=0; wave<2; wave++) setTimeout(()=>{ if(busy!==token) return;
+        const ps=[]; for(let i=0;i<70;i++){ const el=document.createElement('i'); el.className='fly'; const w2=6+Math.random()*6;
+          el.style.cssText=`width:${w2}px;height:${w2*(1.4+Math.random())}px;background:${cols[i%cols.length]};border-radius:2px;`;
+          fx.appendChild(el); ps.push({el,x:Math.random()*vw,y:-20-Math.random()*200,vy:140+Math.random()*120,sway:20+Math.random()*30,ph:Math.random()*6,rot:Math.random()*360,vr:(Math.random()-.5)*500}); }
+        const t0=performance.now();
+        (function tick(now){ const age=(now-t0)/1000;
+          ps.forEach(p=>{ const y=p.y+p.vy*age, rot=p.rot+p.vr*age, x=p.x+Math.sin(age*3+p.ph)*p.sway;
+            p.el.style.opacity=age>3.2?Math.max(0,1-(age-3.2)/0.8):1; p.el.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`; });
+          if(age<4) requestAnimationFrame(tick); else ps.forEach(p=>p.el.remove()); })(t0);
+      }, wave*900);
+    }, 450);
+  }
+  if(fOpt===3){
+    const card=document.createElement('div'); card.className='card3';
+    card.innerHTML=`<h3>Ruth, in 15 answers</h3><p class="sub">Everything you worked out today</p><ul>${P.placed.slice().sort((a,b)=>a.num-b.num).map((pl,i)=>`<li style="animation-delay:${600+i*110}ms"><b>${POP[pl.word]}</b>${PRETTY[pl.word]}</li>`).join('')}</ul>`;
+    setTimeout(()=>{ if(busy===token){ board.scrollTop=0; board.style.overflow='hidden'; board.appendChild(card); } }, 900);
+  }
+}
+reset();
+if(document.fonts) document.fonts.ready.then(()=>{ if(!finishing) draw(); });
+['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+</script>
+</body></html>

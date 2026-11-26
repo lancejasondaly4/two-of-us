@@ -147,6 +147,10 @@
   /* phone crossword (layout D, r20): full screen; the puzzle scrolls; the question and the
      game's own keyboard are docked at the bottom (the phone's keyboard never opens). */
   body:has(.xwd){overflow:hidden; overscroll-behavior:none;}
+  /* No zooming in the phone crossword: quick taps (the same square twice, fast letters) were
+     read by the iPhone as a double-tap zoom. The puzzle only scrolls up and down; the rest is taps. */
+  .xwd, .xwd *{touch-action:manipulation;}
+  .xwd .xwd-board, .xwd .xwd-board *{touch-action:pan-y;}
   .xwd{position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; background:var(--linen);
     padding-top:env(safe-area-inset-top); height:100%; height:100dvh;}
   .xwd button{width:auto; min-height:0; transition:none;}
@@ -1557,6 +1561,9 @@ function xwFlip(){ if(!XW.sel) return; const aw=xwPhoneWord();
   const x=XW.data.placed.find(pl=>pl!==aw&&pl.cells.some(([a,b])=>a===XW.sel.r&&b===XW.sel.c));
   if(x) XW.sel={r:XW.sel.r, c:XW.sel.c, dir:x.dir}; }
 const XWD_KEYS=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+// iPhones ignore the CSS above for two-finger zoom, so block that gesture while the puzzle is up.
+['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>{ if(document.querySelector('.xwd')) e.preventDefault(); },{passive:false}));
+document.addEventListener('dblclick',e=>{ if(e.target.closest&&e.target.closest('.xwd')) e.preventDefault(); },{passive:false});
 function renderCrosswordDock(p){
   const d=XW.data, done=d.placed.length>0 && XW.solved.size===d.placed.length;
   const aw=done?null:xwPhoneWord();
