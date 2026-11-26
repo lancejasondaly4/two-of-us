@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Crossword on a phone: option D</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Option D: the layout most phone crossword apps use. The whole puzzle fills the phone's
+     WIDTH (Ruth's answers packed to 12 squares wide) and scrolls up and down by itself to keep
+     your word in view. The clue sits in one bar right above the game's OWN letter keyboard, so
+     the phone's keyboard (and its AutoFill bar) never appears. Made-up data only (Ruth). */
+  :root{ --linen:#F7F2E9; --card:#FFFDF8; --ink:#2A2622; --muted:#6E655B; --teal:#1F5A5A;
+    --amber:#D99B2B; --amber-soft:#FBEFD6; --line:#E5DCCB; --cellbg:#FBF4E4; --block:#B7CEC9; --gridline:#A9C4BE;
+    --display:"Fraunces", Georgia, serif; --body:"Atkinson Hyperlegible", system-ui, sans-serif; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%; background:var(--linen); color:var(--ink); font-family:var(--body);}
+  body{overflow:hidden; overscroll-behavior:none;}
+  #phone{display:flex; flex-direction:column; height:100%; height:100dvh; padding-top:env(safe-area-inset-top);}
+  .top{display:flex; align-items:center; justify-content:space-between; padding:4px 10px 2px; flex:0 0 auto;}
+  .top button{border:0; background:none; color:var(--teal); font-family:var(--body); font-weight:700; font-size:1rem; padding:8px 4px; min-height:40px;}
+  .top .who{font-size:.9rem; color:var(--muted); font-weight:700;}
+  /* the puzzle: fills the width, scrolls up and down on its own */
+  .board{flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:4px 8px 10px; scrollbar-width:none;}
+  .board::-webkit-scrollbar{display:none;}
+  .grid{display:grid; gap:2px; padding:2px; background:var(--gridline); border-radius:6px; margin:0 auto; width:max-content;}
+  .b{background:var(--block); border-radius:2px;}
+  .c{position:relative; background:var(--cellbg); border-radius:3px; display:flex; align-items:center; justify-content:center;
+     font-weight:700; color:var(--ink); line-height:1; cursor:pointer; box-shadow:0 1px 0 rgba(31,90,90,.2);}
+  .c.act{background:#F2D49A;} .c.cur{background:var(--amber);}
+  .c.solved{color:var(--teal);}
+  .n{position:absolute; top:1px; left:2px; font-weight:700; color:var(--muted); line-height:1;}
+  /* the dock: hint, clue bar and keyboard, always at the bottom */
+  .dock{flex:0 0 auto; background:#E9E3D8; border-top:1px solid var(--line); padding:0 0 calc(6px + env(safe-area-inset-bottom));}
+  .hintrow{display:flex; justify-content:flex-end; padding:2px 8px 0;}
+  .hintrow button{border:0; background:none; color:var(--teal); font-family:var(--body); font-weight:700; font-size:.95rem; padding:8px 6px; min-height:40px;}
+  .cluebar{display:flex; align-items:center; margin:0 6px 7px; background:var(--card); border-radius:12px; min-height:64px; box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .cluebar .arrow{flex:0 0 40px; align-self:stretch; border:0; background:none; color:var(--teal); font-size:1.9rem; padding:0; font-family:var(--body);}
+  .cluebar .txt{flex:1; text-align:center; padding:8px 2px; cursor:pointer;}
+  .cluebar .tag{display:block; font-size:.8rem; color:var(--muted); font-weight:700; margin-bottom:2px;}
+  .cluebar .q{font-family:var(--display); font-size:1.12rem; line-height:1.22;}
+  .kb{display:flex; flex-direction:column; gap:7px; padding:0 3px;}
+  .kb .row{display:flex; justify-content:center; gap:5px;}
+  .kb button{flex:1 1 0; max-width:40px; height:46px; border:0; border-radius:7px; background:var(--card); color:var(--ink);
+     font-family:var(--body); font-size:1.3rem; font-weight:700; box-shadow:0 1px 0 rgba(0,0,0,.25); padding:0; touch-action:manipulation;}
+  .kb button:active{background:var(--amber-soft);}
+  .kb button.del{max-width:64px; flex:1.6 1 0; font-size:1.15rem;}
+  /* a small version of the real game's celebration, so the mockup shows the feel */
+  @keyframes wave{0%,100%{transform:translateY(0)} 35%{transform:translateY(-28%) scale(1.08)}}
+  .c.w{animation:wave .45s ease-in-out both;}
+  @keyframes pop{0%{transform:translate(-50%,0) scale(.3);opacity:0} 25%{opacity:1;transform:translate(-50%,-60%) scale(1.05)} 100%{transform:translate(-50%,-230%) scale(.95);opacity:0}}
+  .pop{position:absolute; left:50%; top:0; font-size:28px; pointer-events:none; animation:pop 1.4s ease-out both; z-index:5;}
+</style></head>
+<body>
+<div id="phone"></div>
+<script>
+const COMPACT={rows:19,cols:12,placed:[
+ {num:11,dir:"A",word:"PAPERROUTE",cells:[[11,2],[11,3],[11,4],[11,5],[11,6],[11,7],[11,8],[11,9],[11,10],[11,11]],clue:"What was their very first job?"},
+ {num:8,dir:"D",word:"AUTUMN",cells:[[8,9],[9,9],[10,9],[11,9],[12,9],[13,9]],clue:"What is their favorite season of the year?"},
+ {num:9,dir:"A",word:"JITTERBUG",cells:[[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9],[9,10]],clue:"What dance did they do when they were young?"},
+ {num:3,dir:"D",word:"STUDEBAKER",cells:[[0,7],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[8,7],[9,7]],clue:"What make was their first car?"},
+ {num:6,dir:"A",word:"BUTTERPECAN",cells:[[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[4,9],[4,10]],clue:"What is their favorite ice cream flavor?"},
+ {num:1,dir:"D",word:"QUILTING",cells:[[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[7,2]],clue:"What is a hobby they have always enjoyed?"},
+ {num:10,dir:"D",word:"GEOGRAPHY",cells:[[10,11],[11,11],[12,11],[13,11],[14,11],[15,11],[16,11],[17,11],[18,11]],clue:"What subject did they like best in school?"},
+ {num:15,dir:"A",word:"FOURTHOFJULY",cells:[[18,0],[18,1],[18,2],[18,3],[18,4],[18,5],[18,6],[18,7],[18,8],[18,9],[18,10],[18,11]],clue:"What is their favorite holiday?"},
+ {num:13,dir:"A",word:"KICKTHECAN",cells:[[13,0],[13,1],[13,2],[13,3],[13,4],[13,5],[13,6],[13,7],[13,8],[13,9]],clue:"What game did they play outside as a child?"},
+ {num:4,dir:"D",word:"BIGBAND",cells:[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],clue:"What kind of music did they love most?"},
+ {num:2,dir:"A",word:"BISCUIT",cells:[[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11]],clue:"What was the name of a pet they loved?"},
+ {num:12,dir:"D",word:"POTROAST",cells:[[11,4],[12,4],[13,4],[14,4],[15,4],[16,4],[17,4],[18,4]],clue:"What was their favorite food growing up?"},
+ {num:14,dir:"A",word:"LAUNDRY",cells:[[16,3],[16,4],[16,5],[16,6],[16,7],[16,8],[16,9]],clue:"What chore did they have as a child?"},
+ {num:7,dir:"A",word:"PEANUT",cells:[[6,5],[6,6],[6,7],[6,8],[6,9],[6,10]],clue:"What did people call them growing up?"},
+ {num:5,dir:"A",word:"DUBUQUE",cells:[[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[2,10]],clue:"What town did they grow up in?"}]};
+
+const K=(r,c)=>r+','+c, P=COMPACT, sol=new Map(), num=new Map(), entry=new Map();
+P.placed.forEach(pl=>pl.cells.forEach(([r,c],i)=>{ sol.set(K(r,c),pl.word[i]); if(i===0) num.set(K(r,c),pl.num); }));
+const order=[...P.placed].sort((a,b)=>a.dir===b.dir?a.num-b.num:(a.dir==='A'?-1:1));
+const POP={PAPERROUTE:'📰',AUTUMN:'🍂',BUTTERPECAN:'🍨',BISCUIT:'🐶',STUDEBAKER:'🚗',BIGBAND:'🎺',QUILTING:'🧵',GEOGRAPHY:'🌎',FOURTHOFJULY:'🎆',JITTERBUG:'💃',PEANUT:'🥜',KICKTHECAN:'🥫',POTROAST:'🍖',DUBUQUE:'🏡',LAUNDRY:'🧺'};
+// a realistic in-progress state, like the other mockups
+['DUBUQUE','PEANUT','PAPERROUTE','BUTTERPECAN'].forEach(w=>{ const pl=P.placed.find(p=>p.word===w); pl.cells.forEach(([r,c],i)=>entry.set(K(r,c),w[i])); });
+let act=P.placed.find(p=>p.word==='STUDEBAKER'), ci=0, justSolved=null, lastScroll=null;
+const solved=pl=>pl.cells.every(([r,c])=>entry.get(K(r,c))===sol.get(K(r,c)));
+const firstEmpty=pl=>{ const i=pl.cells.findIndex(([r,c])=>!entry.get(K(r,c))); return i<0?0:i; };
+ci=firstEmpty(act);
+// Tap a square to go there; tap the square you are already on to switch to the word crossing it.
+function pick(r,c){ const hits=P.placed.filter(pl=>pl.cells.some(([a,b])=>a===r&&b===c)); if(!hits.length) return;
+  const onIt=act.cells[ci][0]===r&&act.cells[ci][1]===c;
+  act = onIt&&hits.length>1 ? hits.find(h=>h!==act) : (hits.includes(act)?act:hits[0]);
+  ci=act.cells.findIndex(([a,b])=>a===r&&b===c); draw(); }
+// Tapping the clue itself also switches across/down (what most crossword apps do).
+function flip(){ const [r,c]=act.cells[ci]; const x=P.placed.find(pl=>pl!==act&&pl.cells.some(([a,b])=>a===r&&b===c)); if(x){ act=x; ci=x.cells.findIndex(([a,b])=>a===r&&b===c); draw(); } }
+function step(n){ const i=order.indexOf(act), L=order.length; act=order[((i+n)%L+L)%L]; ci=firstEmpty(act); draw(); }
+function afterEntry(){
+  if(solved(act)){ justSolved=act; const i=order.indexOf(act); const nxt=order.slice(i+1).concat(order.slice(0,i)).find(w=>!solved(w)); if(nxt){ act=nxt; ci=firstEmpty(act); } }
+  else if(ci<act.cells.length-1) ci++;
+  draw(); }
+function type(ch){ const [r,c]=act.cells[ci]; entry.set(K(r,c),ch); afterEntry(); }
+function del(){ const [r,c]=act.cells[ci]; if(entry.get(K(r,c))) entry.delete(K(r,c)); else if(ci>0){ ci--; const [r2,c2]=act.cells[ci]; entry.delete(K(r2,c2)); } draw(); }
+function hint(){ let i=ci; const [r0,c0]=act.cells[i]; if(entry.get(K(r0,c0))===sol.get(K(r0,c0))) i=firstEmpty(act); ci=i; const [r,c]=act.cells[i]; entry.set(K(r,c),sol.get(K(r,c))); afterEntry(); }
+const ph=document.getElementById('phone');
+function draw(){
+  const actSet=new Set(act.cells.map(([r,c])=>K(r,c))), [cr,cc]=act.cells[ci];
+  const W=Math.min(window.innerWidth,500)-16-4, cs=Math.min(44,Math.floor((W-(P.cols-1)*2)/P.cols));
+  let g=''; for(let r=0;r<P.rows;r++) for(let c=0;c<P.cols;c++){ const k=K(r,c);
+    if(!sol.has(k)){ g+='<div class="b"></div>'; continue; }
+    const cls=['c']; if(actSet.has(k)) cls.push('act'); if(r===cr&&c===cc) cls.push('cur');
+    if(P.placed.some(pl=>solved(pl)&&pl.cells.some(([a,b])=>a===r&&b===c))) cls.push('solved');
+    const n=num.get(k);
+    g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}" style="font-size:${Math.round(cs*0.6)}px">${n?`<span class="n" style="font-size:${Math.max(8,Math.round(cs*0.3))}px">${n}</span>`:''}${entry.get(k)||''}</div>`; }
+  const done=P.placed.every(solved);
+  const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+  ph.innerHTML=`
+    <div class="top"><button>&lsaquo; Back to games</button><span class="who">Get to know Ruth</span></div>
+    <div class="board" id="board"><div class="grid" style="grid-template-columns:repeat(${P.cols},${cs}px); grid-auto-rows:${cs}px">${g}</div></div>
+    <div class="dock">
+      <div class="hintrow"><button id="hint">Show me a letter</button></div>
+      <div class="cluebar"><button class="arrow" id="prev" aria-label="Previous clue">&lsaquo;</button>
+        <div class="txt" id="flip"><span class="tag">${act.num} ${act.dir==='A'?'Across':'Down'} &middot; ${act.cells.length} letters</span><span class="q">${done?'You did it! Every answer worked out.':act.clue}</span></div>
+        <button class="arrow" id="next" aria-label="Next clue">&rsaquo;</button></div>
+      <div class="kb">${rows.map((row,i)=>`<div class="row">${[...row].map(ch=>`<button data-k="${ch}">${ch}</button>`).join('')}${i===2?'<button class="del" data-k="DEL" aria-label="Delete">&#9003;</button>':''}</div>`).join('')}</div>
+    </div>`;
+  ph.querySelectorAll('.c').forEach(el=>el.onclick=()=>pick(+el.dataset.r,+el.dataset.c));
+  ph.querySelectorAll('.kb button').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(k==='DEL') del(); else type(k); });
+  document.getElementById('prev').onclick=()=>step(-1); document.getElementById('next').onclick=()=>step(1);
+  document.getElementById('hint').onclick=hint; document.getElementById('flip').onclick=flip;
+  // Keep the word in view: scroll the PUZZLE (never the page) so the word sits mid-way, sliding from where it was.
+  const board=document.getElementById('board'), focusW=justSolved||act;
+  const rs=focusW.cells.map(x=>x[0]), mid=(Math.min(...rs)+Math.max(...rs)+1)/2*(cs+2)+6;
+  const target=Math.max(0,Math.min(mid-board.clientHeight/2, board.scrollHeight-board.clientHeight));
+  if(lastScroll!=null) board.scrollTop=lastScroll;
+  board.scrollTo({top:target, behavior:'smooth'}); lastScroll=target;
+  board.onscroll=()=>{ lastScroll=board.scrollTop; };
+  if(justSolved){ const w=justSolved; justSolved=null;
+    w.cells.forEach(([r,c],i)=>{ const el=ph.querySelector(`.c[data-r="${r}"][data-c="${c}"]`); if(el){ el.style.animationDelay=(i*60)+'ms'; el.classList.add('w'); } });
+    const [lr,lc]=w.cells[w.cells.length-1], last=ph.querySelector(`.c[data-r="${lr}"][data-c="${lc}"]`);
+    if(last) setTimeout(()=>{ const s=document.createElement('span'); s.className='pop'; s.textContent=POP[w.word]||'✨'; last.appendChild(s); setTimeout(()=>s.remove(),1500); }, w.cells.length*60+120);
+    const token=draw.n=(draw.n||0)+1;
+    setTimeout(()=>{ if(draw.n===token) draw(); }, w.cells.length*60+1700);   // then scroll on to the next clue
+  } else draw.n=(draw.n||0)+1;
+}
+document.addEventListener('keydown',e=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; if(/^[a-z]$/i.test(e.key)) type(e.key.toUpperCase()); else if(e.key==='Backspace') del(); });
+draw();
+if(document.fonts) document.fonts.ready.then(draw);
+window.addEventListener('resize',draw);
+</script>
+</body></html>
