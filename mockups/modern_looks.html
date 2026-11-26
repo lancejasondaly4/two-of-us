@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<title>Two of Us: three modern looks</title>
+<title>Two of Us: Night and Day</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* Three complete looks for the whole game, to try on a phone. Made-up data only (Ruth).
@@ -210,11 +210,46 @@ body[data-look=night] .c.fxw{animation:ignite .8s ease-out both, tileglow .9s ea
   padding:14px 34px; background:radial-gradient(closest-side, rgba(18,16,42,.9), rgba(18,16,42,.6) 60%, rgba(18,16,42,0));}
 @keyframes glowUp{0%{transform:translate(-50%,-30%); opacity:0; filter:blur(6px)} 20%{transform:translate(-50%,-50%); opacity:1; filter:blur(0)}
   75%{transform:translate(-50%,-70%); opacity:1} 100%{transform:translate(-50%,-100%); opacity:0; filter:blur(4px)}}
+
+/* ---------- DAY: Night's daytime twin. Same lettering and layout; warm cream morning light,
+   deep indigo letters, solved letters turn warm amber, sunlight specks instead of fireflies. ---------- */
+body[data-look=day]{
+  --bg: radial-gradient(120% 60% at 50% -5%, #FFE9C4 0, rgba(255,233,196,0) 70%), linear-gradient(180deg, #FCF7EE 0%, #F8F0E2 60%, #F4E9D8 100%);
+  --font:"Atkinson Hyperlegible", system-ui, sans-serif; --display:"Fraunces", Georgia, serif;
+  --ink:#241F3E; --muted:#6B6580; --accent:#A8591A; --tile:#FFFFFF; --block:rgba(36,31,62,.045); --act:#FBE2B6; --cur:#EBA748; --curInk:#241F3E;
+  --okBg:#FFF3DC; --okInk:#9A4F12; --panel:rgba(255,255,255,.8); --key:#FFFFFF; --keyInk:#241F3E; --letter:600;}
+body[data-look=day] .home h1{font-weight:600; font-size:2.6rem; letter-spacing:-.01em;}
+body[data-look=day] .gc{background:rgba(255,255,255,.82); border:1px solid rgba(168,89,26,.10); box-shadow:0 2px 0 rgba(168,89,26,.06), 0 10px 26px rgba(150,100,40,.10);}
+body[data-look=day] .gc.wide:first-child{background:linear-gradient(160deg, #FFF0D4, #FFFFFF 70%); border-color:rgba(235,167,72,.55); box-shadow:0 10px 30px rgba(235,167,72,.20);}
+body[data-look=day] .gc .ico{filter:drop-shadow(0 4px 8px rgba(200,130,40,.30));}
+body[data-look=day] .gc .t{font-weight:600;}
+body[data-look=day] .gc .badge{background:#241F3E; color:#FFE9C4;}
+body[data-look=day] .ptitle{font-weight:600;}
+body[data-look=day] .bar{background:rgba(36,31,62,.08);} body[data-look=day] .bar i{background:linear-gradient(90deg,#EBA748,#F6C76E);}
+body[data-look=day] .grid{gap:3px;}
+body[data-look=day] .c{border-radius:6px; font-family:var(--display); box-shadow:0 1px 2px rgba(120,80,30,.10), 0 2px 6px rgba(120,80,30,.06);}
+body[data-look=day] .c.cur{box-shadow:0 4px 14px rgba(235,167,72,.55);}
+body[data-look=day] .dock{background:rgba(255,250,240,.72); border-top:1px solid rgba(168,89,26,.12); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);}
+body[data-look=day] .clue{border:1px solid rgba(168,89,26,.12); box-shadow:0 4px 16px rgba(150,100,40,.08);}
+body[data-look=day] .clue .q{font-weight:500;}
+body[data-look=day] .kb button{box-shadow:0 1px 0 rgba(120,80,30,.22), 0 2px 5px rgba(120,80,30,.06);}
+body[data-look=day] .kb button:active{background:#FBE2B6;}
+body[data-look=day] .fin .big{font-weight:600; color:#241F3E;}
+body[data-look=day] .fin .cta{background:linear-gradient(180deg,#F6C277,#E9A445); color:#241F3E; border-radius:99px; box-shadow:0 8px 22px rgba(233,164,69,.40);}
+/* a right answer: each letter warms up like the sun coming through, then settles amber */
+@keyframes warm{0%{transform:scale(1); color:var(--ink); text-shadow:none}
+  35%{transform:scale(1.26); color:#D9822B; text-shadow:0 0 10px rgba(255,190,90,.9), 0 0 22px rgba(255,170,60,.5)}
+  100%{transform:scale(1); color:#9A4F12; text-shadow:none}}
+@keyframes tilewarm{0%{background:#fff} 35%{background:#FFE3A8; box-shadow:0 0 0 2px #F6C76E, 0 0 20px rgba(246,180,80,.75)} 100%{background:#FFF3DC}}
+body[data-look=day] .c.fxw{animation:warm .8s ease-out both, tilewarm .9s ease-out both; z-index:3;}
+.sunword{position:absolute; transform:translate(-50%,-50%); font-family:"Fraunces", Georgia, serif; font-style:italic; font-weight:500; font-size:2.2rem; color:#9A4F12; white-space:nowrap;
+  padding:10px 30px; border-radius:99px; background:rgba(255,252,245,.92); box-shadow:0 10px 30px rgba(180,120,40,.22), 0 0 0 1px rgba(235,167,72,.35);
+  animation:glowUp 2.4s ease-out both;}
 @media (prefers-reduced-motion:reduce){ *{animation:none !important;} }
 </style></head>
-<body data-look="glass">
+<body data-look="night">
 <div id="ctl">
-  <div class="r"><span class="lab">Look</span><button data-look="glass">Glass</button><button data-look="bold">Bold</button><button data-look="night">Night</button><button class="snd" id="snd">Sound on</button></div>
+  <div class="r"><span class="lab">Look</span><button data-pref="night">Night</button><button data-pref="day">Day</button><button data-pref="auto" id="autoBtn">Automatic</button><button class="snd" id="snd">Sound on</button></div>
   <div class="r"><span class="lab">Show</span><button data-view="home">Home</button><button data-view="puzzle">Puzzle</button><button class="play" id="pW">&#9654; Right</button><button class="play" id="pF">&#9654; Finish</button></div>
 </div>
 <div id="screen"></div>
@@ -247,7 +282,7 @@ P.placed.forEach(pl=>pl.cells.forEach(([r,c],i)=>{ sol.set(K(r,c),pl.word[i]); i
 const order=[...P.placed].sort((a,b)=>a.dir===b.dir?a.num-b.num:(a.dir==='A'?-1:1));
 const STUDE=P.placed.find(p=>p.word==='STUDEBAKER');
 const START_W=['DUBUQUE','PEANUT','PAPERROUTE','BUTTERPECAN','BISCUIT','JITTERBUG'];
-let look='glass', view='home', mode='w', act=STUDE, ci=0, lastScroll=null, busy=0, finishing=false, sound=true;
+let pref='night', look='night', view='home', mode='w', act=STUDE, ci=0, lastScroll=null, busy=0, finishing=false, sound=true;
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 const solved=pl=>pl.cells.every(([r,c])=>entry.get(K(r,c))===sol.get(K(r,c)));
 const allDone=()=>P.placed.every(solved);
@@ -273,9 +308,9 @@ const cv=document.getElementById('fxc'), cx=cv.getContext('2d'), fx=document.get
 function fit(){ const d=Math.min(2,window.devicePixelRatio||1); cv.width=innerWidth*d; cv.height=innerHeight*d; cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px'; cx.setTransform(d,0,0,d,0,0); }
 fit(); addEventListener('resize',fit);
 const sprites={};
-function glow(col){ if(sprites[col]) return sprites[col]; const s=document.createElement('canvas'); s.width=s.height=64; const g=s.getContext('2d');
-  const rg=g.createRadialGradient(32,32,0,32,32,32); rg.addColorStop(0,'#fff'); rg.addColorStop(.18,col); rg.addColorStop(.45,col+'66'); rg.addColorStop(1,col+'00');
-  g.fillStyle=rg; g.fillRect(0,0,64,64); return sprites[col]=s; }
+function glow(col,core){ core=core||'#fff'; const key=col+core; if(sprites[key]) return sprites[key]; const s=document.createElement('canvas'); s.width=s.height=64; const g=s.getContext('2d');
+  const rg=g.createRadialGradient(32,32,0,32,32,32); rg.addColorStop(0,core); rg.addColorStop(.18,col); rg.addColorStop(.45,col+'66'); rg.addColorStop(1,col+'00');
+  g.fillStyle=rg; g.fillRect(0,0,64,64); return sprites[key]=s; }
 function emit(p){ p.t0=performance.now()+(p.delay||0)*1000; parts.push(p); if(!running){ running=true; requestAnimationFrame(loop); } }
 function loop(now){ cx.clearRect(0,0,innerWidth,innerHeight);
   parts=parts.filter(p=>now<p.t0||(now-p.t0)/1000<p.life);
@@ -283,7 +318,7 @@ function loop(now){ cx.clearRect(0,0,innerWidth,innerHeight);
     let x=p.x+p.vx*f, y=p.y+p.vy*f+0.5*(p.g||0)*a*a; if(p.wob) x+=Math.sin(a*(p.wf||3)+(p.ph||0))*p.wob;
     const t=a/p.life, fa=p.fadeAt??.6; let al=t>fa?Math.max(0,1-(t-fa)/(1-fa)):1; if(p.fadeIn) al*=Math.min(1,a/p.fadeIn);
     cx.globalAlpha=al;
-    if(p.kind==='glow'){ cx.globalCompositeOperation='lighter'; const s=p.r*(p.grow?1+a*p.grow:1); cx.drawImage(glow(p.col),x-s,y-s,s*2,s*2); cx.globalCompositeOperation='source-over'; }
+    if(p.kind==='glow'){ if(!p.soft) cx.globalCompositeOperation='lighter'; const s=p.r*(p.grow?1+a*p.grow:1); cx.drawImage(p.soft?glow(p.col,p.col):glow(p.col),x-s,y-s,s*2,s*2); cx.globalCompositeOperation='source-over'; }
     else if(p.kind==='dot'){ cx.fillStyle=p.col; cx.beginPath(); cx.arc(x,y,p.r*(1-t*.4),0,6.283); cx.fill(); }
     else if(p.kind==='rect'){ cx.save(); cx.translate(x,y); cx.rotate((p.rot||0)+(p.vr||0)*a); cx.scale(1,Math.cos(a*(p.fl||8))); cx.fillStyle=p.col; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore(); }
     else if(p.kind==='glyph'){ cx.font=p.size+'px serif'; cx.textAlign='center'; cx.textBaseline='middle'; cx.save(); cx.translate(x,y); cx.rotate((p.vr||0)*a); cx.fillText(p.glyph,0,0); cx.restore(); } }
@@ -296,7 +331,8 @@ function burst(x,y,n,opt){ for(let i=0;i<n;i++){ const ang=rnd(0,6.283), sp=rnd(
 /* ---------- drawing ---------- */
 const scr=document.getElementById('screen');
 function sync(){ document.body.dataset.look=look;
-  document.querySelectorAll('#ctl [data-look]').forEach(b=>b.classList.toggle('on',b.dataset.look===look));
+  document.querySelectorAll('#ctl [data-pref]').forEach(b=>b.classList.toggle('on',b.dataset.pref===pref));
+  const ab=document.getElementById('autoBtn'); if(ab) ab.textContent=pref==='auto'?('Auto: '+(look==='night'?'Night':'Day')):'Automatic';
   document.querySelectorAll('#ctl [data-view]').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
   document.getElementById('snd').textContent=sound?'Sound on':'Sound off'; }
 function render(){ sync(); if(view==='home') drawHome(); else drawPuzzle(); }
@@ -326,8 +362,8 @@ function drawPuzzle(){
     g+=`<div class="${cls.join(' ')}" data-r="${r}" data-c="${c}" style="font-size:${Math.round(cs*0.58)}px;${col?`--wc:${col}`:''}">${n?`<span class="n" style="font-size:${Math.max(8,Math.round(cs*0.29))}px">${n}</span>`:''}${entry.get(k)||''}</div>`; }
   const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
   const em=P.placed.slice().sort((a,b)=>a.num-b.num).map((pl,i)=>`<span style="animation-delay:${1.3+i*0.09}s">${POP[pl.word]}</span>`).join('');
-  const big={glass:'You know Ruth.', bold:'15 for 15.', night:'You know Ruth.'}[look];
-  const sub={glass:'All 15 answers, worked out.', bold:'That is the whole of Ruth, in one grid.', night:'Every answer found its place.'}[look];
+  const big={glass:'You know Ruth.', bold:'15 for 15.', night:'You know Ruth.', day:'You know Ruth.'}[look];
+  const sub={glass:'All 15 answers, worked out.', bold:'That is the whole of Ruth, in one grid.', night:'Every answer found its place.', day:'Every answer found its place.'}[look];
   const dock = done ? `<div class="fin"><div class="emo">${em}</div><div class="big">${big}</div><div class="sub">${sub}</div><button class="cta" id="again">Now, how well were you listening?</button><div class="links"><button>Save as a picture</button><button>Keep all our answers</button></div></div>`
    : `<div class="hintrow"><button>Show me a letter</button></div>
       <div class="clue"><button class="arrow" id="prev">&lsaquo;</button><div class="txt" id="flip"><span class="tag">${act.num} ${act.dir==='A'?'ACROSS':'DOWN'} &middot; ${act.cells.length} LETTERS</span><span class="q">${act.clue}</span></div><button class="arrow" id="next">&rsaquo;</button></div>
@@ -366,7 +402,7 @@ function autoType(){ const token=busy; const missing=STUDE.cells.filter(([r,c])=
 function wordRect(w){ const a=document.querySelector(`.c[data-r="${w.cells[0][0]}"][data-c="${w.cells[0][1]}"]`), b=document.querySelector(`.c[data-r="${w.cells.at(-1)[0]}"][data-c="${w.cells.at(-1)[1]}"]`);
   if(!a||!b) return null; const ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect(); return {x:(ra.left+rb.right)/2, y:(ra.top+rb.bottom)/2, ra, rb}; }
 function wordMoment(w){ const token=busy; const cells=w.cells.map(([r,c])=>document.querySelector(`.c[data-r="${r}"][data-c="${c}"]`)).filter(Boolean);
-  const gap=look==='bold'?.07:look==='night'?.09:.065, d0=.25;
+  const gap=look==='bold'?.07:(look==='night'||look==='day')?.09:.065, d0=.25;
   if(reduce){ bellWord(0); return; }
   ticks(cells.length,d0,gap); bellWord(d0+cells.length*gap+.05);
   cells.forEach((el,i)=>{ el.style.setProperty('--wc',w.color); el.style.animationDelay=(d0+i*gap)+'s'; el.classList.add('fxw'); if(look==='glass') el.classList.add('lit'); });
@@ -387,6 +423,11 @@ function wordMoment(w){ const token=busy; const cells=w.cells.map(([r,c])=>docum
       cells.forEach(el=>{ const r=el.getBoundingClientRect(); for(let j=0;j<3;j++) emit({kind:'glow',x:r.left+r.width/2+rnd(-6,6),y:r.top+r.height/2,vx:rnd(-12,12),vy:rnd(-70,-30),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(5,9),col:j?'#FFC46B':'#FFE7A8',life:rnd(1.8,2.8),fadeIn:.25,fadeAt:.45,delay:rnd(0,.5)}); });
       const g2=document.createElement('div'); g2.className='glowword'; g2.textContent=PRETTY[w.word];
       g2.style.left=Math.min(Math.max(R.x,110),innerWidth-110)+'px'; g2.style.top=(R.y)+'px'; fx.appendChild(g2); setTimeout(()=>g2.remove(),2500);
+    }
+    if(look==='day'){
+      cells.forEach(el=>{ const r=el.getBoundingClientRect(); for(let j=0;j<3;j++) emit({kind:'glow',soft:true,x:r.left+r.width/2+rnd(-8,8),y:r.top+r.height/2,vx:rnd(-14,14),vy:rnd(-60,-25),wob:rnd(6,14),wf:rnd(2,4),ph:rnd(0,6),r:rnd(6,11),col:['#F6B54A','#FFC98A','#F59E5B'][j],life:rnd(1.8,2.8),fadeIn:.25,fadeAt:.45,delay:rnd(0,.5)}); });
+      const g3=document.createElement('div'); g3.className='sunword'; g3.textContent=PRETTY[w.word];
+      g3.style.left=Math.min(Math.max(R.x,120),innerWidth-120)+'px'; g3.style.top=R.y+'px'; fx.appendChild(g3); setTimeout(()=>g3.remove(),2500);
     }
   }, look==='bold'?after-150:after);
 }
@@ -414,6 +455,7 @@ function finish(){ finishing=true; const token=busy;
       note(196,0,.12,.12,'square'); note(147,.02,.18,.1,'triangle');
       for(let wave=0;wave<2;wave++) for(let i=0;i<80;i++) emit({kind:'rect',x:rnd(0,innerWidth),y:rnd(-60,-10),vx:rnd(-30,30),vy:rnd(170,300),g:0,wob:rnd(15,35),wf:rnd(2,4),ph:rnd(0,6),w:rnd(7,11),h:rnd(11,17),col:BOLDC[i%5],rot:rnd(0,3),vr:rnd(-6,6),fl:rnd(5,10),life:4,fadeAt:.8,delay:wave*.9+rnd(0,.5)});
     }, 1300); }
+  if(look==='day') dayFinish(token);
   if(look==='night'){ const cols=['#FFC46B','#FF8FA3','#7FE6D5','#B9A7FF','#FFE7A8'];
     for(let i=0;i<6;i++){ const at=1.3+i*.55, col=cols[i%cols.length];
       setTimeout(()=>{ if(busy!==token) return; const R=gr(), x=R.left+rnd(.15,.85)*R.width, y=R.top+rnd(.12,.55)*R.height;   // aim once the puzzle has settled
@@ -422,15 +464,34 @@ function finish(){ finishing=true; const token=busy;
         note(180+rnd(0,60),.55,.35,.06,'sine'); note(1400+rnd(0,600),.6,.6,.012,'sine'); }, (at-.55)*1000); } }
 }
 
+// Day finish: a wash of warm light from the puzzle, sunlight specks, and blossoms drifting down.
+function dayFinish(token){
+  setTimeout(()=>{ if(busy!==token) return; const R=document.querySelector('.grid').getBoundingClientRect(), x=R.left+R.width/2, y=R.top+R.height/2;
+    emit({kind:'glow',soft:true,x,y,vx:0,vy:0,r:60,grow:2.2,col:'#FFD58A',life:1.6,fadeIn:.3,fadeAt:.35});
+    burst(x,y,60,{sp:[80,260],r:[6,12],cols:['#F6B54A','#FFC98A','#F59E5B','#FFE3A8'],base:{kind:'glow',soft:true,drag:1.5,g:-20,life:2.2,fadeAt:.4}});
+    const fl=['🌸','🌼','🌸','🍃'];
+    for(let i=0;i<34;i++) emit({kind:'glyph',glyph:fl[i%fl.length],size:rnd(16,26),x:rnd(10,innerWidth-10),y:rnd(-60,-10),vx:rnd(-20,20),vy:rnd(70,130),wob:rnd(18,36),wf:rnd(1.2,2.2),ph:rnd(0,6),vr:rnd(-1.2,1.2),life:5,fadeAt:.75,delay:.3+rnd(0,1.6)});
+  }, 1300);
+}
 /* ---------- try-out controls ---------- */
-document.querySelectorAll('#ctl [data-look]').forEach(b=>b.onclick=()=>{ look=b.dataset.look; if(finishing){ setup(mode); } busy++; fx.innerHTML=''; parts=[]; render(); });
+// Automatic = follow the phone's own Light/Dark setting (many phones switch at sunset).
+const darkMQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+function applyPref(){ if(pref==='auto') look=darkMQ.matches?'night':'day'; else if(pref==='night'||pref==='day') look=pref; }
+function switchLook(){ if(finishing) setup(mode); busy++; fx.innerHTML=''; parts=[]; applyPref(); render(); }
+document.querySelectorAll('#ctl [data-pref]').forEach(b=>b.onclick=()=>{ pref=b.dataset.pref; switchLook(); });
+function autoCheck(){ if(pref==='auto' && (darkMQ.matches?'night':'day')!==look) switchLook(); }
+if(darkMQ.addEventListener) darkMQ.addEventListener('change',autoCheck);
+// Phones usually flip to dark at sunset while the app is in the background, so check again on return.
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) autoCheck(); }); addEventListener('focus',autoCheck);
 document.querySelectorAll('#ctl [data-view]').forEach(b=>b.onclick=()=>{ view=b.dataset.view; if(finishing) setup('w'); render(); });
 document.getElementById('pW').onclick=()=>{ setup('w'); view='puzzle'; render(); autoType(); };
 document.getElementById('pF').onclick=()=>{ setup('f'); view='puzzle'; render(); autoType(); };
 document.getElementById('snd').onclick=()=>{ sound=!sound; sync(); };
 ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 document.addEventListener('keydown',e=>{ if(view!=='puzzle'||e.metaKey||e.ctrlKey||e.altKey) return; if(/^[a-z]$/i.test(e.key)) type(e.key.toUpperCase()); else if(e.key==='Backspace') del(); });
-const q=new URLSearchParams(location.search); if(['glass','bold','night'].includes(q.get('look'))) look=q.get('look');
+const q=new URLSearchParams(location.search), ql=q.get('look');
+if(['night','day','auto'].includes(ql)) pref=ql; else if(['glass','bold'].includes(ql)){ pref=ql; look=ql; }   // Glass and Bold are still here by link
+applyPref();
 setup('w'); render();
 if(document.fonts) document.fonts.ready.then(()=>{ if(!finishing) render(); });
 </script>
