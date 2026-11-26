@@ -925,16 +925,16 @@ function scrHome(){
     return scrReceived();
   }
   // r23 (Lance: "too much to read"): the bare minimum of direction on every setup screen.
+  // r24: the play-together-on-one-phone option is gone from home (Lance: "i doubt that's how the game
+  // will ever be played"). Its screens (mode_local_names, handoff, bridge, scrMenu) are unreachable now.
   app.innerHTML=`
     <div class="center" style="margin:14px 0 28px">
       <h1>Two of Us</h1>
       <p class="lead" style="max-width:460px;margin:12px auto 0">Answer some questions about yourself. The other person gets a crossword made from your answers.</p></div>
     <div class="choices">
       <button class="btn-teal game-btn" id="remote"><span class="game-name">Make a puzzle for someone</span><span class="game-blurb">Send it by text or email.</span></button>
-      <button class="btn-ghost game-btn" id="local"><span class="game-name">Play together on this phone</span><span class="game-blurb">Take turns answering.</span></button>
     </div>`;
   document.getElementById('remote').onclick=()=>go('remote_start');
-  document.getElementById('local').onclick=()=>go('mode_local_names');
 }
 
 function scrLocalNames(){
