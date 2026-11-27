@@ -1,6 +1,6 @@
 {
-  "name": "Two of Us",
-  "short_name": "Two of Us",
+  "name": "Puzzled Together",
+  "short_name": "Puzzled",
   "description": "A crossword made from your answers, for family, friends or co-workers.",
   "id": "/",
   "start_url": "./",
