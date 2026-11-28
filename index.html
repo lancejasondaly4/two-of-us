@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Puzzled Together</title>
+<title>Porch Puzzler</title>
 <meta name="description" content="A crossword made from your answers, for family, friends or co-workers.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1F5A5A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Puzzled">
+<meta name="apple-mobile-web-app-title" content="Porch Puzzler">
 <link rel="apple-touch-icon" href="apple-touch-icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -892,7 +892,7 @@ function scrHome(){
   // game will ever be played"). The app is only ever: make one and send it, or receive one.
   app.innerHTML=`
     <div class="center" style="margin:14px 0 28px">
-      <h1>Puzzled Together</h1>
+      <h1>Porch Puzzler</h1>
       <p class="lead" style="max-width:460px;margin:12px auto 0">Answer some questions about yourself. Send them to someone as a crossword.</p></div>
     <div class="choices">
       <button class="btn-teal game-btn" id="remote"><span class="game-name">Start</span></button>
@@ -2010,7 +2010,7 @@ function exportKeepsake(){
   }
   H+=60; cv.height=H;
   x.fillStyle='#F7F2E9'; x.fillRect(0,0,W,H);
-  x.fillStyle='#2A2622'; x.font='600 40px Georgia'; x.fillText('Puzzled Together',PAD,80);
+  x.fillStyle='#2A2622'; x.font='600 40px Georgia'; x.fillText('Porch Puzzler',PAD,80);
   x.font='20px Georgia'; x.fillStyle='#6E655B'; x.fillText('Our answers',PAD,116);
   x.strokeStyle='#D99B2B'; x.lineWidth=3; x.beginPath(); x.moveTo(PAD,140); x.lineTo(W-PAD,140); x.stroke();
   let y=190;
@@ -2029,7 +2029,7 @@ function exportKeepsake(){
     y+=18;
   }
   x.fillStyle='#6E655B'; x.font='italic 16px Georgia';
-  x.fillText('Kept with the agreement of both.  ·  Puzzled Together',PAD,H-30);
+  x.fillText('Kept with the agreement of both.  ·  Porch Puzzler',PAD,H-30);
   const a=document.createElement('a'); a.download='our-keepsake.png'; a.href=cv.toDataURL('image/png'); a.click();
 }
 
@@ -2048,7 +2048,7 @@ function exportCrossword(p){
   cv.height=listTop + items.length*58 + 60;
   const H=cv.height;
   x.fillStyle='#F7F2E9'; x.fillRect(0,0,W,H);
-  x.fillStyle='#2A2622'; x.font='600 38px Georgia'; x.fillText('Puzzled Together',PAD,76);
+  x.fillStyle='#2A2622'; x.font='600 38px Georgia'; x.fillText('Porch Puzzler',PAD,76);
   x.font='20px Georgia'; x.fillStyle='#6E655B'; x.fillText('A crossword about '+nm,PAD,110);
   x.strokeStyle='#D99B2B'; x.lineWidth=3; x.beginPath(); x.moveTo(PAD,134); x.lineTo(W-PAD,134); x.stroke();
   // solved grid

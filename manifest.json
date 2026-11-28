@@ -1,6 +1,6 @@
 {
-  "name": "Puzzled Together",
-  "short_name": "Puzzled",
+  "name": "Porch Puzzler",
+  "short_name": "Porch Puzzler",
   "description": "A crossword made from your answers, for family, friends or co-workers.",
   "id": "/",
   "start_url": "./",

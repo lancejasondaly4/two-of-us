@@ -1,6 +1,6 @@
-/* Puzzled Together service worker. Offline-first for the app shell.
+/* Porch Puzzler service worker. Offline-first for the app shell.
    No analytics, no network beyond Google Fonts. Bump CACHE on each release. */
-const CACHE = 'twoofus-v103';
+const CACHE = 'twoofus-v104';
 const SHELL = [
   './',
   './index.html',
